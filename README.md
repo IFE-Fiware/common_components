@@ -12,42 +12,16 @@ A brief description of what this project does
     * [Create the Namespace](#create-the-namespace)
       * [Step 1: Create the Namespace](#step-1-create-the-namespace)
       * [Step 2: Verify the Namespace](#step-2-verify-the-namespace)
-    * [Deploy the Namespace](#deploy-the-namespace)
-      * [Step 1: Modify YAML Configuration Files](#step-1-modify-yaml-configuration-files)
-        * [Redis](#redis)
-          * [Example of values.yaml](#example-of-valuesyaml)
-        * [Postgresql](#postgresql)
-          * [Example of values-authority.yaml](#example-of-values-authorityyaml)
-        * [Keycloak](#keycloak)
-          * [Example of values.yaml](#example-of-valuesyaml-1)
-        * [EJBCA](#EJBCA)
-          * [Example of values.yaml](#example-of-valuesyaml-2)
-        * [Onboarding](#onboarding)
-          * [Prerequisites](#prerequisites)
-          * [Example of values.yaml](#example-of-valuesyaml-3)
-          * [Configuration](#configuration)
-        * [Security Attributes Provider](#security-attributes-provider)
-          * [Example of values.yaml](#example-of-valuesyaml-4)
-          * [Configuration](#configuration-1)
-        * [Simpl Cloud Gateway](#simpl-cloud-gateway)
-          * [Example of values.yaml](#example-of-valuesyaml-5)
-          * [Configuration](#configuration-2)
-          * [Profiles](#profiles)
-          * [Common configuration](#common-configuration)
-        * [User Roles](#users-roles)
-          * [Prerequisites](#prerequisites-1)
-          * [Example of values.yaml](#example-of-valuesyaml-6)
-          * [Configuration](#configuration-3)
-        * [Frontend](#frontend)
-          * [Example of values.yaml](#example-of-valuesyaml-7)
-          * [Configuration](#configuration-4)
-        * [TLS Gateway](#tls-gateway)
-          * [Prerequisites](#prerequisites-2)
-          * [Example of values.yaml](#example-of-valuesyaml-8)
-          * [Configuration](#configuration-5)
-          * [Get the TLS Gateway Truststore](#get-the-tls-gateway-truststore)
-          * [Profile-Based Configuration](#profile-based-configuration)
-      * [Step 2: Deploy the Application Using Helm Charts](#step-2-deploy-the-application-using-helm-charts)
+    * [Vault configuration](#vault-configuration)
+      * [Preliminary activities](#preliminary-activities-done-once)
+      * [Secrets for FC-Service](#secrets-for-fc-service)
+      * [Secrets for Catalog Query Mapper Adapter](#secret-for-catalog-query-mapper-adapter)
+    * [Deploy the namespace using ArgoCD](#deploy-the-namespace-using-argocd)
+    * [Manual Deployment](#manual-deployment)
+      * [Files preparation](#files-preparation)
+      * [Deployment](#deployment)
+    * [Monitoring](#monitoring)
+    * [Additional steps](#additional-steps)
     * [Change the namespace](#change-the-namespace)
     * [Delete the deployment](#delete-the-deployment)
     * [Troubleshooting](#troubleshooting)          
@@ -57,60 +31,34 @@ A brief description of what this project does
     * [Create the Namespace](#create-the-namespace-1)
       * [Step 1: Create the Namespace](#create-the-namespace-1)
       * [Step 2: Verify the Namespace](#step-2-verify-the-namespace-1)
-    * [Installation](#installation)
-      * [Files preparation](#files-preparation)
-      * [Manual steps](#manual-steps)
-    * [Deploy the Namespace](#deploy-the-namespace-1)
-      * [Step 1: Modify YAML configuration files](#step-1-modify-yaml-configuration-files-1)
-        * [Redis](#redis-1)
-          * [Example of values.yaml](#example-of-valuesyaml-9)
-        * [Postgresql](#postgresql-1)
-          * [Example of values-participant.yaml](#example-of-values-participantyaml)
-        * [Keycloak](#keycloak-1)
-          * [Example of values.yaml](#example-of-valuesyaml-10)
-        * [SIMPL Cloud Gateway](#simpl-cloud-gateway-1)
-          * [Example of values.yaml](#example-of-valuesyaml-11)
-          * [Profiles](#profiles-2)
-          * [Common configuration](#common-configuration-1)
-        * [User & Roles](#user--roles)
-          * [Example of values.yaml](#example-of-valuesyaml-12)
-          * [Configuration](#configuration-6)
-        * [Frontend](#frontend-1)
-          * [Example of values.yaml](#example-of-valuesyaml-13)
-          * [Configuration](#configuration-7)
-      * [Step 2: Deploy the Application Using Helm Charts](#step-2-deploy-the-application-using-helm-charts-1)
-   * [Change the Namespace](#change-the-namespace-1)
-   * [Delete the Deployment](#delete-the-deployment-1)
-   * [Troubleshooting](#troubleshooting-1)
+    * [Create volumes](#create-volumes)
+    * [Vault configuration](#vault-configuration-1)
+       * [Preliminary activities](#preliminary-activities-done-once-1)
+       * [Secrets for Signer](#secret-for-signer)
+    * [Deploy the namespace using ArgoCD](#deploy-the-namespace-using-argocd-1)
+    * [Manual deployment](#manual-deployment-1)
+      * [Files preparation](#files-preparation-1)
+      * [Deployment](#deployment-1)
+    * [Monitoring](#monitoring-1)
+    * [Additional steps](#additional-steps-1)
+    * [Delete the Deployment](#delete-the-deployment-1)
+    * [Troubleshooting](#troubleshooting-1)
 4. [Install a Consumer Agent](#consumer-deployment)
-     * [Description](#description-2)
-   * [Prerequisites](#prerequisites-4)
-   * [Create the Namespace](#create-the-namespace-2)
-     * [Step 1: Create the Namespace](#create-the-namespace-2)
-     * [Step 2: Verify the Namespace](#step-2-verify-the-namespace-2)
-   * [Deploy the Namespace](#deploy-the-namespace-2)
-     * [Step 1: Modify YAML configuration files](#step-1-modify-yaml-configuration-files-2)
-       * [Redis](#redis-2)
-         * [Example of values.yaml](#example-of-valuesyaml-14)
-       * [Postgresql](#postgresql-2)
-         * [Example of values-participant.yaml](#example-of-values-participantyaml-1)
-       * [Keycloak](#keycloak-2)
-         * [Example of values.yaml](#example-of-valuesyaml-15)
-       * [SIMPL CLoud Gateway](#simpl-cloud-gateway-2)
-         * [Example of values.yaml](#example-of-valuesyaml-16)
-         * [Profiles](#profiles-3)
-         * [Common configuration](#common-configuration-2)
-       * [User & Roles](#user--roles)
-         * [Prerequisites](#prerequisites-6)
-         * [Example of values.yaml](#example-of-valuesyaml-17)
-         * [Configuration](#configuration-8)
-       * [Frontend](#frontend-2)
-         * [Example of values.yaml](#example-of-valuesyaml-18)       
-         * [Configuration](#configuration-9)
-       * [Step 2: Deploy the Application Using Helm Charts](#step-2-deploy-the-application-using-helm-charts-2)
-   * [Change the Namespace](#change-the-namespace-2)
-   * [Delete the Deployment](#delete-the-deployment-2)
-   * [Troubleshooting](#troubleshooting-2)
+    * [Description](#description-2)
+    * [Prerequisites](#prerequisites-1)
+    * [Create the Namespace](#create-the-namespace-2)
+      * [Step 1: Create the Namespace](#create-the-namespace-2)
+      * [Step 2: Verify the Namespace](#step-2-verify-the-namespace-2)
+    * [Create volumes](#create-volumes-1)
+    * [Deploy the namespace using ArgoCD](#deploy-the-namespace-using-argocd-2)
+    * [Manual deployment](#manual-deployment-2)
+      * [Files preparation](#files-preparation-2)
+      * [Deployment](#deployment-2)
+    * [Monitoring](#monitoring)
+    * [Additional steps](#additional-steps-1)
+    * [Change the Namespace](#change-the-namespace-2)
+    * [Delete the Deployment](#delete-the-deployment-2)
+    * [Troubleshooting](#troubleshooting-2)
 
 # Prerequisites
 
@@ -151,482 +99,205 @@ To ensure that the namespace was created successfully, run the following command
 `kubectl get namespaces`
 <br/>This will list all the namespaces in your cluster, and you should see the one you just created listed.
 
-## Deploy the namespace
-Deploying a dedicated namespace, such as **authority1**, helps isolate resources and applications within a Kubernetes cluster.
+## Vault configuration
 
-Filling the namespace with content requires the following activity:
+### Preliminary activities (done once)
 
-### Step 1: Modify YAML Configuration Files
+1. Execute shell of your vault pod `kubectl exec -it vault-0 -- /bin/sh`. In this case pod name is `vault-0`
+2. Login to vault using cmd `vault login`. You will need to provide token for auth
+3. Create secret engine `vault secrets enable -path=dev kv-v2` in this case name of the engine is `dev`
+4. Enable kubernetes interaction with vault `vault auth enable kubernetes`
+5. Add config for kubernetes `vault write auth/kubernetes/config  kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443"`
+6. Write policy in vault for fetching credentials by kubernetes
+    ```hcl
+    vault policy write dev-policy - <<EOF
+    path "dev/data/*" {
+    capabilities = ["read"]
+    }
+    EOF
+    ```
+   In this example `dev-policy` is name of policy - it can be anything, and path `dev/data/*` needs to relate existing secret engine declared in pt 3.
+7. Create role in vault that will bind policy with given service account name and service account namespace
+    ```hcl
+   vault write auth/kubernetes/role/gaiax-edc_role \
+   bound_service_account_names=*-iaa \
+   bound_service_account_namespaces=*-iaa \
+   policies=dev_policy \
+   ttl=24h
+   ```
+   Explanation: `gaiax-edc_role` is a role name, it can be anything. `gaiax-edc-dev*` is a name for both service accounts
+   and kubernetes namespaces names of services account. In this case `*` wildcard was used so to use this role in each namespace
+   there should be kubernetes service account created with the name ending with `iaa` additionally this service
+   account need to be placed in namespace with a name ending with `iaa`. If you require other namespace naming convention
+   then the role need to be modified with correct namespaces names. `dev-policy` is a policy name defined in pt 6.
+8. Go to Vault UI and define new transit secret engine with path `transit/simpl` create encryption key `gaia-x-key1` with type `ed25519`.
+> **⚠️** *Steps 1-8 need to be executed only once , if given role, policy, already exists in vault, then there is no need of configuring them again.*
 
-The first step in configuring the application is to update the necessary YAML files. These files contain key values that define the application's environment, behavior, and settings.
+### Secrets for FC-Service
 
+Two separate secrets are needed, their naming syntax is {{ .Release.Namespace }}-xsfc-data-service and {{ .Release.Namespace }}-xsfc-infra-service, they should be created in created before kv secret engine.
+Their content is:
 
-#### Redis
-
-##### Example of values.yaml
-```bash
-replica:
-  replicaCount: 0
-architecture: standalone
+```json
+{
+  "DATASTORE_FILE_PATH": "/var/lib/fc-service/filestore",
+  "FEDERATED_CATALOGUE_VERIFICATION_SIGNATURES": "true",
+  "GRAPHSTORE_PASSWORD": "neo12345",
+  "GRAPHSTORE_QUERY_TIMEOUT_IN_SECONDS": "5",
+  "GRAPHSTORE_URI": "bolt://xsfc-data-neo4j:7687",
+  "KEYCLOAK_AUTH_SERVER_URL": "https://authority.be.authority1.int.simpl-europe.eu",
+  "KEYCLOAK_CREDENTIALS_SECRET": "generatedsecret",
+  "SPRING_DATASOURCE_PASSWORD": "postgres",
+  "SPRING_DATASOURCE_URL": "jdbc:postgresql://xsfc-data-postgres:5432/postgres",
+  "SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI": "https://authority.be.authority1.int.simpl-europe.eu/auth/realms/gaia-x",
+  "VAULT_ADDR": "http://vault-ha.vault-ha.svc.cluster.local:8200",
+  "VAULT_ADRESS": "http://vault-ha.vault-ha.svc.cluster.local:8200",
+  "VAULT_TOKEN": "hvs.generatedtoken"
+}
 ```
 
-#### Postgresql
+Where you need to modify:
 
-##### Example of values-authority.yaml
+| Variable name                                        |                                     Example                                     | Description                                                       |
+|------------------------------------------------------|:-------------------------------------------------------------------------------:|-------------------------------------------------------------------|
+| KEYCLOAK_AUTH_SERVER_URL                             |             https://authority.be.**authority1.int.simpl-europe.eu**             | Keycloak URL                                                      |
+| KEYCLOAK_CREDENTIALS_SECRET                          |                                 generatedsecret                                 | Client secret from Keycloak                                       |
+| SPRING_DATASOURCE_URL                                |         jdbc:postgresql://xsfc-**data OR infra**-postgres:5432/postgres         | URL to postgres - it's either data or infra for those two secrets |
+| SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI | https://authority.be.**authority1.int.simpl-europe.eu**/auth/realms/**gaia-x**  | URL to Keycloak including realm                                   |
+| VAULT_ADDR/ADDRESS                                   |                 http://vault-ha.vault-ha.svc.cluster.local:8200                 | Internal link to Vault service                                    |
+| VAULT_TOKEN                                          |                               hvs.generatedtoken                                | Token to access the Vault                                         |
 
-```yaml
-primary:
-  initdb:
-    scripts:
-      init.sql: |
-        CREATE USER ejbca WITH PASSWORD 'ejbca2123' CREATEDB;
-        CREATE DATABASE ejbca OWNER ejbca;
-        CREATE USER keycloak WITH PASSWORD 'keycloak' CREATEDB;
-        CREATE DATABASE keycloak OWNER keycloak;
-        CREATE USER securityattributesprovider WITH PASSWORD 'securityattributesprovider' CREATEDB;
-        CREATE DATABASE securityattributesprovider OWNER securityattributesprovider;
-        CREATE USER onboarding WITH PASSWORD 'onboarding' CREATEDB;
-        CREATE DATABASE onboarding OWNER onboarding;
-        CREATE USER usersroles WITH PASSWORD 'usersroles' CREATEDB;
-        CREATE DATABASE usersroles OWNER usersroles;
-        CREATE USER identityprovider WITH PASSWORD 'identityprovider' CREATEDB;
-        CREATE DATABASE identityprovider OWNER identityprovider;
+### Secret for Catalog Query Mapper Adapter
 
+One secret is needed, its naming syntax is {{ .Release.Namespace }}-adapter-simpl-backend, it should be created in created before kv secret engine.
+Its content is (to be revised):
+
+```json
+{
+  "SIGNER_GROUP": "simpl",
+  "SIGNER_ISSUER": "did:web:example.com",
+  "SIGNER_KEY": "gaia-x-key1",
+  "SIGNER_NAMESPACE": "transit"
+}
 ```
 
-#### Keycloak
+Where you need to modify:
 
-<!-- TODO: remove {{ .Release.Namespace }} ? -->
-##### Example of values.yaml
+| Variable name    |   Example   | Description                            |
+|------------------|:-----------:|----------------------------------------|
+| SIGNER_KEY       | gaia-x-key1 | Name of the key for Signer             |
+| SIGNER_NAMESPACE |   transit   | Name of secret engine with transit key |
+
+
+
+## Deploy the namespace using ArgoCD
+
+You can easily deploy the agent using ArgoCD. All the values mentioned in the sections below you can input in ArgoCD deployment. The repoURL gets the package directly from code.europa.eu.
+targetRevision is the package version.
+
+When you create it, you set up the values below (example values).
+The ejbca section needs to be entered after you've gotten through the whole EJBCA configuration process and have the keystore and truststore, then just resynchronise the deployment.
+
 ```yaml
-apiUrl: "<authority endpoint>" # example: https://authority.be.aruba-simpl.cloud
-
-extraEnvVars: 
-  - name: KC_HOSTNAME_ADMIN_URL
-    value: "< apiUrl as above >/auth" # update
-  - name: KC_HOSTNAME_URL
-    value: "< apiUrl as above >/auth" # update
-  - name: USERS_ROLES_BASE_URL
-    value: "http://users-roles.<namespace>.svc.cluster.local:8080" # update
-  - name: KEYCLOAK_BASE_URL
-    value: "< apiUrl as above >/auth" # update
-  - name: REALM
-    value: "<authority>" # set this
-
-auth:
-  adminPassword: "admin"
-
-keycloakConfigCli:
-  enabled: true
-  configuration:
-    authority.json: | 
-      {{- $.Files.Get "kc-init/authority-realm-export.json" -}}
-
-postgresql:
-  enabled: false
-
-externalDatabase:
-  annotations: {}
-  database: keycloak
-  existingSecret: ""
-  existingSecretDatabaseKey: ""
-  existingSecretHostKey: ""
-  existingSecretPasswordKey: ""
-  existingSecretPortKey: ""
-  existingSecretUserKey: ""
-  host: "postgresql.<namespace>.svc.cluster.local"
-  password: keycloak
-  port: 5432
-  user: keycloak
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 'authority1-deployer'                                       # name of the deploying app in argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://code.europa.eu/api/v4/projects/902/packages/helm/stable'
+    path: '""'
+    targetRevision: 0.3.1                                             # version of package
+    helm:
+      values: |
+        values:
+          branch: develop                                             # branch of repo with values - this is develop by default
+        project: default                                              # Project to which the namespace is attached
+        namespaceTag: authority1                                      # identifier of deployment and part of fqdn
+        domainSuffix: int.simpl-europe.eu                             # last part of fqdn
+        argocd:
+          appname: authority1-iaa                                     # name of generated argocd app 
+          namespace: argocd                                           # namespace of your argocd
+        cluster:
+          address: https://kubernetes.default.svc
+          namespace: authority1-iaa                                   # where the app will be deployed
+          kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
+        hashicorp:
+          service: "http://vault-ha.vault-ha.svc.cluster.local:8200"  # local service path to your vault
+        secretEngine: dev-int                                         # container for your secrets in vault
+        ejbca:
+          keystore:
+            base64: base64encodedsuperadminkeystore                   # the whole base64 encoded string of superadmin keystore
+            password: superadminkeystorepass                          # password to superadmin keystore
+          truststore: 
+            base64: base64encodedmanagementcatruststore               # the whole base64 encoded string of ManagementCA truststore
+            password: managementcatruststorepass                      # password to ManagementCA truststore
+        monitoring:
+          enabled: true                                               # "true" enables the deployment of ELK stack for monitoring
+    chart: authority
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: authority1-iaa                                         # where the package will be deployed
 ```
 
-#### EJBCA
+## Manual deployment
 
-> **⚠️** *Step only needed for the governance authority*
+### Files preparation
 
-Before installing EJBCA, update the values in `values.yaml` reasonably to interact with the Postgresql instance.
+The suggested way for deployment, is to unpack the released package to a folder on a host where you have kubectl and helm available and configured.
 
-##### Example of values.yaml
+There is basically one file that you need to modify - values.yaml.
+There are a couple of variables you need to replace - described below. The rest you don't need to change.
+The ejbca section needs to be entered after you've gotten through the whole EJBCA configuration process and have the keystore and truststore, then just update the deployment.
 
 ```yaml
-hostname: &hostname ejbca-community-helm.<namespace>.svc.cluster.local # update this
-fullnameOverride: ejbca-community-helm
+project: default                                  # Project to which the namespace is attached
+namespaceTag: authority1                          # identifier of deployment and part of fqdn
+domainSuffix: int.simpl-europe.eu                 # last part of fqdn
 ejbca:
-  env:
-    HTTPSERVER_HOSTNAME: *hostname
-    TLS_SETUP_ENABLED: "true"
-    DATABASE_JDBC_URL: jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/ejbca # update this
-    DATABASE_USER: "ejbca"
-    DATABASE_PASSWORD: "ejbca2123"
-nginx:
-  host: *hostname
-```
-
-<!-- helm repo add <repo name> https://code.europa.eu/api/v4/projects/<project_id>/packages/helm/<channel> -->
-
-
-#### Onboarding
-> **⚠️** *Step only needed for the governance authority*
-
-#### Prerequisites
-
-- Possess EJBCA SuperAdmin credentials (i.e. PKCS#12 certificate - also named TrustStore - and password)
-- Possess ManagementCA (also named Keystore and its password)
-
-<!-- TODO: update "<password used for the keystore of onboarded participant> explain!!!! -->
-##### Example of values.yaml
-```yaml
-global:
-  hostTls: "tls.authority.dev.simpl-europe.eu" # this is an example, update this field
-  
-  # TODO: find a name to refer to this password in the configuration of the following microservices 
   keystore:
-    password: "<define a password for the keystore of onboarded participant>" # update this
+    base64: base64encodedsuperadminkeystore       # the whole base64 encoded string of superadmin keystore
+    password: superadminkeystorepass              # password to superadmin keystore
+  truststore: 
+    base64: base64encodedmanagementcatruststore   # the whole base64 encoded string of ManagementCA truststore
+    password: managementcatruststorepass          # password to ManagementCA truststore
 
-env:
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/onboarding"
-  SPRING_DATASOURCE_USERNAME: "onboarding"
-  SPRING_DATASOURCE_PASSWORD: "onboarding"
+argocd:
+  appname: authority1-iaa                         # name of generated argocd app 
+  namespace: argocd                               # namespace of your argocd
 
-ejbca:
-  keystore:
-    base64: "<base64 of the keystore>" 
-    password: "<password of the keystore>"
-  truststore:
-    base64: "<base64 of the truststore>"
-    password: "<password of the truststore>"
-  enrollConfig:
-    url: "https://ejbca-community-helm.<namespace>.cluster.local:30443"
-    profileName: "<End Entity Certificate Profile>" # update this field, example "Onboarding TLS Profile"
-    endEntityName: "<EndEntity Profile>" # update this field, example "TLS Server Profile"
-    caName: "<SubCA>" # update this field, example "OnBoardingCA"
+cluster:
+  address: https://kubernetes.default.svc
+  namespace: authority1-iaa                       # where the package will be deployed
+  kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
+
+secretEngine: dev-int                             # container for your secrets in vault
+hashicorp:
+  service: "http://vault-ha.vault-ha.svc.cluster.local:8200"  # local service path to your vault
+
+values:
+  repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/governance-authority.git   # repo URL
+  branch: develop                                                                                 # branch of code in repo
 ```
 
-> **💡** Tip: Generate the *base64* of the keystore and truststore with the following command: `<keystore or trustore> | base64 --wrap=0` (0 is used to disable line wrapping)
+### Deployment
 
-##### Configuration
-The environment variables listed below are used to define the connection details, credentials and file locations required to interact with EJBCA and manage SSL Certificates. For further configuration, view the Helm template and update the values as required.
+After you have prepared the values file, you can start the deployment.
+Use the command prompt. Proceed to the folder where you have the Chart.yaml file and execute the following command. The dot at the end is crucial - it points to current folder to look for the chart.
 
-- **Certificate Configuration**
-  - The `global.hostTls` set `SIMPL_CERTIFICATE_SAN`: The Subject Alternative Name (SAN) for the certificate.
-  - The value `global.keystore.password` set `SIMPL_CERTIFICATE_PASSWORD`: The password for the certificate used by the service.
-
-- **Database Configuration**
-  - `SPRING_DATASOURCE_URL`: The JDBC URL for connecting to the PostgreSQL database.
-    - Format: `jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/onboarding`
-  - `SPRING_DATASOURCE_USERNAME`: The username for the PostgreSQL database.
-  - `SPRING_DATASOURCE_PASSWORD`: The password for the PostgreSQL database.
-
-- **EJBCA Configuration**
-  - The value `ejbca.enrollConfig.url` set `EJBCA_URL`: The URL for the EJBCA enrollment service.
-  - The value `ejbca.enrollConfig.profileName` set `EJBCA_PROFILE_NAME`: The profile name to be used when enrolling with EJBCA.
-  - The value `ejbca.enrollConfig.endEntityName` set `EJBCA_END_ENTITY_NAME`: The name of the end entity in EJBCA.
-  - The value `ejbca.enrollConfig.caName` set `EJBCA_CA_NAME`: The name of the Certificate Authority (CA) in EJBCA.
-
-- **SSL Configuration - Keystore and Truststore**
-  - The value `ejbca.keystore.password` set `SPRING_SSL_BUNDLE_JKS_EJBCA_KEYSTORE_PASSWORD`: The password for the EJBCA keystore.
-  - The value `ejbca.truststore.password` set `SPRING_SSL_BUNDLE_JKS_EJBCA_TRUSTSTORE_PASSWORD`: The password for the EJBCA truststore.
-  - `SPRING_SSL_BUNDLE_JKS_EJBCA_KEY_ALIAS`: The alias for the key within the keystore. Default value: `superadmin`
-  - `SPRING_SSL_BUNDLE_JKS_EJBCA_KEYSTORE_LOCATION`: The file path for the EJBCA keystore. Default path: `/etc/certs/keystore.p12`
-  - `SPRING_SSL_BUNDLE_JKS_EJBCA_TRUSTSTORE_LOCATION`: The file path for the EJBCA truststore. Default path: `/etc/certs/truststore.jks`
-
-
-#### Security Attributes Provider
-> **⚠️** *Step only needed for the governance authority*
-
-##### Example of values.yaml
-```yaml
-env:
-  MICROSERVICE_ONBOARDING_URL: http://onboarding.<namespace>.svc.cluster.local:8080
-  MICROSERVICE_USERS_ROLES_URL: http://users-roles.<namespace>.svc.cluster.local:8080
-  SIMPL_EPHEMERAL_PROOF_EXPIRE_AFTER: 3D
-  SPRING_DATA_REDIS_HOST: redis-master.<namespace>.svc.cluster.local
-  SPRING_DATA_REDIS_PASSWORD: admin
-  SPRING_DATA_REDIS_PORT: "6379"
-  SPRING_DATA_REDIS_USERNAME: default
-  SPRING_DATASOURCE_PASSWORD: securityattributesprovider
-  SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/securityattributesprovider
-  SPRING_DATASOURCE_USERNAME: securityattributesprovider
-
-global:
-  hostBe: authority.be.dev.simpl-europe.eu  # this is an example, update this field
-  hostTls: tls.authority.dev.simpl-europe.eu # this is an example, update this field
-  keystore:
-    password: < password defined in the oboarding component >
-```
-
-##### Configuration
-
-The environment variables listed below are used to define the connection details and credentials for PostgreSQL, Redis, and other services. For further configuration, view the Helm template and update the values as required.
-
-**PostgreSQL Configuration**
-- `SPRING_DATASOURCE_URL`: The JDBC URL for connecting to the PostgreSQL database. Format: `jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/usersroles`
-- `SPRING_DATASOURCE_USERNAME`: The username for the PostgreSQL database. Default value: `usersroles`
-- `SPRING_DATASOURCE_PASSWORD`: The password for the PostgreSQL database. Default value: `usersroles`
-
-**Redis Configuration**
-- `SPRING_DATA_REDIS_HOST`: The host address for the Redis service. Format: `redis-master.<namespace>.svc.cluster.local`
-- `SPRING_DATA_REDIS_PORT`: The port on which Redis is running. Default value: `6379`
-- `SPRING_DATA_REDIS_USERNAME`: The username for connecting to Redis. Default value: `default`
-- `SPRING_DATA_REDIS_PASSWORD`: The password for connecting to Redis. Default value: `admin`
-
-**Ephemeral Proof Issuer Configuration**
-- The value `tls.gateway.url` set `SIMPL_EPHEMERAL_PROOF_ISSUER_URL`: The URL for the Ephemeral Proof Issuer service.
-- The value `global.keystore.password` set `SIMPL_CERTIFICATE_PASSWORD`: The password for the certificate used by the service.
-- `SIMPL_EPHEMERAL_PROOF_EXPIRE_AFTER` : The time to Live of the ephemeral proof in redis. Default value: `3D`, follow the spring standard of the Duration class.
-
-
-#### Simpl Cloud Gateway
-
-##### Example of values.yaml
-```yaml
-global:
-  cors: # this is an example, update this field
-    allowOrigin: https://authority.fe.dev.simpl-europe.eu,https://authority.fe.dev.simpl-europe.eu,http://localhost:4202,http://localhost:3000
-  hostBe: authority.be.dev.simpl-europe.eu  # this is an example, update this field
-  hostFe: authority.fe.dev.simpl-europe.eu  # this is an example, update this field
-  hostTls: tls.authority.dev.simpl-europe.eu  # this is an example, update this field
-  ingress:
-    issuer: dev-prod
-  profile: < authority >
-
-microservices:
-  ejbcaUrl: http://ejbca-community-helm.<namespace>.svc.cluster.local:30080
-  keycloakUrl: http://keycloak.<namespace>.svc.cluster.local
-  onboardingUrl: http://onboarding.<namespace>.svc.cluster.local:8080
-  securityAttributesProviderUrl: http://security-attributes-provider.<namespace>.svc.cluster.local:8080
-  usersRolesUrl: http://users-roles.<namespace>.svc.cluster.local:8080
-```
-
-##### Configuration
-
-This configuration supports two main profiles: authority and participant. Depending on the specified profile, different environment variables will be set. For further configuration, view the Helm template and update the values as required.
-
-##### Profiles
-- The value `global.profile` set `SPRING_PROFILES_ACTIVE`: This sets the active Spring profile. The value should be `authority`.
-- `SAP_URL`: URL for the Security Attributes Provider. Format: `http://security-attributes-provider.<namespace>.svc.cluster.local:8080`
-- `ONBOARDING_URL`: URL for the Onboarding. Format: `http://onboarding.<namespace>.svc.cluster.local:8080`
-- `EJBCA_URL`: URL for the EJBCA. Format: `http://ejbca-community-helm.<namespace>.svc.cluster.local:30080`
-- `IDENTITY_PROVIDER_URL`: URL for the Identity Provider. Format: `http://identity-provider.<namespace>.svc.cluster.local:8080`
-
-##### Common Configuration
-
-Regardless of the profile, the following environment variables are configured:
-
-- The value `global.cors.allowOrigin` set `CORS_ALLOWED_ORIGINS`: Specifies which origins are allowed to make cross-origin requests.
-- The value `miroservices.keycloakUrl` set `KEYCLOAK_URL`: The URL for the Keycloak authentication service.
-- The value `miroservices.usersRolesUrl` set `USERSROLES_URL`: The URL for the Users&Roles service.
-- `CORS_ALLOWED_HEADERS`: Specifies which HTTP headers are allowed in cross-origin requests.
-  - Default value: `Access-Control-Allow-Headers, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Keep-Alive, User-Agent, Content-Type, Authorization, Tenant, Channel, Platform, Set-Cookie, geolocation, x-mobility-mode, device, Cache-Control, X-Request-With, Accept, Origin`.
-
-#### Users Roles
-
-##### Prerequisites
-
-- *simpl-cloud-gateway* up and running
-- *security-attributes-provider* up and running
-
-##### Example of values.yaml
-```yaml
-env:
-  KEYCLOAK_MASTER_PASSWORD: admin # this password was set in keycloak values.yaml
-  KEYCLOAK_MASTER_USER: user
-  SPRING_DATA_REDIS_HOST: redis-master.<namespace>.svc.cluster.local
-  SPRING_DATA_REDIS_PASSWORD: admin
-  SPRING_DATA_REDIS_PORT: "6379"
-  SPRING_DATA_REDIS_USERNAME: default
-  SPRING_DATASOURCE_PASSWORD: usersroles
-  SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/usersroles
-  SPRING_DATASOURCE_USERNAME: usersroles
-
-global:
-  hostBe: authority.be.dev.simpl-europe.eu  # this is an example, update this field
-  hostTls: tls.authority.dev.simpl-europe.eu  # this is an example, update this field
-  keystore:
-    password: < password defined in the oboarding component >
-  profile: <authority>
-```
-
-#### Configuration
-
-The environment variables listed below are used to define the connection details for PostgreSQL, Redis, Keycloak, and other services. For further configuration, view the Helm template and update the values as required.
-
-**Database Configuration**
-- `SPRING_DATASOURCE_URL`: The JDBC URL for connecting to the PostgreSQL database. Format: `jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/usersroles`
-- `SPRING_DATASOURCE_USERNAME`: The username for the PostgreSQL database.
-- `SPRING_DATASOURCE_PASSWORD`: The password for the PostgreSQL database.
-
-**Redis Configuration**
-- `SPRING_DATA_REDIS_HOST`: The host address for the Redis service. Format: `redis-master.<namespace>.svc.cluster.local`
-- `SPRING_DATA_REDIS_PORT`: The port on which Redis is running. Default value: `6379`
-- `SPRING_DATA_REDIS_USERNAME`: The username for connecting to Redis.
-- `SPRING_DATA_REDIS_PASSWORD`: The password for connecting to Redis.
-
-**Keycloak Configuration**
-- The value `global.hostBe` set `KEYCLOAK_URL`: The URL for the Keycloak authentication service.
-- The value `global.profile` set `KEYCLOAK_APP_REALM`: The realm to be used for the application within Keycloak.
-
-**Client Authority Configuration**
-- The value `global.hostTls` set `CLIENT_AUTHORITY_URL`: The URL for the client authority service.
-- The value `global.keystore.password` set `CLIENT_CERTIFICATE_PASSWORD`: The password for the client certificate.
-
-#### Frontend
-
-##### Example of values.yaml
-```yaml
-hostFe: authority.fe.dev.simpl-europe.eu # this is an example, update this field
-cors: # this is an example, update this field
-  allowOrigin: https://authority.be.dev.simpl-europe.eu,https://authority.fe.dev.simpl-europe.eu,http://localhost:4202,http://localhost:4203,http://localhost:3000
-ingress:
-  issuer: dev-prod
-
-env:
-- name: APPLICATION
-  value: <onboarding or participant-utility>
-- name: API_URL
-  value: "https://authority.be.dev.simpl-europe.eu" # this is an example, update this field
-- name: KEYCLOAK_URL
-  value: "https://authority.be.dev.simpl-europe.eu/auth" # this is an example, update this field
-- name: KEYCLOAK_REALM
-  value: "<authority>" 
-- name: KEYCLOAK_CLIENT_ID
-  value: "frontend-cli"
-```
-
-##### Configuration
-The configuration provides details on the backend and frontend host URLs, CORS allowed origins, ingress issuer, and environment variables for the onboarding application. For further configuration, view the Helm template and update the values as required.
-
-**Frontend Host Configuration**
-- `hostFe`: The hostname for the frontend service. Value: `my.frontend.host`
-
-**CORS Configuration - Allowed Origins**
-- `cors.allowOrigin`: Specifies the origins that are allowed to access the application resources via cross-origin requests.
-  - Value: `https://my.frontend.host, https://participant.fe.aruba-simpl.cloud, http://localhost:4202, http://localhost:4203, http://localhost:3000`
-
-**Ingress Configuration - Issuer**
-- `ingress.issuer`: The issuer for the ingress, which is typically used for managing TLS certificates. Value: `your-issuer-ingress`
-
-**Environment Variables**
-- `APPLICATION`: The name of the application. Value: `onboarding`.
-- `API_URL`: The URL for the API backend. Value: `https://my.backend.host`
-  
-**Keycloak Configuration**
-- `KEYCLOAK_URL`: The URL for the Keycloak authentication service. Value: `https://my.backend.host/auth`
-- `KEYCLOAK_REALM`: The Keycloak realm that the application uses for authentication. Value: `authority`
-- `KEYCLOAK_CLIENT_ID`: The client ID used by the application to authenticate with Keycloak. Value: `frontend-cli`
-
-#### TLS Gateway
-
-This microservice is a gateway for inbound Tier 2 API operation between agents and work only in https on mTLS.
-
-##### Prerequisites
-
-- All the previous microservices up and runnning
-
-##### Example of values.yaml
-```yaml
-global:
-  authorityUrl: https://authority.be.dev.simpl-europe.eu # this is an example, update this field
-  cors: # this is an example, update this field
-    allowOrigin: https://authority.fe.dev.simpl-europe.eu,https://authority.fe.dev.simpl-europe.eu,http://localhost:4202,http://localhost:3000
-  profile: <authority>
-microservices:
-  securityAttributesProviderUrl: http://security-attributes-provider.<namespace>.svc.cluster.local:8080
-ssl:
-  keyStore:
-    base64: "<base64 of the keystore>" # get the keystore as explained in Configuration
-    password: "<password defined in the oboarding component>"
-  trustStore:
-    base64:  "<base64 of the truststore>" # get the truststore as explained in Configuration
-    password: "<password defined in the oboarding component>"
-```
-
-> **💡** Tip: Generate the *base64* of the keystore and truststore with the following command: `<keystore or trustore> | base64 --wrap=0` (0 is used to disable line wrapping)
-
-##### Configuration
-
-######  Download the TLS Gateway Governance Authority keystore
-> **⚠️** *Step required for governance only, a participant MUST be onboarded through the application UI by following the onboarding process*
-
-To initialize the authority, you must send a `POST` request to the following API endpoint of the `security-attributes-provider`: `http://localhost:8080/participant/initialize`.
-
-To initialize the authority, you must call this API `POST` of the `security-attributes-provider`. Since the API requires authentication, you need to obtain a JWT from Keycloak for a user with the **T2IAA_M** role. In this example, we use the preconfigured user `e.j`. Here is an example of how to obtain the token and call the API.
-
-```bash
-# Authentication flow - Direct Access Grants must be enbled for frontend-cli in Keycloak clients settings
-curl --location 'https://authority.be.dev.simpl-europe.eu/auth/realms/authority/protocol/openid-connect/token' \
---header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'grant_type=password' \
---data-urlencode 'client_id=frontend-cli' \
---data-urlencode 'password=password' \
---data-urlencode 'username=e.j'
-```
-
-Alternately, you can obtain a JWT without needing to modify the Keycloak client settings for the `frontend-cli` by interacting with the authority frontend through the following API:
-`https://<your-domain>/application/additional-request`, for example `https://authority.fe.authority1.int.simpl-europe.eu/application/additional-request`.
-
-To retrieve the token open your browser and navigate to that url. Perform the requested login and open the *Network* tab in the browser's *DevTools*.
-
-![](./imgs/Access%20token.png)
-
-Since this is an internal endpoint, you'll need to set up a port forward on the microservice to access it. In this example, we assume that you've forwarded the service port to your local port `8080`.
-
-```bash
-kubectl port-forward security-attributes-provider 8080:8080
-
-curl --location 'http://localhost:8080/participant/initialize' \
--X POST \
---header 'Authorization: Bearer <JWT_TOKEN>' \
---header 'Content-Type: application/json' \
---data-raw '{
-  "organizationName" : "<my-organization>",
-  "identityAttributes" : [ ]
-}'
-```
-
-Then download the credentials, i.e. the **keystore**, from `user-roles`. Since this is an internal endpoint, you'll need to set up a port forward on the microservice to access it. In this example, we assume that you've forwarded the service port to your local port `8080`.
-
-```bash
-kubectl port-forward users-roles 8080:8080
-
-curl --location 'http://localhost:8080/credential/download' \
--o keystore-tls-gateway.p12
-```
-
-#####  Get the TLS Gateway truststore
-
-Authorities can download the truststore, i.e. OnBoardingCa.jks, from EJBCA Admin dashboard, as done similarly [here](/doc/EJBCA.md#download-the-managementca-certificate). 
-
-##### Profile-Based Configuration
-
-###### Profiles
-
-- The value `global.profile` set `SPRING_PROFILES_ACTIVE`: This sets the active Spring profile. The value is `authority`.
-- The value `microservices.securityAttributesProviderUrl` set `SAP_URL`: The URL for the Security Attributes Provider (SAP) microservice.
-
-#### CORS Configuration
-
-- The value `global.cors.allowOrigin` set `CORS_ALLOWED_ORIGINS`: The allowed origins for CORS requests.
-  - Default value includes: `Access-Control-Allow-Headers`, `Access-Control-Allow-Credentials`, `Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, `Keep-Alive`, `User-Agent`, `Content-Type`, `Authorization`, `Tenant`, `Channel`, `Platform`, `Set-Cookie`, `geolocation`, `x-mobility-mode`, `device`, `Cache-Control`, `X-Request-With`, `Accept`, `Origin`.
-
-##### SSL Configuration
-<!-- - `SERVER_SSL_TRUST_STORE`: The location of the truststore file. -->
-<!-- - `SERVER_SSL_KEY_STORE`: The location of the keystore file. -->
-- The value `ssl.keyStore.password` set `SERVER_SSL_KEY_STORE_PASSWORD`: The password for the keystore.
-- The value `ssl.trustStore.password` set `SERVER_SSL_TRUST_STORE_PASSWORD`: The password for the truststore.
-
-
-### Step 2: Deploy the Application Using Helm Charts
-
-Once the YAML configuration files have been updated, the next step is to deploy the application using Helm charts. Helm is a package manager for Kubernetes, allowing you to manage and deploy Kubernetes applications efficiently.
-
-Go to master charts directory:
-
-`cd .\charts\`
-
-Now you can deploy the namespace:
+Now you can deploy the agent:
 
 `helm install authority . `
+
+## Monitoring
+
+ELK stack for monitoring is added with this release.  
+Its deployment can be disabled by switch the value monitoring.enabled to false.  
+When it's enabled, after the stack is deployed, you can access the ELK stack UI by https://kibana.**namespacetag**.**domainsuffix**  
+Default user is "elastic", its password can be extracted by kubectl command. `kubectl get secret elastic-elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}' -n {namespace}`
+
+## Additional steps
 
 :rotating_light: :rotating_light: :rotating_light: **Attention!!!** :rotating_light: :rotating_light: :rotating_light: <br>
 <b><i>After installing the namespace, there are services that connect using the TLS protocol (e.g. EJBCA). In the current phase of application development, this element must be configured manually.
@@ -683,279 +354,182 @@ To ensure that the namespace was created successfully, run the following command
 `kubectl get namespaces`
 <br/>This will list all the namespaces in your cluster, and you should see the one you just created listed.
 
-## Installation
+## Create volumes
 
-The deployment is based on master helm chart which, when applied on Kubernetes cluster, should deploy the Data Provider to it using ArgoCD.
+Two volumes needs to be created manually at the moment:
+
+- nfs-storage-pvc-xsfc
+- nfs-storage-pvc-sdapibe
+
+This will be fixed in future versions.
+
+## Vault configuration
+
+### Preliminary activities (done once)
+
+1. Execute shell of your vault pod `kubectl exec -it vault-0 -- /bin/sh`. In this case pod name is `vault-0`
+2. Login to vault using cmd `vault login`. You will need to provide token for auth
+3. Create secret engine `vault secrets enable -path=dev kv-v2` in this case name of the engine is `dev`
+4. Enable kubernetes interaction with vault `vault auth enable kubernetes`
+5. Add config for kubernetes `vault write auth/kubernetes/config  kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443"`
+6. Write policy in vault for fetching credentials by kubernetes
+    ```hcl
+    vault policy write dev-policy - <<EOF
+    path "dev/data/*" {
+    capabilities = ["read"]
+    }
+    EOF 
+    ```
+   
+    In this example `dev-policy` is name of policy - it can be anything, and path `dev/data/*` needs to relate existing secret engine declared in pt 3.
+
+7. Create role in vault that will bind policy with given service account name and service account namespace
+
+```hcl
+vault write auth/kubernetes/role/gaiax-edc_role \
+      bound_service_account_names=*-iaa \
+      bound_service_account_namespaces=*-iaa \
+      policies=dev_policy \
+      ttl=24h
+```
+Explanation: `gaiax-edc_role` is a role name, it can be anything. `gaiax-edc-dev*` is a name for both service accounts
+and kubernetes namespaces names of services account. In this case `*` wildcard was used so to use this role in each namespace
+there should be kubernetes service account created with the name ending with `iaa` additionally this service
+account need to be placed in namespace with a name ending with `iaa`. If you require other namespace naming convention
+then the role need to be modified with correct namespaces names. `dev-policy` is a policy name defined in pt 6.
+
+IMPORTANT  
+Steps 1-7 need to be executed only once , if given role, policy, already exists in vault, then there is no need of configuring them again.
+
+### Secret for Signer
+
+One secret is needed, its naming syntax is {{ .Release.Namespace }}-infra-adapter-simpl-backend", it should be created in created before kv secret engine.
+Its content is (to be revised):
+
+```json
+{
+  "ENGINE_PATH": "/opt/plugins/hashicorp-vault-provider.so",
+  "HTTP_HOST": "",
+  "HTTP_IDLE_TIMEOUT": "120s",
+  "HTTP_PORT": "8080",
+  "HTTP_READ_TIMEOUT": "10s",
+  "HTTP_WRITE_TIMEOUT": "10s",
+  "LOG_ENCODING": "json",
+  "LOG_LEVEL": "debug",
+  "VAULT_ADRESS": "http://vault-ha.vault-ha.svc.cluster.local:8200",
+  "VAULT_TOKEN": "hvs.generatedtoken"
+}
+```
+
+Where you need to modify:
+
+| Variable name               |                     Example                     | Description                    |
+|-----------------------------|:-----------------------------------------------:|--------------------------------|
+| VAULT_ADDRESS               | http://vault-ha.vault-ha.svc.cluster.local:8200 | Internal link to Vault service |
+| VAULT_TOKEN                 |               hvs.generatedtoken                | Token to access the Vault      |
+
+
+## Deploy the namespace using ArgoCD
+
+You can easily deploy the agent using ArgoCD. All the values mentioned in the sections below you can input in ArgoCD deployment. The repoURL gets the package directly from code.europa.eu.
+targetRevision is the package version.
+
+When you create it, you set up the values below (example values)
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 'dataprovider01-deployer'                               # name of the deploying app in argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://code.europa.eu/api/v4/projects/904/packages/helm/stable'
+    path: '""'
+    targetRevision: 0.3.1
+    helm:
+      values: |
+        values:
+          branch: develop                                       # branch of repo with values - this is develop by default
+        secretEngine: dev-int                                   # container for your secrets in vault
+        project: default
+        namespaceTag: dataprovider01                            # identifier of deployment and part of fqdn
+        domainSuffix: int.simpl-europe.eu                       # last part of fqdn
+        argocd:
+          appname: dataprovider01-iaa                           # name of generated argocd app 
+          namespace: argocd                                     # namespace of your argocd
+        cluster:
+          address: https://kubernetes.default.svc
+          namespace: dataprovider01-iaa                         # where the app will be deployed
+          kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
+        authority:
+          keycloakClientID: federated-catalogue                 # name of the client in authority keycloak
+          keycloakSecret: clientsecretfromkeycloak              # secret of that client (from its credentials)
+          namespaceTag: authority1                              # namespace tag of target authority
+        monitoring:
+          enabled: true                                         # "true" enables the deployment of ELK stack for monitoring
+    chart: data-provider
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: dataprovider01-iaa                               # where the package will be deployed
+```
+
+## Manual deployment
 
 ### Files preparation
 
 The suggested way for deployment, is to unpack the released package to a folder on a host where you have kubectl and helm available and configured.
 
 There is basically one file that you need to modify - values.yaml.
-There are a couple of variables you need to replace.
-
-| Variable name          |     Example         | Description     |
-| ---------------------- |     :-----:         | --------------- |
-| ${NAMESPACE}           | dataprovider01-iaa  | Namespace on the cluster, also used as ArgoCD application name |
-| ${NAMESPACETAG}        | dataprovider01      | Namespace tag - that will be in FQDN differentiating the deployment, used for example in participant.be.**dataprovider01**.int.simpl-europe.eu  |
-| ${DOMAINSUFFIX}        | int.simpl-europe.eu | Domain suffix in FQDN, used for example in participant.be.dataprovider01.**int.simpl-europe.eu** |
-
-You might also need to modify (if needed) the values in keys:
-
-| Variable key           |     Example         | Description     |
-| ---------------------- |     :-----:         | --------------- |
-| values.repo_URL        | https://....git     | URL for repo with app-values folder |
-| values.branch          | develop             | Branch of this repo to use          |
-
-### Manual steps
-
-Two volumes needs to be created manually at the moment:
-* nfs-storage-pvc-xsfc
-* nfs-storage-pvc-sdapibe
-
-This will be fixed in future versions.
-
-In values of TLS Gateway you need to input the base64 encoded keystore and truststore, with their passwords, in those keys:
-
-```
-ssl:
-  keyStore:
-    base64: "yourbase64keystore"
-    password: "yourpassword"
-  trustStore:
-    base64: "yourbase64truststore"
-    password: "yourpassword"
-```
-
-
-## Deploy the namespace
-Deploying a dedicated namespace, such as **data-provider1**, helps isolate resources and applications within a Kubernetes cluster.
-
-Filling the namespace with content requires the following activity:
-
-### Step 1: Modify YAML configuration files
-
-The first step in configuring the application is to update the necessary YAML files. These files contain key values that define the application's environment, behavior, and settings.
-
-#### Redis
-
-##### Example of values.yaml
-```yaml
-replica:
-  replicaCount: 0
-architecture: standalone
-```
-
-#### Postgresql
-
-##### Example of values-participant.yaml
-```yaml
-primary:
-  initdb:
-    scripts:
-      init.sql: |
-        CREATE USER keycloak WITH PASSWORD 'keycloak' CREATEDB;
-        CREATE DATABASE keycloak OWNER keycloak;
-        CREATE USER usersroles WITH PASSWORD 'usersroles' CREATEDB;
-        CREATE DATABASE usersroles OWNER usersroles;
-```
-> **⚠️** The configuration examples use the users and passwords mentioned above. If you change them, ensure that your configuration reflects those changes accordingly.
-
-#### Keycloak
-
-##### Example of values.yaml
-```yaml
-apiUrl: "<participant endpoint>" # example: https://participant.be.aruba-simpl.cloud
-                                  
-extraEnvVars:
-- name: KC_HOSTNAME_ADMIN_URL
-  value: "< apiUrl as above with /auth, example: https://participant.be.aruba-simpl.cloud/auth>" # update
-- name: KC_HOSTNAME_URL
-  value: "< apiUrl as above with /auth, example: https://participant.be.aruba-simpl.cloud/auth>" # update
-- name: USERS_ROLES_BASE_URL
-  value: "http://users-roles.<namespace>.svc.cluster.local:8080" # update
-- name: KEYCLOAK_BASE_URL
-  value: "< apiUrl as above with /auth, example: https://participant.be.aruba-simpl.cloud/auth>" # update
-- name: REALM
-  value: participant
- 
-auth:
-adminPassword: "admin"
- 
-keycloakConfigCli:
-  enabled: true
-  configuration:
-    participant.json: |
-      {{- $.Files.Get "kc-init/participant-realm-export.json" -}}
- 
-postgresql:
-enabled: false
- 
-externalDatabase:
-annotations: {}
-database: keycloak
-existingSecret: ""
-existingSecretDatabaseKey: ""
-existingSecretHostKey: ""
-existingSecretPasswordKey: ""
-existingSecretPortKey: ""
-existingSecretUserKey: ""
-host: "postgresql.<namespace>.svc.cluster.local"
-password: keycloak
-port: 5432
-user: keycloak
-```
-
-#### SIMPL Cloud Gateway
-
-##### Example of values.yaml
+There are a couple of variables you need to replace - described below. The rest you don't need to change.
 
 ```yaml
-global:
-cors: # this is an example, update this field
-  allowOrigin: https://authority.fe.dev.simpl-europe.eu,https://authority.fe.dev.simpl-europe.eu,http://localhost:4202,http://localhost:3000
-hostBe: authority.be.dev.simpl-europe.eu  # this is an example, update this field
-hostFe: authority.fe.dev.simpl-europe.eu  # this is an example, update this field
-hostTls: tls.authority.dev.simpl-europe.eu  # this is an example, update this field
-ingress:
-  issuer: dev-prod
-profile: < participant >
+project: default                                  # Project to which the namespace is attached
+namespaceTag: dataprovider01                      # identifier of deployment and part of fqdn
+authority:
+  namespaceTag: authority1                        # namespace tag of target authority
+  keycloakClientID: federated-catalogue           # name of the client in authority keycloak
+  keycloakSecret: clientsecretfromkeycloak        # secret of that client (from its credentials)
+domainSuffix: int.simpl-europe.eu                 # last part of fqdn
 
-microservices:
-ejbcaUrl: http://ejbca-community-helm.<namespace>.svc.cluster.local:30080
-keycloakUrl: http://keycloak.<namespace>.svc.cluster.local
-onboardingUrl: http://onboarding.<namespace>.svc.cluster.local:8080
-securityAttributesProviderUrl: http://security-attributes-provider.<namespace>.svc.cluster.local:8080
-usersRolesUrl: http://users-roles.<namespace>.svc.cluster.local:8080
+argocd:
+  appname: dataprovider01-iaa                     # name of generated argocd app 
+  namespace: argocd                               # namespace of your argocd
+
+cluster:
+  address: https://kubernetes.default.svc
+  namespace: dataprovider01-iaa                   # where the package will be deployed
+  kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
+
+
+secretEngine: dev-int                             # container for your secrets in vault
+hashicorp:
+  service: "http://vault-ha.vault-ha.svc.cluster.local:8200"  # local service path to your vault
+
+values:
+  repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/data-provider.git  # repo URL
+  branch: develop                                                                         # branch of code in repo
 ```
 
-##### Profiles
+### Deployment
 
-The value `global.profile` set `SPRING_PROFILES_ACTIVE`: This sets the active Spring profile. The value should be `participant`.
+After you have prepared the values file, you can start the deployment.
+Use the command prompt. Proceed to the folder where you have the Chart.yaml file and execute the following command. The dot at the end is crucial - it points to current folder to look for the chart.
 
-The value `global.authorityUrl` set `AUTHORITY_URL`: URL of the authority backend.
+`helm install data-provider .`
 
-##### Common configuration:
+After it's been already deployed and you want to implement changes, you can use this command (in the same folder):
 
-The value `global.cors.allowOrigin` set `CORS_ALLOWED_ORIGINS`: Specifies which origins are allowed to make cross-origin requests.
-The value `miroservices.keycloakUrl` set `KEYCLOAK_URL`: The URL for the Keycloak authentication service.
-The value `miroservices.usersRolesUrl` set `USERSROLES_URL`: The URL for the Users&Roles service.
-`CORS_ALLOWED_HEADERS`: Specifies which HTTP headers are allowed in cross-origin requests.
-Default value: `Access-Control-Allow-Headers, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Keep-Alive, User-Agent, Content-Type, Authorization, Tenant, Channel, Platform, Set-Cookie, geolocation, x-mobility-mode, device, Cache-Control, X-Request-With, Accept, Origin.`
+`helm upgrade data-provider .`
 
-#### User & Roles
+## Monitoring
 
-##### Prerequisites
+ELK stack for monitoring is added with this release.  
+Its deployment can be disabled by switch the value monitoring.enabled to false.  
+When it's enabled, after the stack is deployed, you can access the ELK stack UI by https://kibana.**namespacetag**.**domainsuffix**  
+Default user is "elastic", its password can be extracted by kubectl command. `kubectl get secret elastic-elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}' -n {namespace}`
 
-*simpl-cloud-gateway* up and running
-
-*security-attribute-provider* up and running
-
-#### Example of values.yaml
-
-```yaml
-env:
-  KEYCLOAK_MASTER_PASSWORD: admin # this password was set in keycloak values.yaml
-  KEYCLOAK_MASTER_USER: user
-  SPRING_DATA_REDIS_HOST: redis-master.<namespace>.svc.cluster.local
-  SPRING_DATA_REDIS_PASSWORD: admin
-  SPRING_DATA_REDIS_PORT: "6379"
-  SPRING_DATA_REDIS_USERNAME: default
-  SPRING_DATASOURCE_PASSWORD: usersroles
-  SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/usersroles
-  SPRING_DATASOURCE_USERNAME: usersroles
-
-global:
-  hostBe: authority.be.dev.simpl-europe.eu  # this is an example, update this field
-  hostTls: tls.authority.dev.simpl-europe.eu  # this is an example, update this field
-  keystore:
-    password: < password defined in the oboarding component >
-  profile: <participant>
-```
-##### Configuration
-
-The environment variables listed below are used to define the connection details for PostgreSQL, Redis, Keycloak, and other services. For further configuration, view the Helm template and update the values as required.
-
-**Database Configuration**
-
-- `SPRING_DATASOURCE_URL`: The JDBC URL for connecting to the PostgreSQL database. Format: `jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/usersroles`
-- `SPRING_DATASOURCE_USERNAME`: The username for the PostgreSQL database.
-- `SPRING_DATASOURCE_PASSWORD`: The password for the PostgreSQL database.
-
-**Redis Configuration**
-
-- `SPRING_DATA_REDIS_HOST`: The host address for the Redis service. Format: `redis-master.<namespace>.svc.cluster.local`
-- `SPRING_DATA_REDIS_PORT`: The port on which Redis is running. Default value: `6379`
-- `SPRING_DATA_REDIS_USERNAME`: The username for connecting to Redis.
-- `SPRING_DATA_REDIS_PASSWORD`: The password for connecting to Redis.
-
-**Keycloak Configuration**
-
-- The value `global.hostBe` set `KEYCLOAK_URL`: The URL for the Keycloak authentication service.
-- The value `global.profile` set `KEYCLOAK_APP_REALM`: The realm to be used for the application within Keycloak.
-
-**Client Authority Configuration**
-
-- The value `global.hostTls` set `CLIENT_AUTHORITY_URL`: The URL for the client authority service.
-- The value `global.keystore.password` set `CLIENT_CERTIFICATE_PASSWORD`: The password for the client certificate.
-
-#### Frontend
-
-##### Example of values.yaml
-
-```yaml
-hostFe: authority.fe.dev.simpl-europe.eu # this is an example, update this field
-cors: # this is an example, update this field
-  allowOrigin: https://authority.be.dev.simpl-europe.eu,https://authority.fe.dev.simpl-europe.eu,http://localhost:4202,http://localhost:4203,http://localhost:3000
-ingress:
-  issuer: dev-prod
-
-env:
-- name: APPLICATION
-  value: <participant-utility>
-- name: API_URL
-  value: "https://authority.be.dev.simpl-europe.eu" # this is an example, update this field
-- name: KEYCLOAK_URL
-  value: "https://authority.be.dev.simpl-europe.eu/auth" # this is an example, update this field
-- name: KEYCLOAK_REALM
-  value: "<participant>"
-- name: KEYCLOAK_CLIENT_ID
-  value: "frontend-cli"
-```
-
-##### Configuration
-
-The configuration provides details on the backend and frontend host URLs, CORS allowed origins, ingress issuer, and environment variables for the onboarding application. For further configuration, view the Helm template and update the values as required.
-
-**Frontend Host Configuration**
-
-- `hostFe`: The hostname for the frontend service. Value: `my.frontend.host`
-
-**CORS Configuration - Allowed Origins**
-
-- `cors.allowOrigin`: Specifies the origins that are allowed to access the application resources via cross-origin requests.
-  Value: `https://my.frontend.host, https://participant.fe.aruba-simpl.cloud, http://localhost:4202, http://localhost:4203, http://localhost:3000`
-
-**Ingress Configuration - Issuer**
-
-- `ingress.issuer`: The issuer for the ingress, which is typically used for managing TLS certificates. Value: `your-issuer-ingress`
-
-**Environment Variables**
-
-- `APPLICATION`: The name of the application. Value: participant-utility
-- `API_URL`: The URL for the API backend. Value: `https://my.backend.host` **Keycloak Configuration**
-- `KEYCLOAK_URL`: The URL for the Keycloak authentication service. Value: `https://my.backend.host/auth`
-- `KEYCLOAK_REALM`: The Keycloak realm that the application uses for authentication. Value: `authority`
-- `KEYCLOAK_CLIENT_ID`: The client ID used by the application to authenticate with Keycloak. Value: `frontend-cli`
-
-### Step 2: Deploy the Application Using Helm Charts
-Go to master charts directory:
-
-`cd .\charts\`
-
-Now you can deploy the namespace:
-
-`helm install data-provider . `
+## Additional steps
 
 :rotating_light: :rotating_light: :rotating_light: **Attention!!!** :rotating_light: :rotating_light: :rotating_light: <br>
 <b><i>After installing the namespace, there are services that connect using the TLS protocol (e.g. EJBCA). In the current phase of application development, this element must be configured manually.
@@ -963,13 +537,13 @@ The entire procedure is described in confuence:</i></b>
 
 https://confluence.simplprogramme.eu/display/SIMPL/EJBCA+Configuration
 
-<b><i>For the namespace data-provider to work correctly, it is necessary to perform the actions described in the link above.</i></b>
+<b><i>For the namespace authority to work correctly, it is necessary to perform the actions described in the link above.</i></b>
 
 ## Change the namespace
 
 The process of implementing changes is analogous to deploying the namespace for the first time:
 
-`helm upgrade data-provider . `
+`helm upgrade data-provider .`
 
 ## Delete the deployment:
 
@@ -1013,227 +587,100 @@ To ensure that the namespace was created successfully, run the following command
 `kubectl get namespaces`
 <br/>This will list all the namespaces in your cluster, and you should see the one you just created listed.
 
-## Deploy the namespace
-Deploying a dedicated namespace, such as **consumer1**, helps isolate resources and applications within a Kubernetes cluster.
+## Create volumes
+
+Two volumes needs to be created manually at the moment:
+
+- nfs-storage-pvc-xsfc
+- nfs-storage-pvc-sdapibe
+
+This will be fixed in future versions.
+
+## Deploy the namespace using ArgoCD
+
+You can easily deploy the agent using ArgoCD. All the values mentioned in the sections below you can input in ArgoCD deployment. The repoURL gets the package directly from code.europa.eu.
+targetRevision is the package version.
+
+When you create it, you set up the values below (example values)
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 'consumer01-deployer'                            # name of the deploying app in argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://code.europa.eu/api/v4/projects/903/packages/helm/stable'
+    path: '""'
+    targetRevision: 0.3.1
+    helm:
+      values: |
+        values:
+          branch: develop                                 # branch of repo with values - this is develop by default
+        secretEngine: dev-int                             # container for your secrets in vault
+        project: default
+        namespaceTag: consumer01                          # identifier of deployment and part of fqdn
+        domainSuffix: int.simpl-europe.eu                 # last part of fqdn
+        argocd:
+          appname: consumer01-iaa                         # name of generated argocd app 
+          namespace: argocd                               # namespace of your argocd
+        cluster:
+          address: https://kubernetes.default.svc
+          namespace: consumer01-iaa                       # where the app will be deployed
+          kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
+        authority:
+          keycloakClientID: federated-catalogue           # name of the client in authority keycloak
+          keycloakSecret: clientsecretfromkeycloak        # secret of that client (from its credentials)
+          namespaceTag: authority1                        # namespace tag of target authority
+        monitoring:
+          enabled: true                                   # "true" enables the deployment of ELK stack for monitoring
+    chart: consumer
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: consumer01-iaa                             # where the package will be deployed
+```
+
+## Manual deployment
+
+### Files preparation
+
+The suggested way for deployment, is to unpack the released package to a folder on a host where you have kubectl and helm available and configured.
+
+There is basically one file that you need to modify - values.yaml.
+There are a couple of variables you need to replace - described below. The rest you don't need to change.
+
+```yaml
+authority:
+  namespaceTag: authority1                        # namespace tag of target authority
+  keycloakClientID: federated-catalogue           # name of the client in authority keycloak
+  keycloakSecret: clientsecretfromkeycloak        # secret of that client (from its credentials)
+
+argocd:
+  appname: consumer01-iaa                         # name of generated argocd app 
+  namespace: argocd                               # namespace of your argocd
+
+project: default                                  # Project to which the namespace is attached
+
+cluster:
+  address: https://kubernetes.default.svc
+  namespace: consumer01-iaa                       # where the package will be deployed
+  kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
+
+namespaceTag: consumer01                          # identifier of deployment and part of fqdn
+domainSuffix: int.simpl-europe.eu                 # last part of fqdn
+
+values:
+  repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/consumer.git  # repo URL
+  branch: develop                                                                    # branch of code in repo
+```
+
+### Deployment
+
+Deploying a dedicated namespace, such as **consumer**, helps isolate resources and applications within a Kubernetes cluster.
 
 Filling the namespace with content requires the following activity:
 
-### Step 1: Modify YAML configuration files
-
-The first step in configuring the application is to update the necessary YAML files. These files contain key values that define the application's environment, behavior, and settings.
-
-#### Redis
-
-##### Example of values.yaml
-```yaml
-replica:
-  replicaCount: 0
-architecture: standalone
-```
-
-#### Postgresql
-
-##### Example of values-participant.yaml
-```yaml
-primary:
-  initdb:
-    scripts:
-      init.sql: |
-        CREATE USER keycloak WITH PASSWORD 'keycloak' CREATEDB;
-        CREATE DATABASE keycloak OWNER keycloak;
-        CREATE USER usersroles WITH PASSWORD 'usersroles' CREATEDB;
-        CREATE DATABASE usersroles OWNER usersroles;
-```
-> **⚠️** The configuration examples use the users and passwords mentioned above. If you change them, ensure that your configuration reflects those changes accordingly.
-
-#### Keycloak
-
-##### Example of values.yaml
-```yaml
-apiUrl: "<participant endpoint>" # example: https://participant.be.aruba-simpl.cloud
-                                  
-extraEnvVars:
-- name: KC_HOSTNAME_ADMIN_URL
-  value: "< apiUrl as above with /auth, example: https://participant.be.aruba-simpl.cloud/auth>" # update
-- name: KC_HOSTNAME_URL
-  value: "< apiUrl as above with /auth, example: https://participant.be.aruba-simpl.cloud/auth>" # update
-- name: USERS_ROLES_BASE_URL
-  value: "http://users-roles.<namespace>.svc.cluster.local:8080" # update
-- name: KEYCLOAK_BASE_URL
-  value: "< apiUrl as above with /auth, example: https://participant.be.aruba-simpl.cloud/auth>" # update
-- name: REALM
-  value: participant
- 
-auth:
-adminPassword: "admin"
- 
-keycloakConfigCli:
-  enabled: true
-  configuration:
-    participant.json: |
-      {{- $.Files.Get "kc-init/participant-realm-export.json" -}}
- 
-postgresql:
-enabled: false
- 
-externalDatabase:
-annotations: {}
-database: keycloak
-existingSecret: ""
-existingSecretDatabaseKey: ""
-existingSecretHostKey: ""
-existingSecretPasswordKey: ""
-existingSecretPortKey: ""
-existingSecretUserKey: ""
-host: "postgresql.<namespace>.svc.cluster.local"
-password: keycloak
-port: 5432
-user: keycloak
-```
-
-#### SIMPL Cloud Gateway
-
-##### Example of values.yaml
-
-```yaml
-global:
-cors: # this is an example, update this field
-  allowOrigin: https://authority.fe.dev.simpl-europe.eu,https://authority.fe.dev.simpl-europe.eu,http://localhost:4202,http://localhost:3000
-hostBe: authority.be.dev.simpl-europe.eu  # this is an example, update this field
-hostFe: authority.fe.dev.simpl-europe.eu  # this is an example, update this field
-hostTls: tls.authority.dev.simpl-europe.eu  # this is an example, update this field
-ingress:
-  issuer: dev-prod
-profile: < participant >
-
-microservices:
-ejbcaUrl: http://ejbca-community-helm.<namespace>.svc.cluster.local:30080
-keycloakUrl: http://keycloak.<namespace>.svc.cluster.local
-onboardingUrl: http://onboarding.<namespace>.svc.cluster.local:8080
-securityAttributesProviderUrl: http://security-attributes-provider.<namespace>.svc.cluster.local:8080
-usersRolesUrl: http://users-roles.<namespace>.svc.cluster.local:8080
-```
-
-##### Profiles
-
-The value `global.profile` set `SPRING_PROFILES_ACTIVE`: This sets the active Spring profile. The value should be `participant`.
-
-The value `global.authorityUrl` set `AUTHORITY_URL`: URL of the authority backend. 
-
-##### Common configuration:
-  
-The value `global.cors.allowOrigin` set `CORS_ALLOWED_ORIGINS`: Specifies which origins are allowed to make cross-origin requests.
-The value `miroservices.keycloakUrl` set `KEYCLOAK_URL`: The URL for the Keycloak authentication service.
-The value `miroservices.usersRolesUrl` set `USERSROLES_URL`: The URL for the Users&Roles service.
-`CORS_ALLOWED_HEADERS`: Specifies which HTTP headers are allowed in cross-origin requests.
-Default value: `Access-Control-Allow-Headers, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Keep-Alive, User-Agent, Content-Type, Authorization, Tenant, Channel, Platform, Set-Cookie, geolocation, x-mobility-mode, device, Cache-Control, X-Request-With, Accept, Origin.`
-
-#### User & Roles
-
-##### Prerequisites
-    
-*simpl-cloud-gateway* up and running
-
-*security-attribute-provider* up and running
-
-##### Example of values.yaml
-  
-```yaml
-env:
-  KEYCLOAK_MASTER_PASSWORD: admin # this password was set in keycloak values.yaml
-  KEYCLOAK_MASTER_USER: user
-  SPRING_DATA_REDIS_HOST: redis-master.<namespace>.svc.cluster.local
-  SPRING_DATA_REDIS_PASSWORD: admin
-  SPRING_DATA_REDIS_PORT: "6379"
-  SPRING_DATA_REDIS_USERNAME: default
-  SPRING_DATASOURCE_PASSWORD: usersroles
-  SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/usersroles
-  SPRING_DATASOURCE_USERNAME: usersroles
-
-global:
-  hostBe: authority.be.dev.simpl-europe.eu  # this is an example, update this field
-  hostTls: tls.authority.dev.simpl-europe.eu  # this is an example, update this field
-  keystore:
-    password: < password defined in the oboarding component >
-  profile: <participant>
-```
-##### Configuration
-    
-The environment variables listed below are used to define the connection details for PostgreSQL, Redis, Keycloak, and other services. For further configuration, view the Helm template and update the values as required.
-
-**Database Configuration**
-
-  - `SPRING_DATASOURCE_URL`: The JDBC URL for connecting to the PostgreSQL database. Format: `jdbc:postgresql://postgresql.<namespace>.svc.cluster.local:5432/usersroles`
-  - `SPRING_DATASOURCE_USERNAME`: The username for the PostgreSQL database.
-  - `SPRING_DATASOURCE_PASSWORD`: The password for the PostgreSQL database.
-
-**Redis Configuration**
-
-  - `SPRING_DATA_REDIS_HOST`: The host address for the Redis service. Format: `redis-master.<namespace>.svc.cluster.local`
-  - `SPRING_DATA_REDIS_PORT`: The port on which Redis is running. Default value: `6379`
-  - `SPRING_DATA_REDIS_USERNAME`: The username for connecting to Redis.
-  - `SPRING_DATA_REDIS_PASSWORD`: The password for connecting to Redis.
-
-**Keycloak Configuration**
-
-  - The value `global.hostBe` set `KEYCLOAK_URL`: The URL for the Keycloak authentication service.
-  - The value `global.profile` set `KEYCLOAK_APP_REALM`: The realm to be used for the application within Keycloak.
-
-**Client Authority Configuration**
-
-  - The value `global.hostTls` set `CLIENT_AUTHORITY_URL`: The URL for the client authority service.
-  - The value `global.keystore.password` set `CLIENT_CERTIFICATE_PASSWORD`: The password for the client certificate.
-
-#### Frontend
-
-##### Example of values.yaml
-
-```yaml
-hostFe: authority.fe.dev.simpl-europe.eu # this is an example, update this field
-cors: # this is an example, update this field
-  allowOrigin: https://authority.be.dev.simpl-europe.eu,https://authority.fe.dev.simpl-europe.eu,http://localhost:4202,http://localhost:4203,http://localhost:3000
-ingress:
-  issuer: dev-prod
-
-env:
-- name: APPLICATION
-  value: <participant-utility>
-- name: API_URL
-  value: "https://authority.be.dev.simpl-europe.eu" # this is an example, update this field
-- name: KEYCLOAK_URL
-  value: "https://authority.be.dev.simpl-europe.eu/auth" # this is an example, update this field
-- name: KEYCLOAK_REALM
-  value: "<participant>"
-- name: KEYCLOAK_CLIENT_ID
-  value: "frontend-cli"
-```
-
-##### Configuration
-
-The configuration provides details on the backend and frontend host URLs, CORS allowed origins, ingress issuer, and environment variables for the onboarding application. For further configuration, view the Helm template and update the values as required.
-
-**Frontend Host Configuration**
-
-- `hostFe`: The hostname for the frontend service. Value: `my.frontend.host`
-      
-**CORS Configuration - Allowed Origins**
-
-- `cors.allowOrigin`: Specifies the origins that are allowed to access the application resources via cross-origin requests.
-  Value: `https://my.frontend.host, https://participant.fe.aruba-simpl.cloud, http://localhost:4202, http://localhost:4203, http://localhost:3000`
-
-**Ingress Configuration - Issuer**
-
-- `ingress.issuer`: The issuer for the ingress, which is typically used for managing TLS certificates. Value: `your-issuer-ingress`
-
-**Environment Variables**
-
-- `APPLICATION`: The name of the application. Value: participant-utility
-- `API_URL`: The URL for the API backend. Value: `https://my.backend.host` **Keycloak Configuration**
-- `KEYCLOAK_URL`: The URL for the Keycloak authentication service. Value: `https://my.backend.host/auth`
-- `KEYCLOAK_REALM`: The Keycloak realm that the application uses for authentication. Value: `authority`
-- `KEYCLOAK_CLIENT_ID`: The client ID used by the application to authenticate with Keycloak. Value: `frontend-cli`
-
-### Step 2: Deploy the Application Using Helm Charts
 Go to master charts directory:
 
 `cd .\charts\`
@@ -1241,6 +688,15 @@ Go to master charts directory:
 Now you can deploy the namespace:
 
 `helm install consumer . `
+
+## Monitoring
+
+ELK stack for monitoring is added with this release.  
+Its deployment can be disabled by switch the value monitoring.enabled to false.  
+When it's enabled, after the stack is deployed, you can access the ELK stack UI by https://kibana.**namespacetag**.**domainsuffix**  
+Default user is "elastic", its password can be extracted by kubectl command. `kubectl get secret elastic-elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}' -n {namespace}`
+
+## Additional steps
 
 :rotating_light: :rotating_light: :rotating_light: **Attention!!!** :rotating_light: :rotating_light: :rotating_light: <br>
 <b><i>After installing the namespace, there are services that connect using the TLS protocol (e.g. EJBCA). In the current phase of application development, this element must be configured manually.
@@ -1259,7 +715,6 @@ The process of implementing changes is analogous to deploying the namespace for 
 ## Delete the deployment:
 
 `helm uninstall consumer .`
-
 
 # Troubleshooting
 If you encounter issues during deployment, check the following:
