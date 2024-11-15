@@ -40,7 +40,7 @@ A brief description of what this project does
       * [Files preparation](#files-preparation-1)
       * [Deployment](#deployment-1)
     * [Monitoring](#monitoring-1)
-    * [Additional steps](#additional-steps-1)
+    * [Change the namespace](#change-the-namespace-1)
     * [Delete the Deployment](#delete-the-deployment-1)
     * [Troubleshooting](#troubleshooting-1)
 4. [Install a Consumer Agent](#consumer-deployment)
@@ -55,7 +55,6 @@ A brief description of what this project does
       * [Files preparation](#files-preparation-2)
       * [Deployment](#deployment-2)
     * [Monitoring](#monitoring)
-    * [Additional steps](#additional-steps-1)
     * [Change the Namespace](#change-the-namespace-2)
     * [Delete the Deployment](#delete-the-deployment-2)
     * [Troubleshooting](#troubleshooting-2)
@@ -528,16 +527,6 @@ Its deployment can be disabled by switch the value monitoring.enabled to false.
 When it's enabled, after the stack is deployed, you can access the ELK stack UI by https://kibana.**namespacetag**.**domainsuffix**  
 Default user is "elastic", its password can be extracted by kubectl command. `kubectl get secret elastic-elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}' -n {namespace}`
 
-## Additional steps
-
-:rotating_light: :rotating_light: :rotating_light: **Attention!!!** :rotating_light: :rotating_light: :rotating_light: <br>
-<b><i>After installing the namespace, there are services that connect using the TLS protocol (e.g. EJBCA). In the current phase of application development, this element must be configured manually.
-The entire procedure is described in confuence:</i></b>
-
-https://confluence.simplprogramme.eu/display/SIMPL/EJBCA+Configuration
-
-<b><i>For the namespace authority to work correctly, it is necessary to perform the actions described in the link above.</i></b>
-
 ## Change the namespace
 
 The process of implementing changes is analogous to deploying the namespace for the first time:
@@ -694,16 +683,6 @@ ELK stack for monitoring is added with this release.
 Its deployment can be disabled by switch the value monitoring.enabled to false.  
 When it's enabled, after the stack is deployed, you can access the ELK stack UI by https://kibana.**namespacetag**.**domainsuffix**  
 Default user is "elastic", its password can be extracted by kubectl command. `kubectl get secret elastic-elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}' -n {namespace}`
-
-## Additional steps
-
-:rotating_light: :rotating_light: :rotating_light: **Attention!!!** :rotating_light: :rotating_light: :rotating_light: <br>
-<b><i>After installing the namespace, there are services that connect using the TLS protocol (e.g. EJBCA). In the current phase of application development, this element must be configured manually.
-The entire procedure is described in confuence:</i></b>
-
-https://confluence.simplprogramme.eu/display/SIMPL/EJBCA+Configuration
-
-<b><i>For the namespace consumer to work correctly, it is necessary to perform the actions described in the link above.</i></b>
 
 ## Change the namespace
 
