@@ -398,8 +398,7 @@ there should be kubernetes service account created with the name ending with `ia
 account need to be placed in namespace with a name ending with `iaa`. If you require other namespace naming convention
 then the role need to be modified with correct namespaces names. `dev-policy` is a policy name defined in pt 6.
 
-IMPORTANT  
-Steps 1-7 need to be executed only once , if given role, policy, already exists in vault, then there is no need of configuring them again.
+> **⚠️** *Steps 1-7 need to be executed only once , if given role, policy, already exists in vault, then there is no need of configuring them again.*
 
 ### Secret for Signer
 
