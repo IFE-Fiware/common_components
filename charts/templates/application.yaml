@@ -1,0 +1,91 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.argocd.appname }}
+  namespace: {{ .Values.argocd.namespace }}
+spec:
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - CreateNamespace=true
+      - ServerSideApply=true
+  project: {{ .Values.project }}
+  destination:
+    server: {{ .Values.cluster.address }}
+    namespace: {{ .Values.cluster.namespace }}
+  sources:
+  - repoURL: {{ .Values.values.repo_URL }}
+    targetRevision: {{ .Values.values.branch }}
+    ref: values
+  - repoURL: {{ .Values.confluent_operator.repo_URL }}
+    targetRevision: {{ .Values.confluent_operator.targetRevision }}
+    chart: {{ .Values.confluent_operator.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.confluent_operator.valueFiles }}
+        - $values/app-values/confluent-operator/{{ . }}
+        {{- end }}
+      values: |
+        fullnameOverride: {{ .Values.confluent_operator.nameOverride }}
+        kRaftEnabled: true
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.kafka.projectID }}/packages/helm/stable"
+    path: ''
+    targetRevision: {{ .Values.kafka.targetRevision }}
+    chart: {{ .Values.kafka.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.kafka.valueFiles }}
+        - $values/app-values/kafka/{{ . }}
+        {{- end }}
+      values: |
+        clusterIssuer: {{ .Values.cluster.issuer }}
+        kafka:
+          image:
+            tag: {{ .Values.kafka.image.tag }}
+            initTag: {{ .Values.kafka.image.initTag }}
+          auth:
+            enabled: {{ .Values.kafka.auth.enabled }}
+          topic:
+            autocreate: {{ .Values.kafka.topic.autocreate }}
+  - repoURL: {{ .Values.redpanda.repo_URL }}
+    targetRevision: {{ .Values.redpanda.targetRevision }}
+    chart: {{ .Values.redpanda.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.redpanda.valueFiles }}
+        - $values/app-values/redpanda/{{ . }}
+        {{- end }}
+      values: |
+        fullnameOverride: {{ .Values.redpanda.nameOverride }}
+        console:
+          config:
+            kafka:
+              brokers:
+                - kafka-0-internal.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
+                - kafka-1-internal.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
+                - kafka-2-internal.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
+              {{- if .Values.kafka.auth.enabled }}
+              sasl:
+                enabled: true
+                username: redpanda
+                password: redpanda
+                mechanism: PLAIN
+              {{- end }}
+        ingress:
+          hosts:
+            - host: redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+              paths:
+                - path: /
+                  pathType: Prefix
+                  backend: 
+                    service:
+                      name: redpanda
+                      port:
+                        number: 8080
+          tls:
+            - secretName: redpanda-tls
+              hosts:
+                - redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          annotations:
+            cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
