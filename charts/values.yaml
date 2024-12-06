@@ -1,0 +1,45 @@
+argocd:
+  appname: ${NAMESPACE}
+  namespace: argocd
+
+project: default
+  
+cluster:
+  address: https://kubernetes.default.svc
+  namespace: ${NAMESPACE}
+  issuer: dev-prod
+
+namespaceTag: ${NAMESPACETAG}
+domainSuffix: ${DOMAINSUFFIX}
+
+values:
+  repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
+  branch: feature/SIMPL-6788
+
+confluent_operator:
+  repo_URL: https://packages.confluent.io/helm
+  chart_name: confluent-for-kubernetes
+  targetRevision: 0.1145.6
+  nameOverride: confluent-operator
+
+kafka:
+  image:
+    tag: 7.8.0
+    initTag: 2.9.0
+  projectID: "976"
+  targetRevision: v0.0.1
+  chart_name: kafka
+  auth: 
+    enabled: true
+  topic:
+    autocreate: false
+  valueFiles:
+    - values.yaml
+
+redpanda:
+  repo_URL: https://charts.redpanda.com
+  chart_name: console
+  targetRevision: 0.7.30
+  nameOverride: redpanda
+  valueFiles:
+    - values.yaml
