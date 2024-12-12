@@ -27,7 +27,7 @@ kafka:
     tag: 7.8.0
     initTag: 2.9.0
   projectID: "976"
-  targetRevision: v0.0.1
+  targetRevision: v0.0.2
   chart_name: kafka
   auth: 
     enabled: true
