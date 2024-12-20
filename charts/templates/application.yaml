@@ -10,6 +10,15 @@ spec:
       - ApplyOutOfSyncOnly=true
       - CreateNamespace=true
       - ServerSideApply=true
+  ignoreDifferences:
+    - kind: Secret
+      name: logstash-writer-secret
+      jsonPointers:
+        - /data
+    - kind: Secret
+      name: user-monitoring-secret
+      jsonPointers:
+        - /data
   project: {{ .Values.project }}
   destination:
     server: {{ .Values.cluster.address }}
@@ -18,74 +27,49 @@ spec:
   - repoURL: {{ .Values.values.repo_URL }}
     targetRevision: {{ .Values.values.branch }}
     ref: values
-  - repoURL: {{ .Values.confluent_operator.repo_URL }}
-    targetRevision: {{ .Values.confluent_operator.targetRevision }}
-    chart: {{ .Values.confluent_operator.chart_name }}
+  {{- if .Values.monitoring.enabled }}
+  - repoURL: {{ .Values.monitoring.operator.repo_URL }}
+    targetRevision: {{ .Values.monitoring.operator.targetRevision }}
+    chart: {{ .Values.monitoring.operator.chart_name }}
     helm:
       valueFiles:
-        {{- range .Values.confluent_operator.valueFiles }}
-        - $values/app-values/confluent-operator/{{ . }}
+        {{- range .Values.monitoring.operator.valueFiles }}
+        - $values/app-values/monitoring-operator/{{ . }}
         {{- end }}
       values: |
-        fullnameOverride: {{ .Values.confluent_operator.nameOverride }}
-        kRaftEnabled: true
-  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.kafka.projectID }}/packages/helm/stable"
+        managedNamespaces: [{{ .Values.monitoring.operator.managedNamespaces }}]
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.monitoring.projectID }}/packages/helm/stable"
     path: ''
-    targetRevision: {{ .Values.kafka.targetRevision }}
-    chart: {{ .Values.kafka.chart_name }}
+    targetRevision: {{ .Values.monitoring.targetRevision }}
+    chart: {{ .Values.monitoring.chart_name }}
     helm:
+      releaseName: {{ .Values.monitoring.fullnameOverride }}
       valueFiles:
-        {{- range .Values.kafka.valueFiles }}
-        - $values/app-values/kafka/{{ . }}
+        {{- range .Values.monitoring.valueFiles }}
+        - $values/app-values/monitoring/{{ . }}
         {{- end }}
       values: |
-        clusterIssuer: {{ .Values.cluster.issuer }}
-        kafka:
-          image:
-            tag: {{ .Values.kafka.image.tag }}
-            initTag: {{ .Values.kafka.image.initTag }}
-          auth:
-            enabled: {{ .Values.kafka.auth.enabled }}
-          topic:
-            autocreate: {{ .Values.kafka.topic.autocreate }}
-  - repoURL: {{ .Values.redpanda.repo_URL }}
-    targetRevision: {{ .Values.redpanda.targetRevision }}
-    chart: {{ .Values.redpanda.chart_name }}
-    helm:
-      valueFiles:
-        {{- range .Values.redpanda.valueFiles }}
-        - $values/app-values/redpanda/{{ . }}
-        {{- end }}
-      values: |
-        fullnameOverride: {{ .Values.redpanda.nameOverride }}
-        console:
-          config:
-            kafka:
-              brokers:
-                - kafka-0-internal.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
-                - kafka-1-internal.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
-                - kafka-2-internal.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
-              {{- if .Values.kafka.auth.enabled }}
-              sasl:
-                enabled: true
-                username: redpanda
-                password: redpanda
-                mechanism: PLAIN
-              {{- end }}
-        ingress:
-          hosts:
-            - host: redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-              paths:
-                - path: /
-                  pathType: Prefix
-                  backend: 
-                    service:
-                      name: redpanda
-                      port:
-                        number: 8080
-          tls:
-            - secretName: redpanda-tls
-              hosts:
-                - redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          annotations:
-            cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+        domainSuffix: {{ .Values.domainSuffix }}
+        namespaceTag: {{ .Values.namespaceTag }}
+        mainNamespace: {{ .Values.namespaceTag }}
+        metricbeat:
+          kubeStateHost: {{ .Values.cluster.kubeStateHost }}
+        heartbeat:
+          services:
+            heartbeat.monitors:
+            - type: tcp
+              name: Elasticsearch Service
+              id: elasticsearch:9200
+              schedule: '@every 5s'
+              hosts: ["elastic-elasticsearch-es-http.{{ .Values.cluster.namespace }}.svc:9200"]
+            - type: tcp
+              name: Kibana GUI
+              id: kibana:443
+              schedule: '@every 5s'
+              hosts: ["kibana.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}:443"]
+            - type: icmp
+              id: kibana/icmp
+              name: Kibana ICMP
+              hosts: ["elastic-kibana-kb-http.{{ .Values.cluster.namespace }}.svc"]
+              schedule: '*/5 * * * * * *'
+  {{- end }}
