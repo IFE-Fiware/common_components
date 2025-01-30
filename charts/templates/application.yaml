@@ -37,6 +37,7 @@ spec:
         - $values/app-values/monitoring-operator/{{ . }}
         {{- end }}
       values: |
+        fullnameOverride: {{ .Values.monitoring.operator.nameOverride }}-{{ .Release.Namespace }}
         managedNamespaces: [{{ .Values.monitoring.operator.managedNamespaces }}]
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.monitoring.projectID }}/packages/helm/stable"
     path: ''
@@ -73,3 +74,90 @@ spec:
               hosts: ["elastic-kibana-kb-http.{{ .Values.cluster.namespace }}.svc"]
               schedule: '*/5 * * * * * *'
   {{- end }}
+  - repoURL: {{ .Values.vault.repo_URL }}
+    targetRevision: {{ .Values.vault.targetRevision }}
+    chart: {{ .Values.vault.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.vault.valueFiles }}
+        - $values/app-values/vault/{{ . }}
+        {{- end }}
+      values: |
+        fullnameOverride: vault-{{ .Release.Namespace }}
+        {{- if .Values.vault.resources }}
+        resources: {{- toYaml .Values.vault.resources | nindent 10 }}
+        {{- end }}
+  - repoURL: {{ .Values.confluent_operator.repo_URL }}
+    targetRevision: {{ .Values.confluent_operator.targetRevision }}
+    chart: {{ .Values.confluent_operator.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.confluent_operator.valueFiles }}
+        - $values/app-values/confluent-operator/{{ . }}
+        {{- end }}
+      values: |
+        fullnameOverride: {{ .Values.confluent_operator.nameOverride }}
+        name: confluent-operator-{{ .Release.Namespace }}
+        kRaftEnabled: true
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.kafka.projectID }}/packages/helm/stable"
+    path: ''
+    targetRevision: {{ .Values.kafka.targetRevision }}
+    chart: {{ .Values.kafka.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.kafka.valueFiles }}
+        - $values/app-values/kafka/{{ . }}
+        {{- end }}
+      values: |
+        clusterIssuer: {{ .Values.cluster.issuer }}
+        kafka:
+          auth:
+            enabled: {{ .Values.kafka.auth.enabled }}
+          topic:
+            autocreate: {{ .Values.kafka.topic.autocreate }}
+        hashicorp:
+          service: {{ .Values.hashicorp.service }}
+          role: {{ .Values.hashicorp.role }}
+        secretEngine: {{ .Values.hashicorp.secretEngine }}
+  - repoURL: {{ .Values.redpanda.repo_URL }}
+    targetRevision: {{ .Values.redpanda.targetRevision }}
+    chart: {{ .Values.redpanda.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.redpanda.valueFiles }}
+        - $values/app-values/redpanda/{{ . }}
+        {{- end }}
+      values: |
+        fullnameOverride: {{ .Values.redpanda.nameOverride }}
+        console:
+          config:
+            kafka:
+              brokers:
+                - kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
+              {{- if .Values.kafka.auth.enabled }}
+              sasl:
+                enabled: true
+                username: redpanda
+                password: redpanda
+                mechanism: PLAIN
+              {{- end }}
+        ingress:
+          hosts:
+            - host: redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+              paths:
+                - path: /
+                  pathType: Prefix
+                  backend: 
+                    service:
+                      name: redpanda
+                      port:
+                        number: 8080
+          tls:
+            - secretName: redpanda-tls
+              hosts:
+                - redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          annotations:
+            cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+            nginx.ingress.kubernetes.io/auth-type: basic
+            nginx.ingress.kubernetes.io/auth-secret: redpanda-credentials
+            nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
