@@ -54,11 +54,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 1.0.0                           # version of package
+    targetRevision: 1.1.0                           # version of package
     helm:
       values: |
         values:
-          branch: v1.0.0                            # branch of repo with values 
+          branch: v1.1.0                            # branch of repo with values 
         project: default                            # Project to which the namespace is attached
         namespaceTag: common                        # identifier of deployment and part of fqdn
         domainSuffix: int.simpl-europe.eu           # last part of fqdn
@@ -70,7 +70,17 @@ spec:
           namespace: common                         # where the app will be deployedsvc
           issuer: dev-prod                          # issuer of certificate
           kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
-    chart: common_components
+        hashicorp:
+          service: "http://vault-common.common.svc.cluster.local:8200"      # link to vault that is also deployed by this chart - replace "common" if needed in both places
+          secretEngine: dev-int                     # name of the kv secret engine you'll create in vault
+          role: dev-int-role                        # name of the role you'll create in vault
+        monitoring:
+          operator:
+            managedNamespaces: "common,authority,dataprovider,consumer"     # list namespaces with agents in your cluster
+        kafka:
+          topic:
+            autocreate: true                        # set to true if kafka should automatically create topics
+    chart: common_components                        # chart name
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: common                               # where the package will be deployed
@@ -87,7 +97,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```
 values:
-  branch: v1.0.0                            # branch of repo with values 
+  branch: v1.1.0                            # branch of repo with values 
 
 project: default                            # Project to which the namespace is attached
 
@@ -103,6 +113,19 @@ cluster:
   namespace: common                         # where the app will be deployedsvc
   issuer: dev-prod                          # issuer of certificate
   kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
+
+hashicorp:
+  service: "http://vault-common.common.svc.cluster.local:8200"      # link to vault that is also deployed by this chart - replace "common" if needed in both places
+  secretEngine: dev-int                     # name of the kv secret engine you'll create in vault
+  role: dev-int-role                        # name of the role you'll create in vault
+
+monitoring:
+  operator:
+    managedNamespaces: "common,authority,dataprovider,consumer"     # list namespaces with agents in your cluster
+
+kafka:
+  topic:
+    autocreate: true                        # set to true if kafka should automatically create topics
 ```
 
 ##### Deployment
@@ -120,3 +143,83 @@ ELK stack for monitoring is added with this release.
 Its deployment can be disabled by switch the value monitoring.enabled to false.  
 When it's enabled, after the stack is deployed, you can access the ELK stack UI by https://kibana.**namespacetag**.**domainsuffix**  
 Default user is "elastic", its password can be extracted by kubectl command. `kubectl get secret elastic-elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}' -n {namespace}`
+
+
+### Vault Configuration ###
+
+After deploying common-tools namespace , vault instance has to be properly configured
+
+1. Unseal Vault
+
+Port forward vault service to local port 8300 using kubectl:
+kubectl -n [namespace] port-forward svc/vault 8300:8200
+http://localhost:8300/
+
+
+You will be greeted with key setup page. Enter the number of Key shares and Key threshold (for example: three). 
+
+![Init](images/Init.png)
+
+Three keys and a root token will be provided. It is important to save all keys for possible future unseals. Root token has to be saved too, it’s used as an auth token to enter vault. Keys can also be downloaded  as a file.
+Click “Continue to Unseal” 
+
+![Keys](images/Keys.png)
+
+Enter all generated keys into the text box. The vault will unseal .
+
+![Unseal](images/Unseal.png)
+
+Login with root token
+
+Create secret engine
+1. Got to Secrets Engines (in the menu on the left) -> Enable new engine
+2. Select “Generic kv” from the list
+3. Change path to “common”
+4. Enable Engine
+
+Setup Kubernetes Authentication method 
+1.	Go  to Access -> Authentication Methods -> Enable new method
+2.	Select Kubernetes from the list
+3.	Leave path as default (“kubernetes”)
+4.	In Configure Kubernetes enter Kubernetes host: https://10.3.0.1:443
+<p align="left">
+![Host](images/Host.png)
+</p>
+5.	Save Configuration
+
+Configure common-role
+1.	Go to Access -> Authentication Methods -> Kuberntes 
+2.	Create role
+3.	Enter the following values:
+
+Set role name to : “common-role”
+Alias name source – set to : “serviceaccount_uid”
+
+Bound service account names -  these are service account names that will be able to access common-role.
+It is required to add the roles as below, one item per row.
+<p align="left">
+![AccountNames](images/AccountNames.png)
+ </p>
+Bound service account namespaces: -  these are the namespaces that will be able to access to access common-role
+The names of namespaces created on the environment have to be put here. (For example *1 will add all namespaces ending with "1")
+<p align="left">
+![Namespaces](images/Namespaces.png)
+ </p>
+Drop down tokens  on the bottom of the page:
+Input “common-policy” in Generated Token’s Policies
+<p align="left">
+![TokenPolicies](images/TokenPolicies.png)
+ </p>
+
+Configure access – policy
+1.	Go to policies -> ACL policies -> Create ACL Policy 
+2.	Set policy name to “common-policy”
+3.	Input capabilities for common/data path:
+
+path "common/data/*" {
+  capabilities = ["create", "read", "update", "patch", "delete", "list"]
+}
+
+<p align="left">
+![ACL](images/ACL.png)
+ </p>
