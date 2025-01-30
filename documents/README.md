@@ -223,3 +223,19 @@ path "common/data/*" {
 <p align="left">
 ![ACL](images/ACL.png)
  </p>
+
+#### Secret for Kafka
+
+One secret is needed, its naming syntax is {{ .Release.Namespace }}-kafka-credentials, it should be created in created before kv secret engine.
+Its content is:
+
+```
+{
+  "redpanda": "redpanda",
+  "user1": "password1",
+  "user2": "password2",
+  "user2": "password2",
+}
+```
+Redpanda user is used for communication with kafka UI. The rest you can set up as needed - one is necessary for Crossplane for example. 
+After you update the secret, you need to restart the kafka StatefulSet. 
