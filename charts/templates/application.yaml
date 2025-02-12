@@ -30,6 +30,9 @@ spec:
   {{- if .Values.monitoring.enabled }}
   - repoURL: {{ .Values.monitoring.operator.repo_URL }}
     targetRevision: {{ .Values.monitoring.operator.targetRevision }}
+    chart: {{ .Values.monitoring.operator.crds_chart_name }}
+  - repoURL: {{ .Values.monitoring.operator.repo_URL }}
+    targetRevision: {{ .Values.monitoring.operator.targetRevision }}
     chart: {{ .Values.monitoring.operator.chart_name }}
     helm:
       valueFiles:
