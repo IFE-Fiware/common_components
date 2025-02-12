@@ -27,6 +27,7 @@ monitoring:
   operator:
     repo_URL: https://helm.elastic.co/
     chart_name: eck-operator
+    crds_chart_name: eck-operator-crds
     targetRevision: "2.14.0"
     nameOverride: eck-operator
     managedNamespaces: "common,authority1,dataprovider01,consumer01,authority2,dataprovider02,consumer02,authority3,dataprovider03,consumer03"
