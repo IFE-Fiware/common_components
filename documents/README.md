@@ -23,6 +23,7 @@ The following versions of the elements will be used in the process:
 | nginx-ingress          | 1.10.x or newer | Used as ingress controller. <br/> Other version *might* work but tests were performed using 1.10.x version. <br/> Image used: `registry.k8s.io/ingress-nginx/controller:v1.10.0`  |
 | cert-manager           | 1.15.x or newer | Used for automatic cert management. <br/> Other version *might* work but tests were performed using 1.15.x version. <br/> Image used: `quay.io/jetstack/cert-manager-controller::v1.15.3` |
 | argocd                 | 2.11.x or newer | Used as GitOps tool . App of apps concept. <br/> Other version *might* work but tests were performed using 2.11.x version. <br/> Image used: `quay.io/argoproj/argocd:v2.11.3` |
+| kube-state-metrics  | 2.13.x or newer | Used for monitoring, Metricbeat statuses in Kibana dashboard    |
 
 ## Installation
 
@@ -54,11 +55,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 1.1.0                           # version of package
+    targetRevision: 1.1.2                           # version of package
     helm:
       values: |
         values:
-          branch: v1.1.0                            # branch of repo with values 
+          branch: v1.1.2                            # branch of repo with values 
         project: default                            # Project to which the namespace is attached
         namespaceTag: common                        # identifier of deployment and part of fqdn
         domainSuffix: int.simpl-europe.eu           # last part of fqdn
@@ -97,7 +98,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```
 values:
-  branch: v1.1.0                            # branch of repo with values 
+  branch: v1.1.2                            # branch of repo with values 
 
 project: default                            # Project to which the namespace is attached
 
