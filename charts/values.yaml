@@ -28,13 +28,13 @@ monitoring:
     repo_URL: https://helm.elastic.co/
     chart_name: eck-operator
     crds_chart_name: eck-operator-crds
-    targetRevision: "2.14.0"
+    targetRevision: "2.16.1"
     nameOverride: eck-operator
     managedNamespaces: "common,authority1,dataprovider01,consumer01,authority2,dataprovider02,consumer02,authority3,dataprovider03,consumer03"
     valueFiles:
       - values.yaml
   projectID: "828"
-  targetRevision: 0.1.10
+  targetRevision: 0.1.11
   chart_name: eck-monitoring
   fullnameOverride: elastic
   valueFiles:
