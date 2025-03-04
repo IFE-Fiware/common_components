@@ -55,11 +55,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 1.1.2                           # version of package
+    targetRevision: 1.2.0                           # version of package
     helm:
       values: |
         values:
-          branch: v1.1.2                            # branch of repo with values 
+          branch: v1.2.0                            # branch of repo with values 
         project: default                            # Project to which the namespace is attached
         namespaceTag: common                        # identifier of deployment and part of fqdn
         domainSuffix: int.simpl-europe.eu           # last part of fqdn
@@ -98,7 +98,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```
 values:
-  branch: v1.1.2                            # branch of repo with values 
+  branch: v1.2.0                            # branch of repo with values 
 
 project: default                            # Project to which the namespace is attached
 
