@@ -1,2 +1,0 @@
-#ClusterIssuer to generate Kibana SSL front certificate
-clusterIssuer: "dev-prod"
