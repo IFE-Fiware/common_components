@@ -53,11 +53,20 @@ spec:
         - $values/app-values/monitoring/{{ . }}
         {{- end }}
       values: |
+        clusterIssuer: {{ .Values.cluster.issuer }}
         domainSuffix: {{ .Values.domainSuffix }}
         namespaceTag: {{ .Values.namespaceTag }}
         mainNamespace: {{ .Values.namespaceTag }}
         metricbeat:
           kubeStateHost: {{ .Values.cluster.kubeStateHost }}
+        elasticsearch:
+          diskSpace: {{ .Values.monitoring.params.diskSpace.elasticsearch }}
+          count: {{ .Values.monitoring.params.count.elasticsearch }}
+        logstash:
+          diskSpace: {{ .Values.monitoring.params.diskSpace.logstash }}
+          count_beats: {{ .Values.monitoring.params.count.logstash }}
+        kibana:
+          count: {{ .Values.monitoring.params.count.kibana }}
         heartbeat:
           services:
             heartbeat.monitors:
@@ -112,7 +121,6 @@ spec:
         - $values/app-values/kafka/{{ . }}
         {{- end }}
       values: |
-        clusterIssuer: {{ .Values.cluster.issuer }}
         kafka:
           auth:
             enabled: {{ .Values.kafka.auth.enabled }}
@@ -121,7 +129,7 @@ spec:
         hashicorp:
           service: {{ .Values.hashicorp.service }}
           role: {{ .Values.hashicorp.role }}
-        secretEngine: {{ .Values.hashicorp.secretEngine }}
+          secretEngine: {{ .Values.hashicorp.secretEngine }}
   - repoURL: {{ .Values.redpanda.repo_URL }}
     targetRevision: {{ .Values.redpanda.targetRevision }}
     chart: {{ .Values.redpanda.chart_name }}

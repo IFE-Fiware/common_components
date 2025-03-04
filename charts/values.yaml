@@ -37,8 +37,14 @@ monitoring:
   targetRevision: 0.1.11
   chart_name: eck-monitoring
   fullnameOverride: elastic
-  valueFiles:
-    - values.yaml
+  params:
+    diskSpace: 
+      elasticsearch: 50Gi
+      logstash: 3Gi
+    count:
+      elasticsearch: 3
+      kibana: 1
+      logstash: 1
 
 vault:
   repo_URL: 'https://helm.releases.hashicorp.com'
@@ -52,12 +58,12 @@ vault:
 confluent_operator:
   repo_URL: https://packages.confluent.io/helm
   chart_name: confluent-for-kubernetes
-  targetRevision: 0.1145.6
+  targetRevision: 0.1193.1
   nameOverride: confluent-operator
 
 kafka:
   projectID: "976"
-  targetRevision: v0.0.3
+  targetRevision: 1.0.1
   chart_name: kafka
   auth: 
     enabled: true
@@ -69,7 +75,7 @@ kafka:
 redpanda:
   repo_URL: https://charts.redpanda.com
   chart_name: console
-  targetRevision: 0.7.30
+  targetRevision: 0.7.31
   nameOverride: redpanda
   valueFiles:
     - values.yaml
