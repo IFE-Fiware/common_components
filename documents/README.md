@@ -55,11 +55,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 1.2.0                           # version of package
+    targetRevision: 1.2.1                           # version of package
     helm:
       values: |
         values:
-          branch: v1.2.0                            # branch of repo with values 
+          branch: v1.2.1                            # branch of repo with values 
         project: default                            # Project to which the namespace is attached
         namespaceTag: common                        # identifier of deployment and part of fqdn
         domainSuffix: int.simpl-europe.eu           # last part of fqdn
@@ -81,6 +81,10 @@ spec:
         kafka:
           topic:
             autocreate: true                        # set to true if kafka should automatically create topics
+        redpanda:
+          credentials: 
+            username: admin                         # set username for redpanda logon
+            password: admin                         # set password for redpanda logon
     chart: common_components                        # chart name
   destination:
     server: 'https://kubernetes.default.svc'
@@ -98,7 +102,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```
 values:
-  branch: v1.2.0                            # branch of repo with values 
+  branch: v1.2.1                            # branch of repo with values 
 
 project: default                            # Project to which the namespace is attached
 
@@ -127,6 +131,11 @@ monitoring:
 kafka:
   topic:
     autocreate: true                        # set to true if kafka should automatically create topics
+
+redpanda:
+  credentials: 
+    username: admin                         # set username for redpanda logon
+    password: admin                         # set password for redpanda logon
 ```
 
 ##### Deployment
