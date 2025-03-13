@@ -34,7 +34,7 @@ monitoring:
     valueFiles:
       - values.yaml
   projectID: "828"
-  targetRevision: 0.1.11
+  targetRevision: 0.1.12
   chart_name: eck-monitoring
   fullnameOverride: elastic
   params:
@@ -43,7 +43,7 @@ monitoring:
       logstash: 3Gi
     count:
       elasticsearch: 3
-      kibana: 1
+      kibana: 2
       logstash: 1
 
 vault:
@@ -77,5 +77,8 @@ redpanda:
   chart_name: console
   targetRevision: 0.7.31
   nameOverride: redpanda
+  credentials: 
+    username: admin
+    password: admin
   valueFiles:
     - values.yaml
