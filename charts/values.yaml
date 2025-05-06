@@ -3,7 +3,15 @@ argocd:
   namespace: argocd
 
 project: default
-  
+
+agentList:
+  authorities:
+    - authority1
+  consumers:
+    - consumer01
+  providers:
+    - dataprovider01
+
 cluster:
   address: https://kubernetes.default.svc
   namespace: ${NAMESPACE}
@@ -14,7 +22,6 @@ namespaceTag: ${NAMESPACETAG}
 domainSuffix: ${DOMAINSUFFIX}
 
 hashicorp:
-  service: "http://vault-common.common.svc.cluster.local:8200"
   secretEngine: ${SECRETENGINE}
   role: ${SECRETROLE}
 
@@ -30,7 +37,6 @@ monitoring:
     crds_chart_name: eck-operator-crds
     targetRevision: "2.16.1"
     nameOverride: eck-operator
-    managedNamespaces: "common,authority1,dataprovider01,consumer01,authority2,dataprovider02,consumer02,authority3,dataprovider03,consumer03"
     valueFiles:
       - values.yaml
   projectID: "828"
@@ -46,9 +52,36 @@ monitoring:
       kibana: 2
       logstash: 1
 
+vault_operator:
+  repo_URL: ghcr.io/bank-vaults/helm-charts
+  targetRevision: 1.22.5
+  chart_name: vault-operator
+  resources:
+    requests:
+      cpu: "0"
+      memory: "0"
+
+vault_webhook:
+  repo_URL: ghcr.io/bank-vaults/helm-charts
+  targetRevision: 1.21.4
+  chart_name: vault-secrets-webhook
+  resources:
+    requests:
+      cpu: "0"
+      memory: "0"
+
+vault_injector:
+  repo_URL: https://helm.releases.hashicorp.com
+  targetRevision: 0.30.0
+  chart_name: vault
+  resources:
+    requests:
+      cpu: "0"
+      memory: "0"
+
 vault:
-  repo_URL: 'https://helm.releases.hashicorp.com'
-  targetRevision: 0.29.1
+  projectID: "1080"
+  targetRevision: 1.0.0
   chart_name: vault
   resources:
     requests:
@@ -77,8 +110,71 @@ redpanda:
   chart_name: console
   targetRevision: 0.7.31
   nameOverride: redpanda
-  credentials: 
-    username: admin
-    password: admin
+  valueFiles:
+    - values.yaml
+
+pg_operator:
+  repo_URL: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+  chart_name: postgres-operator
+  targetRevision: 1.14.0
+  nameOverride: pg-operator
+  valueFiles:
+    - values.yaml
+
+pg_admin:
+  repo_URL: https://helm.runix.net
+  chart_name: pgadmin4
+  targetRevision: 1.38.0
+  nameOverride: pg-admin
+  valueFiles:
+    - values.yaml
+
+pg_cluster:
+  projectID: "1024"
+  targetRevision: 1.0.0
+  chart_name: pg-cluster
+  valueFiles:
+    - values.yaml
+
+redis:
+  repo_URL: 'https://charts.bitnami.com/bitnami'
+  targetRevision: 19.6.0
+  chart_name: redis
+  nameOverride: redis
+  master:
+    resourcesPreset: "none"
+    resources:
+      requests:
+        cpu: "0"
+        memory: "0"
+  valueFiles:
+    - values.yaml
+    
+redis_commander:
+  repo_URL: 'https://github.com/joeferner/redis-commander.git'
+  targetRevision: master
+  nameOverride: redis-commander
+  path: 'k8s/helm-chart/redis-commander'
+  valueFiles:
+    - values.yaml
+
+notification:
+  projectID: "1002"
+  targetRevision: 0.0.3
+  nameOverride: simpl-notification
+  chart_name: simpl-notification-service
+  resources:
+    requests:
+      cpu: "0"
+      memory: "0"
+  valueFiles:
+    - values.yaml
+
+mailpit:
+  enabled: true
+  repo_URL: 'https://jouve.github.io/charts/'
+  targetRevision: 0.23.1
+  chart_name: mailpit
+  nameOverride: mailpit
   valueFiles:
     - values.yaml

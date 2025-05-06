@@ -1,4 +1,20 @@
-# Common components repo
+# Common Components Agent
+
+<!-- TOC -->
+* [Common Components Agent](#common-components-agent)
+  * [Description](#description)
+  * [Pre-Requisites](#pre-requisites)
+    * [Tools](#tools)
+  * [Installation](#installation)
+    * [Prerequisites](#prerequisites)
+      * [Create the Namespace](#create-the-namespace)
+    * [Deployment using ArgoCD](#deployment-using-argocd)
+    * [Manual deployment](#manual-deployment)
+      * [Files preparation](#files-preparation)
+      * [Deployment](#deployment)
+    * [Monitoring](#monitoring)
+* [Troubleshooting](#troubleshooting)
+<!-- TOC -->
 
 ## Description
 This project contains the configuration files required for deploying an application using Helm and ArgoCD. 
@@ -30,15 +46,8 @@ The following versions of the elements will be used in the process:
 ### Prerequisites
 
 #### Create the Namespace
-Once the namespace variable is set, you can create the namespace using the following kubectl command:
 
-`kubectl create namespace common`
-
-#### Verify the Namespace
-To ensure that the namespace was created successfully, run the following command:
-
-`kubectl get namespaces`
-<br/>This will list all the namespaces in your cluster, and you should see the one you just created listed.
+As an update from previous version, all the agent namespaces now are created automatically. 
 
 ### Deployment using ArgoCD
 
@@ -55,11 +64,18 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 1.2.1                           # version of package
+    targetRevision: 1.3.0                           # version of package
     helm:
       values: |
         values:
-          branch: v1.2.1                            # branch of repo with values 
+          branch: v1.3.0                            # branch of repo with values 
+        agentList:                                  # list of all the agents to be deployed
+          authorities:
+            - authority1
+          consumers:
+            - consumer01
+          providers:
+            - dataprovider01
         project: default                            # Project to which the namespace is attached
         namespaceTag: common                        # identifier of deployment and part of fqdn
         domainSuffix: int.simpl-europe.eu           # last part of fqdn
@@ -68,23 +84,20 @@ spec:
           namespace: argocd                         # namespace of your argocd
         cluster:
           address: https://kubernetes.default.svc
-          namespace: common                         # where the app will be deployedsvc
+          namespace: common                         # where the app will be deployed
           issuer: dev-prod                          # issuer of certificate
           kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
         hashicorp:
-          service: "http://vault-common.common.svc.cluster.local:8200"      # link to vault that is also deployed by this chart - replace "common" if needed in both places
-          secretEngine: dev-int                     # name of the kv secret engine you'll create in vault
-          role: dev-int-role                        # name of the role you'll create in vault
-        monitoring:
-          operator:
-            managedNamespaces: "common,authority,dataprovider,consumer"     # list namespaces with agents in your cluster
+          service: "http://vault.common.svc.cluster.local:8200"      # link to vault that is also deployed by this chart - replace "common" if needed in both places
+          secretEngine: dev-int                     # name of the kv secret engine that will be created in vault
+          role: dev-int-role                        # name of the role that will be created in vault
         kafka:
           topic:
             autocreate: true                        # set to true if kafka should automatically create topics
-        redpanda:
-          credentials: 
-            username: admin                         # set username for redpanda logon
-            password: admin                         # set password for redpanda logon
+        mailpit:
+          enabled: true                             # set to true if mailpit should be deployed as mock smtp for notification service
+        monitoring:
+          enabled: true                             # should monitoring be enabled
     chart: common_components                        # chart name
   destination:
     server: 'https://kubernetes.default.svc'
@@ -102,7 +115,15 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```
 values:
-  branch: v1.2.1                            # branch of repo with values 
+  branch: v1.3.0                            # branch of repo with values 
+
+agentList:                                  # list of all the agents to be deployed
+  authorities:
+    - authority1
+  consumers:
+    - consumer01
+  providers:
+    - dataprovider01
 
 project: default                            # Project to which the namespace is attached
 
@@ -115,7 +136,7 @@ argocd:
 
 cluster:
   address: https://kubernetes.default.svc
-  namespace: common                         # where the app will be deployedsvc
+  namespace: common                         # where the app will be deployed
   issuer: dev-prod                          # issuer of certificate
   kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
 
@@ -124,18 +145,15 @@ hashicorp:
   secretEngine: dev-int                     # name of the kv secret engine you'll create in vault
   role: dev-int-role                        # name of the role you'll create in vault
 
-monitoring:
-  operator:
-    managedNamespaces: "common,authority,dataprovider,consumer"     # list namespaces with agents in your cluster
-
 kafka:
   topic:
     autocreate: true                        # set to true if kafka should automatically create topics
 
-redpanda:
-  credentials: 
-    username: admin                         # set username for redpanda logon
-    password: admin                         # set password for redpanda logon
+mailpit:
+  enabled: true                             # set to true if mailpit should be deployed as mock smtp for notification service
+
+monitoring:
+  enabled: true                             # should monitoring be enabled
 ```
 
 ##### Deployment
@@ -154,98 +172,64 @@ Its deployment can be disabled by switch the value monitoring.enabled to false.
 When it's enabled, after the stack is deployed, you can access the ELK stack UI by https://kibana.**namespacetag**.**domainsuffix**  
 Default user is "elastic", its password can be extracted by kubectl command. `kubectl get secret elastic-elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}' -n {namespace}`
 
+### Vault Configuration
 
-### Vault Configuration ###
+In our project, we use Vault to increase security in different namespaces. Vault is a powerful tool for managing secrets, such as passwords, tokens, and encryption keys.
+Additionally, our environment has been enriched with the vault-secrets-webhook module, which facilitates integration between Vault and our application.
 
-After deploying common-tools namespace , vault instance has to be properly configured
-
-1. Unseal Vault
-
-Port forward vault service to local port 8300 using kubectl:
-kubectl -n [namespace] port-forward svc/vault 8300:8200
-http://localhost:8300/
+Applications retrieve all necessary passwords, keys, and tokens from Vault based on the appropriate definitions contained in the application.yaml file.
 
 
-You will be greeted with key setup page. Enter the number of Key shares and Key threshold (for example: three). 
+**_IMPORTANT_**: **dataprovider_namespace**-gitea secret is not in use as Gitea credential yet.
 
-![Init](images/Init.png)
+Example entries in Vaults look like this:
 
-Three keys and a root token will be provided. It is important to save all keys for possible future unseals. Root token has to be saved too, it’s used as an auth token to enter vault. Keys can also be downloaded  as a file.
-Click “Continue to Unseal” 
+![Vault view](images/vault1.png)
 
-![Keys](images/Keys.png)
+**_As an update from previous version, most of the Vault configuration is now applied automatically.
+You just need to create a key for Signer and update a couple of values, which is mentioned in other agents readmes._**
 
-Enter all generated keys into the text box. The vault will unseal .
+**_All the credentials (for Keycloak and other components) are also now automatically stored in Vault - review the secrets for credentials if needed._**
 
-![Unseal](images/Unseal.png)
+You can access vault on https://vault.**namespacetag**.**domainsuffix**
+Root token can be found in secret vault-unseal-keys, in key vault-root. 
 
-Login with root token
+The application retrieves them according to the following configuration:
 
-Create secret engine
-1. Got to Secrets Engines (in the menu on the left) -> Enable new engine
-2. Select “Generic kv” from the list
-3. Change path to “common”
-4. Enable Engine
+![kafka-credentials view](images/kafka-credentials1.png)
 
-Setup Kubernetes Authentication method 
-1.	Go  to Access -> Authentication Methods -> Enable new method
-2.	Select Kubernetes from the list
-3.	Leave path as default (“kubernetes”)
-4.	In Configure Kubernetes enter Kubernetes host: https://10.3.0.1:443
-<p align="left">
-![Host](images/Host.png)
-</p>
-5.	Save Configuration
+![kafka-credentials_application_yaml view](images/kafka-credentials_application_yaml.png)
 
-Configure common-role
-1.	Go to Access -> Authentication Methods -> Kuberntes 
-2.	Create role
-3.	Enter the following values:
+However, supplying the vault with the appropriate set of values ​​is done when building Vault containers.
 
-Set role name to : “common-role”
-Alias name source – set to : “serviceaccount_uid”
+This is defined in two files located in the https://code.europa.eu/simpl/simpl-open/development/common-components/vault.git repository:
+vault/charts/templates/secrets.yaml and vault/charts/templates/vault.yaml.
 
-Bound service account names -  these are service account names that will be able to access common-role.
-It is required to add the roles as below, one item per row.
-<p align="left">
-![AccountNames](images/AccountNames.png)
- </p>
-Bound service account namespaces: -  these are the namespaces that will be able to access to access common-role
-The names of namespaces created on the environment have to be put here. (For example *1 will add all namespaces ending with "1")
-<p align="left">
-![Namespaces](images/Namespaces.png)
- </p>
-Drop down tokens  on the bottom of the page:
-Input “common-policy” in Generated Token’s Policies
-<p align="left">
-![TokenPolicies](images/TokenPolicies.png)
- </p>
+1. vault/charts/templates/secrets.yaml
+The secrets.yaml file is used to create Kubernetes secrets that Vault gets the credentials from.
+This file defines how secrets will be created in the Kubernetes environment to be later used by Vault.
+A sample definition for one of our tools is:
 
-Configure access – policy
-1.	Go to policies -> ACL policies -> Create ACL Policy 
-2.	Set policy name to “common-policy”
-3.	Input capabilities for common/data path:
+![kafka-credentials_secrets_yaml view](images/kafka-credentials_secrets_yaml.png)
 
-path "common/data/*" {
-  capabilities = ["create", "read", "update", "patch", "delete", "list"]
-}
+2. vault/charts/templates/vault.yaml
+The vault.yaml file configures Vault in the Kubernetes environment, ensuring that it has the necessary resources and policies to securely manage secrets.
+Furthermore, when our application needs a secret, it retrieves it from Vault using the configuration and policies defined in the vault.yaml file.
 
-<p align="left">
-![ACL](images/ACL.png)
- </p>
+![kafka-credentials_vault_yaml view](images/kafka-credentials_vault_yaml.png)
 
-#### Secret for Kafka
+The above configuration ensures that passwords and other secrets are generated securely and managed efficiently, reducing the risk of security breaches and simplifying the management of secrets across namespaces.
 
-One secret is needed, its naming syntax is {{ .Release.Namespace }}-kafka-credentials, it should be created in created before kv secret engine.
-Its content is:
 
-```
-{
-  "redpanda": "redpanda",
-  "user1": "password1",
-  "user2": "password2",
-  "user2": "password2",
-}
-```
-Redpanda user is used for communication with kafka UI. The rest you can set up as needed - one is necessary for Crossplane for example. 
-After you update the secret, you need to restart the kafka StatefulSet. 
+### Redis-commander
+
+Redis commander is a frontend that allows to view data stored in redis-master
+
+![Redis_commander](images/RedisCommander.png)
+
+it can be accessed via an ingress. Password for redis commander is stored in a vault secret in common-redis secret.
+Default username is : admin
+
+Example of secret stored in a common namespace (common06 in this example)
+
+![alt text](images/RedisSecret.png)
