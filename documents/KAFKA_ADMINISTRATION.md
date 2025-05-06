@@ -30,12 +30,7 @@ If kafka.auth.enabled is set as true, you need to have the Secret created in Vau
 
 You can access the console by going to https url redpanda.*namespaceTag*.*domainSuffix*
 
-The *italic* values above are based on values.yaml file. Also in the values file, or by overwriting the values, you can set the username and password for accessing the console. Default is admin / admin. 
-
-| Variable name                 |     Default value         | Description     |
-| ----------------------        |     :-----:         | --------------- |
-| redpanda.credentials.username | admin        | Username for Redpanda Console |
-| redpanda.credentials.password | admin        | Password for Redpanda Console |
+For credentials you need to access the Vault, you'll find them in secret named *namespaceTag*-redpanda-credentials.
 
 #### Console overview
 
