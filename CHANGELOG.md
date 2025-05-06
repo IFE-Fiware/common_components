@@ -1,45 +1,49 @@
-## 1.2.1 (2025-04-02)
-
-No changes.
-
-
 # Changelog
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.1] - 2025-03-10
+## [1.3.0] - 2025-04-18
+- Updated many components to implement Consumer version 1.3.0.
+- Moved Redis and PostgreSQL components to Common Agent.
+- Added Notification component to Common Agent.
 
-### Changed
-- Version update of Monitoring
-- Move Redpanda credentials values setup to values file
-- Change Kibana count to 2
-- Add Kafka administration readme
 
-## [1.2.0] - 2025-02-26
+### Kafka
 
-### Changed
-- Version updates of confluent-operator, Kafka chart and Redpanda
-- Fixed indentation of variables for Kafka
-- Add values for disk size and component count for monitoring
+#### 1.0.1 (2025-03-03)
 
-## [1.1.2] - 2025-02-13
+#### Changed
+- Remove ingress.issuer from values - cleanup
 
-### Changed
-- Fixed Filebeat deployment
-- Update ECK Operator to 2.16.1
-- Update readme
 
-## [1.1.1] - 2025-02-12
+### eck-monitoring
 
-### Changed
-- Added deployment of CRDs for monitoring
+#### 0.1.12 (2025-03-07)
 
-## [1.1.0] - 2025-01-30
+#### Added
+- Added logs parsing for new containers
+- Added end user manual for dashboards
 
-### Changed
-- Installation required for agent, per site (only once - can be common to more than one agent)
-- Common Vault component for all credentials and secrets
-- Common Kafka component used in some agents internal asynchronous communications
-- Common ELK stack for monitoring ang logs centralisation of one or more agents"
+#### Changed
+- Changed default values for kibana resources
+
+#### Fixed
+- Moved changelog file to correct directory
+- Upgrade ELK to 8.16.0
+
+
+### Notification
+
+#### 0.0.2 (2025-03-12)
+
+#### Added
+- (SIMPL-10454) asyncAPI created
+- (SIMPL-10731) retry mechanism for Kafka created
+
+#### Changed
+- (SIMPL-10405) webConfig refactored
+- (SIMPL-10551) interfaces refactored; notification channel introduced; default "email" channel added
+- (SIMPL-10007) Sonar fixes
+- (SPGRLOG-1630) REST API removed
