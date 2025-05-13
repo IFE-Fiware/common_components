@@ -64,11 +64,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 1.3.0                           # version of package
+    targetRevision: 1.3.1                           # version of package
     helm:
       values: |
         values:
-          branch: v1.3.0                            # branch of repo with values 
+          branch: v1.3.1                            # branch of repo with values 
         agentList:                                  # list of all the agents to be deployed
           authorities:
             - authority1
@@ -115,7 +115,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```
 values:
-  branch: v1.3.0                            # branch of repo with values 
+  branch: v1.3.1                            # branch of repo with values 
 
 agentList:                                  # list of all the agents to be deployed
   authorities:
