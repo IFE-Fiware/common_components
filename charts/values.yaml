@@ -40,7 +40,7 @@ monitoring:
     valueFiles:
       - values.yaml
   projectID: "828"
-  targetRevision: 0.1.12
+  targetRevision: 0.1.14
   chart_name: eck-monitoring
   fullnameOverride: elastic
   params:
