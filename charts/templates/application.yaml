@@ -194,6 +194,7 @@ spec:
         {{- end }}
       values: |
         domainSuffix: {{ .Values.domainSuffix }}
+        namespaceTag: {{ .Values.namespaceTag }}
         cluster:
           issuer: {{ .Values.cluster.issuer }}
           namespace: {{ .Values.cluster.namespace }}
@@ -369,7 +370,7 @@ spec:
         fullnameOverride: {{ .Values.redis_commander.nameOverride }}
         ingress:
           hosts:
-          - host: redis-commander.{{ .Values.cluster.namespace }}.{{ .Values.domainSuffix }}
+          - host: redis-commander.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
             paths:
               - "/"
           tls:
