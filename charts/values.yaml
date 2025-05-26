@@ -124,7 +124,7 @@ pg_operator:
 pg_admin:
   repo_URL: https://helm.runix.net
   chart_name: pgadmin4
-  targetRevision: 1.38.0
+  targetRevision: 1.44.0
   nameOverride: pg-admin
   valueFiles:
     - values.yaml
