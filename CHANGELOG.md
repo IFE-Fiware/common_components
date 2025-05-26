@@ -1,3 +1,8 @@
+## 1.3.2 (2025-05-20)
+
+No changes.
+
+
 ## 1.3.1 (2025-05-13)
 
 No changes.
@@ -13,9 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Update Elastic, Logstash and Kibana
 
+## [1.3.2] (2025-05-16)
+
+- Fix domain address of Redis Commander.
+
 ## [1.3.1] (2025-05-13)
 
-Update Vault version. 
+- Update Vault version. 
 
 ## [1.3.0] - 2025-04-18
 - Updated many components to implement Consumer version 1.3.0.

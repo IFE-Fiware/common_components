@@ -64,11 +64,19 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
+<<<<<<< HEAD
     targetRevision: 2.0.0                           # version of package
     helm:
       values: |
         values:
           branch: v2.0.0                            # branch of repo with values 
+=======
+    targetRevision: 1.3.2                           # version of package
+    helm:
+      values: |
+        values:
+          branch: v1.3.2                            # branch of repo with values 
+>>>>>>> origin/develop
         agentList:                                  # list of all the agents to be deployed
           authorities:
             - authority1
@@ -88,7 +96,6 @@ spec:
           issuer: dev-prod                          # issuer of certificate
           kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
         hashicorp:
-          service: "http://vault.common.svc.cluster.local:8200"      # link to vault that is also deployed by this chart - replace "common" if needed in both places
           secretEngine: dev-int                     # name of the kv secret engine that will be created in vault
           role: dev-int-role                        # name of the role that will be created in vault
         kafka:
@@ -141,7 +148,6 @@ cluster:
   kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
 
 hashicorp:
-  service: "http://vault-common.common.svc.cluster.local:8200"      # link to vault that is also deployed by this chart - replace "common" if needed in both places
   secretEngine: dev-int                     # name of the kv secret engine you'll create in vault
   role: dev-int-role                        # name of the role you'll create in vault
 
