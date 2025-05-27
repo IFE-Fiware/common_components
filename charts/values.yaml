@@ -108,7 +108,7 @@ kafka:
 redpanda:
   repo_URL: https://charts.redpanda.com
   chart_name: console
-  targetRevision: 3.1.0
+  targetRevision: 0.7.31
   nameOverride: redpanda
   valueFiles:
     - values.yaml
