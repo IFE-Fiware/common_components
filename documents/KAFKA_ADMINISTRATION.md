@@ -45,3 +45,26 @@ Using the menu on the right, you'll be able to see topics,
 Consumer groups, etc. 
 
 ![Init](images/RedpandaConsumerGroups.png)
+
+#### Creating Topics
+
+By clicking "Create topic" button you are able to add topics.
+
+![Init](images/RedpandaCreateTopics.png)
+
+The topics to be created are listed below. All topics have 1 partition, 2 replicas (with exception of contract_consumption.transfer) and cleanup policy set to delete. Retention time and size leave on default.
+
+contract_consumption.transfer -- 1 replica only!
+decommissioned
+iaa.authority.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
+iaa.consumer.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
+iaa.dataprovider.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
+iaa.dataprovider.eu.europa.ec.simpl.authenticationprovider.events.identity-attributes.updated
+notifications
+provisioned
+sign-contract-req-consumer
+sign-contract-req-provider
+sign-contract-resp-consumer
+sign-contract-resp-provider
+status-update-consumer
+status-update-provider
