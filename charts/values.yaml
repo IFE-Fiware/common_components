@@ -81,7 +81,7 @@ vault_injector:
 
 vault:
   projectID: "1080"
-  targetRevision: 1.1.1
+  targetRevision: 1.1.2
   chart_name: vault
   resources:
     requests:
