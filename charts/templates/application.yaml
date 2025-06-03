@@ -193,6 +193,7 @@ spec:
         - $values/app-values/vault/{{ . }}
         {{- end }}
       values: |
+        namespaceTag: {{ .Values.namespaceTag }}
         domainSuffix: {{ .Values.domainSuffix }}
         cluster:
           issuer: {{ .Values.cluster.issuer }}
