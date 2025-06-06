@@ -54,17 +54,17 @@ By clicking "Create topic" button you are able to add topics.
 
 The topics to be created are listed below. All topics have 1 partition, 2 replicas (with exception of contract_consumption.transfer) and cleanup policy set to delete. Retention time and size leave on default.
 
-1.contract_consumption.transfer -- 1 replica only!
-2.decommissioned
-3.iaa.authority.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
-4.iaa.consumer.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
-5.iaa.dataprovider.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
-6.iaa.dataprovider.eu.europa.ec.simpl.authenticationprovider.events.identity-attributes.updated
-7.notifications
-8.provisioned
-9.sign-contract-req-consumer
-10.sign-contract-req-provider
-11.sign-contract-resp-consumer
-12.sign-contract-resp-provider
-13.status-update-consumer
-14.status-update-provider
+* 1.contract_consumption.transfer -- 1 replica only!
+* 2.decommissioned
+* 3.iaa.authority.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
+* 4.iaa.consumer.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
+* 5.iaa.dataprovider.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
+* 6.iaa.dataprovider.eu.europa.ec.simpl.authenticationprovider.events.identity-attributes.updated
+* 7.notifications
+* 8.provisioned
+* 9.sign-contract-req-consumer
+* 10.sign-contract-req-provider
+* 11.sign-contract-resp-consumer
+* 12.sign-contract-resp-provider
+* 13.status-update-consumer
+* 14.status-update-provider
