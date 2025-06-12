@@ -97,7 +97,6 @@ confluent_operator:
 kafka:
   projectID: "976"
   targetRevision: 1.0.1
-  targetRevision: 1.0.1
   chart_name: kafka
   auth: 
     enabled: true
