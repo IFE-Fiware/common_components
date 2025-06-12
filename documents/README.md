@@ -64,13 +64,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-<<<<<<< HEAD
     targetRevision: 2.0.0                           # version of package
     helm:
       values: |
         values:
           branch: v2.0.0                            # branch of repo with values 
-=======
     targetRevision: 1.3.2                           # version of package
     helm:
       values: |

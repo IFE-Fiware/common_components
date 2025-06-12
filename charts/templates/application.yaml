@@ -193,12 +193,13 @@ spec:
         - $values/app-values/vault/{{ . }}
         {{- end }}
       values: |
-        namespaceTag: {{ .Values.namespaceTag }}
         domainSuffix: {{ .Values.domainSuffix }}
+        namespaceTag: {{ .Values.namespaceTag }}
         cluster:
           issuer: {{ .Values.cluster.issuer }}
           namespace: {{ .Values.cluster.namespace }}
         hashicorp:
+          service: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           secretEngine: {{ .Values.hashicorp.secretEngine }}
           role: {{ .Values.hashicorp.role }}
         agentList:
