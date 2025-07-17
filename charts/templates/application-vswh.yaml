@@ -27,10 +27,21 @@ spec:
         - $values/app-values/vault-webhook/{{ . }}
         {{- end }}
       values: |
+        podAnnotations:
+          vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
+          vault.security.banzaicloud.io/vault-skip-verify: "true"
         watchNamespace: {{ .Values.cluster.namespace }}
         fullnameOverride: vault-webhook-{{ .Release.Namespace }}
         serviceAccount:
           name: vault-webhook-service-account
-        {{- if .Values.vault_webhook.resources }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.vault_webhook.resources }}
         resources: {{- toYaml .Values.vault_webhook.resources | nindent 10 }}
+          {{- end }}
         {{- end }}

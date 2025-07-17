@@ -4,6 +4,9 @@ argocd:
 
 project: default
 
+resourcePreset: default
+# resourcePreset: low
+
 agentList:
   authorities:
     - authority1
@@ -35,14 +38,35 @@ monitoring:
     repo_URL: https://helm.elastic.co/
     chart_name: eck-operator
     crds_chart_name: eck-operator-crds
-    targetRevision: "2.16.1"
+    targetRevision: "3.0.0"
     nameOverride: eck-operator
     valueFiles:
       - values.yaml
   projectID: "828"
-  targetRevision: 0.1.14
+  targetRevision: 0.1.15
   chart_name: eck-monitoring
   fullnameOverride: elastic
+  resources:
+    elasticsearch:
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+    kibana:
+      requests:
+        memory: "500Mi"
+        cpu: "500m"
+    metricbeat:
+      requests:
+        memory: "100Mi"
+        cpu: "100m"
+    filebeat:
+      requests:
+        memory: "100Mi"
+        cpu: "100m"
+    logstash:
+      requests:
+        memory: "200Mi"
+        cpu: "200m"
   params:
     diskSpace: 
       elasticsearch: 50Gi
@@ -58,8 +82,11 @@ vault_operator:
   chart_name: vault-operator
   resources:
     requests:
-      cpu: "0"
-      memory: "0"
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
 
 vault_webhook:
   repo_URL: ghcr.io/bank-vaults/helm-charts
@@ -67,8 +94,11 @@ vault_webhook:
   chart_name: vault-secrets-webhook
   resources:
     requests:
-      cpu: "0"
-      memory: "0"
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
 
 vault_injector:
   repo_URL: https://helm.releases.hashicorp.com
@@ -76,17 +106,23 @@ vault_injector:
   chart_name: vault
   resources:
     requests:
-      cpu: "0"
-      memory: "0"
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
 
 vault:
   projectID: "1080"
-  targetRevision: 1.1.3
+  targetRevision: 1.2.0
   chart_name: vault
   resources:
     requests:
-      cpu: "0"
-      memory: "0"
+      cpu: "500m"
+      memory: "500Mi"
+    limits:
+      cpu: "1"
+      memory: "1000Mi"
 
 confluent_operator:
   repo_URL: https://packages.confluent.io/helm
@@ -96,12 +132,27 @@ confluent_operator:
 
 kafka:
   projectID: "976"
-  targetRevision: 1.0.1
+  targetRevision: 1.0.2
   chart_name: kafka
   auth: 
     enabled: true
   topic:
     autocreate: false
+  resources:
+    kafka:
+      requests:
+        cpu: 400m
+        memory: 400Mi
+      limits:
+        cpu: 2
+        memory: 4Gi
+    kraftController:
+      requests:
+        cpu: 400m
+        memory: 400Mi
+      limits:
+        cpu: 2
+        memory: 4Gi
   valueFiles:
     - values.yaml
 
@@ -110,6 +161,13 @@ redpanda:
   chart_name: console
   targetRevision: 0.7.31
   nameOverride: redpanda
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
   valueFiles:
     - values.yaml
 
@@ -124,15 +182,30 @@ pg_operator:
 pg_admin:
   repo_URL: https://helm.runix.net
   chart_name: pgadmin4
-  targetRevision: 1.44.0
+  targetRevision: 1.47.0
   nameOverride: pg-admin
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
   valueFiles:
     - values.yaml
 
 pg_cluster:
   projectID: "1024"
-  targetRevision: 1.0.0
+  targetRevision: 1.0.1
   chart_name: pg-cluster
+  volumeSize: 30Gi
+  resources:
+    requests:
+      cpu: 400m
+      memory: 400Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi
   valueFiles:
     - values.yaml
 
@@ -141,12 +214,13 @@ redis:
   targetRevision: 19.6.0
   chart_name: redis
   nameOverride: redis
-  master:
-    resourcesPreset: "none"
-    resources:
-      requests:
-        cpu: "0"
-        memory: "0"
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
   valueFiles:
     - values.yaml
     
@@ -155,18 +229,28 @@ redis_commander:
   targetRevision: master
   nameOverride: redis-commander
   path: 'k8s/helm-chart/redis-commander'
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
   valueFiles:
     - values.yaml
 
 notification:
   projectID: "1002"
-  targetRevision: 0.0.3
+  targetRevision: 2.0.0
   nameOverride: simpl-notification
   chart_name: simpl-notification-service
   resources:
     requests:
-      cpu: "0"
-      memory: "0"
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
   valueFiles:
     - values.yaml
 
