@@ -112,6 +112,7 @@ spec:
       values: |
         fullnameOverride: {{ .Values.monitoring.operator.nameOverride }}-{{ .Release.Namespace }}
         managedNamespaces: [{{ join "," (concat .Values.agentList.authorities .Values.agentList.providers .Values.agentList.consumers (list .Values.cluster.namespace)) }}]
+        agentType: common
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.monitoring.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.monitoring.targetRevision }}
@@ -132,11 +133,63 @@ spec:
         elasticsearch:
           diskSpace: {{ .Values.monitoring.params.diskSpace.elasticsearch }}
           count: {{ .Values.monitoring.params.count.elasticsearch }}
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.monitoring.resources.elasticsearch }}
+          resources: {{- toYaml .Values.monitoring.resources.elasticsearch | nindent 12 }}
+            {{- end }}
+          {{- end }}
         logstash:
           diskSpace: {{ .Values.monitoring.params.diskSpace.logstash }}
           count_beats: {{ .Values.monitoring.params.count.logstash }}
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.monitoring.resources.logstash }}
+          resources: {{- toYaml .Values.monitoring.resources.logstash | nindent 12 }}
+            {{- end }}
+          {{- end }}
         kibana:
           count: {{ .Values.monitoring.params.count.kibana }}
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.monitoring.resources.kibana }}
+          resources: {{- toYaml .Values.monitoring.resources.kibana | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        filebeat:
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.monitoring.resources.filebeat }}
+          resources: {{- toYaml .Values.monitoring.resources.filebeat | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        metricbeat:
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.monitoring.resources.metricbeat }}
+          resources: {{- toYaml .Values.monitoring.resources.metricbeat | nindent 12 }}
+            {{- end }}
+          {{- end }}
         heartbeat:
           services:
             heartbeat.monitors:
@@ -167,8 +220,15 @@ spec:
       values: |
         watchNamespace: {{ .Values.cluster.namespace }}
         fullnameOverride: vault-operator-{{ .Release.Namespace }}
-        {{- if .Values.vault_operator.resources }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.vault_operator.resources }}
         resources: {{- toYaml .Values.vault_operator.resources | nindent 10 }}
+          {{- end }}
         {{- end }}
   - repoURL: {{ .Values.vault_injector.repo_URL }}
     targetRevision: {{ .Values.vault_injector.targetRevision }}
@@ -182,6 +242,16 @@ spec:
         injector:
           enabled: true
           externalVaultAddr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.vault_injector.resources }}
+          resources: {{- toYaml .Values.vault_injector.resources | nindent 12 }}
+            {{- end }}
+          {{- end }}
         server:
           enabled: false
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.vault.projectID }}/packages/helm/stable"
@@ -205,8 +275,15 @@ spec:
         agentList:
           {{- toYaml .Values.agentList | nindent 10 }}
         fullnameOverride: vault-{{ .Release.Namespace }}
-        {{- if .Values.vault.resources }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.vault.resources }}
         resources: {{- toYaml .Values.vault.resources | nindent 10 }}
+          {{- end }}
         {{- end }}
   - repoURL: {{ .Values.confluent_operator.repo_URL }}
     targetRevision: {{ .Values.confluent_operator.targetRevision }}
@@ -236,6 +313,27 @@ spec:
             enabled: {{ .Values.kafka.auth.enabled }}
           topic:
             autocreate: {{ .Values.kafka.topic.autocreate }}
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.kafka.resources.kafka }}
+          resources: {{- toYaml .Values.kafka.resources.kafka | nindent 12 }}
+            {{- end }}
+          {{- end }}
+        kraftController:
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.kafka.resources.kraftController }}
+          resources: {{- toYaml .Values.kafka.resources.kraftController | nindent 12 }}
+            {{- end }}
+          {{- end }}
         hashicorp:
           service: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           role: {{ .Values.hashicorp.role }}
@@ -289,6 +387,16 @@ spec:
             cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
             vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
             vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.redpanda.resources }}
+        resources: {{- toYaml .Values.redpanda.resources | nindent 10 }}
+          {{- end }}
+        {{- end }}
   - repoURL: {{ .Values.pg_operator.repo_URL }}
     targetRevision: {{ .Values.pg_operator.targetRevision }}
     chart: {{ .Values.pg_operator.chart_name }}
@@ -333,6 +441,16 @@ spec:
                 - pgadmin.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           annotations:
             cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.pg_admin.resources }}
+        resources: {{- toYaml .Values.pg_admin.resources | nindent 10 }}
+          {{- end }}
+        {{- end }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.pg_cluster.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.pg_cluster.targetRevision }}
@@ -346,6 +464,17 @@ spec:
         authorityList: {{ .Values.agentList.authorities }}
         consumerList: {{ .Values.agentList.consumers }}
         providerList: {{ .Values.agentList.providers }}
+        volumeSize: {{ .Values.pg_cluster.volumeSize }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.pg_cluster.resources }}
+        resources: {{- toYaml .Values.pg_cluster.resources | nindent 10 }}
+          {{- end }}
+        {{- end }}
   - repoURL: {{ .Values.redis.repo_URL }}
     targetRevision: {{ .Values.redis.targetRevision }}
     fullnameOverride: {{.Values.redis_commander.fullnameOverride}}
@@ -357,6 +486,17 @@ spec:
         {{- end }}
       values: |
         fullnameOverride: {{ .Values.redis.nameOverride }}
+        master:
+          {{- if eq .Values.resourcePreset "low" }}
+          resources:
+            requests:
+              cpu: "0"
+              memory: "0"
+          {{- else }}
+            {{- if .Values.redis.resources }}
+          resources: {{- toYaml .Values.redis.resources | nindent 12 }}
+            {{- end }}
+          {{- end }}
   - repoURL: {{ .Values.redis_commander.repo_URL }}
     targetRevision: {{ .Values.redis_commander.targetRevision }}
     path: {{.Values.redis_commander.path}}
@@ -384,8 +524,15 @@ spec:
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
-        {{- if .Values.redis_commander.master }}
-        master: {{- toYaml .Values.redis_commander.master | nindent 10 }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.redis_commander.resources }}
+        resources: {{- toYaml .Values.redis_commander.resources | nindent 10 }}
+  {{- end }}
         {{- end }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.notification.projectID }}/packages/helm/stable"
     targetRevision: {{ .Values.notification.targetRevision }}
@@ -406,13 +553,22 @@ spec:
               secretConfigPath: "{{ .Values.hashicorp.secretEngine }}/{{ .Values.cluster.namespace }}-notifications"
           kafka:
             bootstrapServer: http://kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
+            otel:
+              endpoint: http://collector.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
         {{- if .Values.mailpit.enabled }}
           mail:
             smtpHost: mailpit-{{ .Values.cluster.namespace }}-smtp
             smtpUser: smtp
         {{- end }}
-        {{- if .Values.notification.resources }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.notification.resources }}
         resources: {{- toYaml .Values.notification.resources | nindent 10 }}
+          {{- end }}
         {{- end }}
   {{- if .Values.mailpit.enabled }}
   - repoURL: {{ .Values.mailpit.repo_URL }}
