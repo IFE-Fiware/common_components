@@ -4,9 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] (2025-06-06)
-- Updated many components to implement Common version 2.0.0.
-- Update Elastic, Logstash and Kibana
+## [2.1.0] - 2025-06-27
+- Updated many components to implement Consumer version 2.1.0.
 
 
 ### Kafka
@@ -19,20 +18,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### eck-monitoring
 
-#### 0.1.14 (2025-05-12)
+#### 0.1.15 (2025-06-05)
 
 #### Changed
+- Edited dashboard for heartbeat
+- SIMPL-13099 Upgrade Monitoring Stack and change input type in filebeat
+- SIMPL-12666 Removed unused fields.
+- Changed configuration because of change in business pods names.
 - SIMPL-12666 Remove unused fields
 
 
 ### Notification
 
-#### 0.0.3 (2025-03-31)
-
-#### Added
-- SIMPL-10994 created dedicated service account
-
-#### Changed
-- SIMPL-10995 service moved to the common namespace
-- SIMPL-11087 Fortify issues fixed
-- SIMPL-10007 unused libraries removed
+#### 2.0.0 (2025-05-29)
+No changes.
