@@ -27,14 +27,13 @@ spec:
         - $values/app-values/vault-webhook/{{ . }}
         {{- end }}
       values: |
-        podAnnotations:
-          vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
-          vault.security.banzaicloud.io/vault-skip-verify: "true"
         watchNamespace: {{ .Values.cluster.namespace }}
         fullnameOverride: vault-webhook-{{ .Release.Namespace }}
         serviceAccount:
           name: vault-webhook-service-account
+        env:
+          VAULT_ADDR: "https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}"
+          VAULT_ROLE: "{{ .Values.hashicorp.role }}"
         {{- if eq .Values.resourcePreset "low" }}
         resources:
           requests:
