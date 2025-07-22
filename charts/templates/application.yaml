@@ -580,7 +580,7 @@ spec:
         - $values/app-values/mailpit/{{ . }}
         {{- end }}
       values: |
-        fullnameOverride: {{ .Values.mailpit.nameOverride }}-{{ .Release.Namespace }}
+        fullnameOverride: {{ .Values.mailpit.nameOverride }}-{{ .Values.cluster.namespace }}
         ingress:
           enabled: true
           annotations:
