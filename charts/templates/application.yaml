@@ -475,28 +475,6 @@ spec:
         resources: {{- toYaml .Values.pg_cluster.resources | nindent 10 }}
           {{- end }}
         {{- end }}
-  - repoURL: {{ .Values.redis.repo_URL }}
-    targetRevision: {{ .Values.redis.targetRevision }}
-    fullnameOverride: {{.Values.redis_commander.fullnameOverride}}
-    chart: {{ .Values.redis.chart_name }}
-    helm:
-      valueFiles:
-        {{- range .Values.redis.valueFiles }}
-        - $values/app-values/Redis/{{ . }}
-        {{- end }}
-      values: |
-        fullnameOverride: {{ .Values.redis.nameOverride }}
-        master:
-          {{- if eq .Values.resourcePreset "low" }}
-          resources:
-            requests:
-              cpu: "0"
-              memory: "0"
-          {{- else }}
-            {{- if .Values.redis.resources }}
-          resources: {{- toYaml .Values.redis.resources | nindent 12 }}
-            {{- end }}
-          {{- end }}
   - repoURL: {{ .Values.redis_commander.repo_URL }}
     targetRevision: {{ .Values.redis_commander.targetRevision }}
     path: {{.Values.redis_commander.path}}
@@ -520,7 +498,15 @@ spec:
           annotations:
             cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
         redis:
-          host: "redis-master.{{ .Values.cluster.namespace }}.svc.cluster.local"
+          {{- $allAgents := list -}}
+          {{- $allAgents = concat $allAgents .Values.agentList.authorities -}}
+          {{- $allAgents = concat $allAgents .Values.agentList.providers -}}
+          {{- $allAgents = concat $allAgents .Values.agentList.consumers -}}
+          {{- $hosts := list -}}
+          {{- range $allAgents -}}
+            {{- $hosts = append $hosts (printf "redis-master.%s.svc.cluster.local" .fieldname) -}}
+          {{- end -}}
+          hosts: {{ join "," $hosts }}
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
