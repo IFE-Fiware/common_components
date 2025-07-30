@@ -507,6 +507,7 @@ spec:
             {{- $hosts = append $hosts (print "redis-master." . ".svc.cluster.local") -}}
           {{- end }}
           hosts: {{ join "," $hosts }}
+          password: vault:{{ .Values.hashicorp.secretEngine }}/data/{{ .Values.cluster.namespace }}-#redis
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
