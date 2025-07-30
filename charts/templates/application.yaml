@@ -504,7 +504,7 @@ spec:
           {{- $allAgents = concat $allAgents .Values.agentList.consumers -}}
           {{- $hosts := list -}}
           {{- range $allAgents -}}
-            {{- $hosts = append $hosts (printf "redis-master.%s.svc.cluster.local" .fieldname) -}}
+            {{- $hosts = append $hosts (printf "redis-master.%s.svc.cluster.local") -}}
           {{- end -}}
           hosts: {{ join "," $hosts }}
         podAnnotations:
