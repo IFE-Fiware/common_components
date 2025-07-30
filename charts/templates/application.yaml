@@ -110,7 +110,7 @@ spec:
         - $values/app-values/monitoring-operator/{{ . }}
         {{- end }}
       values: |
-        fullnameOverride: {{ .Values.monitoring.operator.nameOverride }}-{{ .Release.Namespace }}
+        fullnameOverride: {{ .Values.monitoring.operator.nameOverride }}-{{ .Values.cluster.namespace }}
         managedNamespaces: [{{ join "," (concat .Values.agentList.authorities .Values.agentList.providers .Values.agentList.consumers (list .Values.cluster.namespace)) }}]
         agentType: common
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.monitoring.projectID }}/packages/helm/stable"
@@ -219,7 +219,7 @@ spec:
         {{- end }}
       values: |
         watchNamespace: {{ .Values.cluster.namespace }}
-        fullnameOverride: vault-operator-{{ .Release.Namespace }}
+        fullnameOverride: vault-operator-{{ .Values.cluster.namespace }}
         {{- if eq .Values.resourcePreset "low" }}
         resources:
           requests:
@@ -274,7 +274,7 @@ spec:
           role: {{ .Values.hashicorp.role }}
         agentList:
           {{- toYaml .Values.agentList | nindent 10 }}
-        fullnameOverride: vault-{{ .Release.Namespace }}
+        fullnameOverride: vault-{{ .Values.cluster.namespace }}
         {{- if eq .Values.resourcePreset "low" }}
         resources:
           requests:
@@ -295,7 +295,7 @@ spec:
         {{- end }}
       values: |
         fullnameOverride: {{ .Values.confluent_operator.nameOverride }}
-        name: confluent-operator-{{ .Release.Namespace }}
+        name: confluent-operator-{{ .Values.cluster.namespace }}
         kRaftEnabled: true
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.kafka.projectID }}/packages/helm/stable"
     path: ''
@@ -406,7 +406,7 @@ spec:
         - $values/app-values/pg-operator/{{ . }}
         {{- end }}
       values: |
-        fullnameOverride: {{ .Values.pg_operator.nameOverride }}-{{ .Release.Namespace }}
+        fullnameOverride: {{ .Values.pg_operator.nameOverride }}-{{ .Values.cluster.namespace }}
         configKubernetes:
           watched_namespace: {{ .Values.cluster.namespace }}
   - repoURL: {{ .Values.pg_admin.repo_URL }}
@@ -418,7 +418,7 @@ spec:
         - $values/app-values/pg-admin/{{ . }}
         {{- end }}
       values: |
-        fullnameOverride: {{ .Values.pg_admin.nameOverride }}-{{ .Release.Namespace }}
+        fullnameOverride: {{ .Values.pg_admin.nameOverride }}-{{ .Values.cluster.namespace }}
         env:
           email: admin@{{ .Values.domainSuffix }}
         podAnnotations:
@@ -432,11 +432,11 @@ spec:
                   pathType: Prefix
                   backend: 
                     service:
-                      name: {{ .Values.pg_admin.nameOverride }}-{{ .Release.Namespace }}
+                      name: {{ .Values.pg_admin.nameOverride }}-{{ .Values.cluster.namespace }}
                       port:
                         number: 80
           tls:
-            - secretName: pgadmin-tls-{{ .Release.Namespace }}
+            - secretName: pgadmin-tls-{{ .Values.cluster.namespace }}
               hosts:
                 - pgadmin.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           annotations:
