@@ -505,7 +505,7 @@ spec:
           {{- $hosts := list -}}
           {{- range $allAgents -}}
             {{- $hosts = append $hosts (printf "redis-master." . ".svc.cluster.local") -}}
-          {{- end -}}
+          {{- end }}
           hosts: {{ join "," $hosts }}
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
