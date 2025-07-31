@@ -504,7 +504,7 @@ spec:
           {{- $allAgents = concat $allAgents .Values.agentList.consumers -}}
           {{- $hosts := list -}}
           {{- range $allAgents -}}
-            {{- $hosts = append $hosts (print "redis-master." . ":6379:0:${REDIS_PASSWORD}") -}}
+            {{- $hosts = append $hosts (print "redis-master." . ":6379:0:$${REDIS_PASSWORD}") -}}
           {{- end }}
           hosts: {{ join "," $hosts }}
           password: vault:{{ .Values.hashicorp.secretEngine }}/data/{{ .Values.cluster.namespace }}-#redis
