@@ -15,6 +15,7 @@ fullnameOverride: "redis-commander"
 redis:
   # -- Specifies redis username - supported since Redis 6.0 with ACL support.
   username: "default"
+  host: ""
 
 podAnnotations:
   vault.security.banzaicloud.io/vault-path: "kubernetes"
