@@ -504,10 +504,9 @@ spec:
           {{- $allAgents = concat $allAgents .Values.agentList.consumers -}}
           {{- $hosts := list -}}
           {{- range $allAgents -}}
-            {{- $hosts = append $hosts (print "redis-master." . ":6379:0:$${REDIS_PASSWORD}") -}}
+            {{- $hosts = append $hosts (print "redis-master." . ":6379:0:${REDIS_PASSWORD}") -}}
           {{- end }}
           hosts: {{ join "," $hosts }}
-          password: vault:{{ .Values.hashicorp.secretEngine }}/data/{{ .Values.cluster.namespace }}-#redis
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
