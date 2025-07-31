@@ -30,3 +30,8 @@ env:
       secretKeyRef:
         name: "redis-secrets"
         key: commander
+  - name: REDIS_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: "redis-secrets"
+        key: redis
