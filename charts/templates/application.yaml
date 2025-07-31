@@ -498,7 +498,7 @@ spec:
           annotations:
             cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
         redis:
-          {{- $redisPassword := (lookup "v1" "Secret" .cluster.namespace "redis-secrets").data.redis | b64dec -}}
+          {{- $redisPassword := (lookup "v1" "Secret" .Values.cluster.namespace "redis-secrets").data.redis | b64dec -}}
           {{- $allAgents := list -}}
           {{- $allAgents = concat $allAgents .Values.agentList.authorities -}}
           {{- $allAgents = concat $allAgents .Values.agentList.providers -}}
