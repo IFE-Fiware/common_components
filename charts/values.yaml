@@ -223,21 +223,6 @@ redis:
       memory: "512Mi"
   valueFiles:
     - values.yaml
-    
-redis_commander:
-  repo_URL: 'https://github.com/joeferner/redis-commander.git'
-  targetRevision: master
-  nameOverride: redis-commander
-  path: 'k8s/helm-chart/redis-commander'
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "512Mi"
-    limits:
-      cpu: "500m"
-      memory: "512Mi"
-  valueFiles:
-    - values.yaml
 
 notification:
   projectID: "1002"

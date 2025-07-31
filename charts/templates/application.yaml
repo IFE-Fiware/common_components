@@ -66,10 +66,6 @@ spec:
       jsonPointers:
         - /data
     - kind: Secret
-      name: redis-secrets
-      jsonPointers:
-        - /data
-    - kind: Secret
       name: mailpit-secrets
       jsonPointers:
         - /data
@@ -474,52 +470,6 @@ spec:
           {{- if .Values.pg_cluster.resources }}
         resources: {{- toYaml .Values.pg_cluster.resources | nindent 10 }}
           {{- end }}
-        {{- end }}
-  - repoURL: {{ .Values.redis_commander.repo_URL }}
-    targetRevision: {{ .Values.redis_commander.targetRevision }}
-    path: {{.Values.redis_commander.path}}
-    chart: {{ .Values.redis_commander.chart_name }}
-    helm:
-      valueFiles:
-        {{- range .Values.redis_commander.valueFiles }}
-        - $values/app-values/Redis_commander/{{ . }}
-        {{- end }}
-      values: |
-        fullnameOverride: {{ .Values.redis_commander.nameOverride }}
-        ingress:
-          hosts:
-          - host: redis-commander.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-            paths:
-              - "/"
-          tls:
-          - secretName: redis-commander-tls
-            hosts:
-              - redis-commander.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          annotations:
-            cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
-        redis:
-          {{- $redisPassword := (lookup "v1" "Secret" .Values.cluster.namespace "redis-secrets").data.redis | b64dec -}}
-          {{- $allAgents := list -}}
-          {{- $allAgents = concat $allAgents .Values.agentList.authorities -}}
-          {{- $allAgents = concat $allAgents .Values.agentList.providers -}}
-          {{- $allAgents = concat $allAgents .Values.agentList.consumers -}}
-          {{- $hosts := list -}}
-          {{- range $allAgents -}}
-            {{- $hosts = append $hosts (print "redis-master." . ":6379:0:" $redisPassword) -}}
-          {{- end }}
-          hosts: {{ join "," $hosts }}
-        podAnnotations:
-          vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
-        {{- if eq .Values.resourcePreset "low" }}
-        resources:
-          requests:
-            cpu: "0"
-            memory: "0"
-        {{- else }}
-          {{- if .Values.redis_commander.resources }}
-        resources: {{- toYaml .Values.redis_commander.resources | nindent 10 }}
-  {{- end }}
         {{- end }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.notification.projectID }}/packages/helm/stable"
     targetRevision: {{ .Values.notification.targetRevision }}
