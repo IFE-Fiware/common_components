@@ -109,6 +109,7 @@ spec:
           secretEngine: test-int                    # name of the kv secret engine that will be created in vault
           role: test-int-role                       # name of the role that will be created in vault
         kafka:
+          ha: true                                  # true creates 3 replicas of each component, false creates 1 of each
           topic:
             autocreate: true                        # set to true if kafka should automatically create topics
         mailpit:
@@ -157,6 +158,7 @@ hashicorp:
   secretEngine: test-int                    # name of the kv secret engine that will be created in vault
   role: test-int-role                       # name of the role that will be created in vault
 kafka:
+  ha: true                                  # true creates 3 replicas of each component, false creates 1 of each
   topic:
     autocreate: true                        # set to true if kafka should automatically create topics
 mailpit:

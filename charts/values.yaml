@@ -133,7 +133,7 @@ confluent_operator:
 kafka:
   ha: true
   projectID: "976"
-  targetRevision: 1.0.2
+  targetRevision: 1.1.0
   chart_name: kafka
   auth: 
     enabled: true
