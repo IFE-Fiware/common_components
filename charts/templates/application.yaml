@@ -309,6 +309,11 @@ spec:
             enabled: {{ .Values.kafka.auth.enabled }}
           topic:
             autocreate: {{ .Values.kafka.topic.autocreate }}
+          {{- if eq .Values.kafka.ha "false" }}
+          replicas: 1
+          topic: 
+            replicas: 1
+          {{- end }}
           {{- if eq .Values.resourcePreset "low" }}
           resources:
             requests:
@@ -320,6 +325,9 @@ spec:
             {{- end }}
           {{- end }}
         kraftController:
+          {{- if eq .Values.kafka.ha "false" }}
+          replicas: 1
+          {{- end }}
           {{- if eq .Values.resourcePreset "low" }}
           resources:
             requests:

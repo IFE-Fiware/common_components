@@ -131,6 +131,7 @@ confluent_operator:
   nameOverride: confluent-operator
 
 kafka:
+  ha: true
   projectID: "976"
   targetRevision: 1.0.2
   chart_name: kafka
