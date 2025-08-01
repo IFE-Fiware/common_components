@@ -209,21 +209,6 @@ pg_cluster:
   valueFiles:
     - values.yaml
 
-redis:
-  repo_URL: 'https://charts.bitnami.com/bitnami'
-  targetRevision: 21.2.13
-  chart_name: redis
-  nameOverride: redis
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "512Mi"
-    limits:
-      cpu: "500m"
-      memory: "512Mi"
-  valueFiles:
-    - values.yaml
-
 notification:
   projectID: "1002"
   targetRevision: 2.0.0
