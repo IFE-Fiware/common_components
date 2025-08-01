@@ -326,7 +326,7 @@ spec:
           {{- end }}
         kraftController:
           {{- if eq .Values.kafka.ha false }}
-          replicas: 1
+          replicas: 0
           {{- end }}
           {{- if eq .Values.resourcePreset "low" }}
           resources:
