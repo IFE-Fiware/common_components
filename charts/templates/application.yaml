@@ -361,28 +361,22 @@ spec:
           vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
         fullnameOverride: {{ .Values.redpanda.nameOverride }}
-        console:
-          config:
-            kafka:
-              brokers:
-                - kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
-              {{- if .Values.kafka.auth.enabled }}
-              sasl:
-                enabled: true
-                username: redpanda
-                mechanism: PLAIN
-              {{- end }}
+        config:
+          kafka:
+            brokers:
+              - kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
+            {{- if .Values.kafka.auth.enabled }}
+            sasl:
+              enabled: true
+              username: redpanda
+              mechanism: PLAIN
+            {{- end }}
         ingress:
           hosts:
             - host: redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
               paths:
                 - path: /
                   pathType: Prefix
-                  backend: 
-                    service:
-                      name: redpanda
-                      port:
-                        number: 8080
           tls:
             - secretName: redpanda-tls
               hosts:
