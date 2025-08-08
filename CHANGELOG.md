@@ -5,7 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [2.2.0] - 2025-08-08
-- Updated many components to implement Consumer version 2.2.0.
+- Updated many components to implement Common Components agent version 2.2.0.
+- Add disabling High Availability to kafka
+- Hotfixes
 
 ## [2.1.1] - 2025-07-21
 
@@ -13,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hotfix for SIMPL-14418
 
 ## [2.1.0] - 2025-06-27
-- Updated many components to implement Consumer version 2.1.0.
+- Updated many components to implement Common Components agent version 2.1.0.
 
 
 ### Kafka
