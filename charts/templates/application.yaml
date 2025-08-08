@@ -355,7 +355,10 @@ spec:
         extraEnv:
           {{- if .Values.kafka.auth.enabled }}
           - name: KAFKA_SASL_PASSWORD
-            value: vault:{{ .Values.hashicorp.secretEngine }}/data/{{ .Values.cluster.namespace }}-kafka-credentials#redpanda
+            valueFrom:
+              secretKeyRef:
+                name: kafka-users-secret
+                key: redpanda
           {{- end }}
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
