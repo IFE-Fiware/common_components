@@ -81,11 +81,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: v2.1.1                          # version of package
+    targetRevision: v2.2.0                          # version of package
     helm:
       values: |
         values:
-          branch: v2.1.1                            # branch of repo with values
+          branch: v2.2.0                            # branch of repo with values
         resourcePreset: default                     # set to "low" to disable requests of resources
         agentList:                                  # list of all the agents to be deployed
           authorities:
@@ -109,6 +109,7 @@ spec:
           secretEngine: test-int                    # name of the kv secret engine that will be created in vault
           role: test-int-role                       # name of the role that will be created in vault
         kafka:
+          ha: true                                  # true creates 3 replicas of each component, false creates 1 of each
           topic:
             autocreate: true                        # set to true if kafka should automatically create topics
         mailpit:
@@ -133,7 +134,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```
 values:
-  branch: v2.1.1                            # branch of repo with values
+  branch: v2.2.0                            # branch of repo with values
 resourcePreset: default                     # set to "low" to disable requests of resources
 agentList:                                  # list of all the agents to be deployed
   authorities:
@@ -157,6 +158,7 @@ hashicorp:
   secretEngine: test-int                    # name of the kv secret engine that will be created in vault
   role: test-int-role                       # name of the role that will be created in vault
 kafka:
+  ha: true                                  # true creates 3 replicas of each component, false creates 1 of each
   topic:
     autocreate: true                        # set to true if kafka should automatically create topics
 mailpit:

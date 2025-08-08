@@ -28,7 +28,7 @@ spec:
         {{- end }}
       values: |
         watchNamespace: {{ .Values.cluster.namespace }}
-        fullnameOverride: vault-webhook-{{ .Release.Namespace }}
+        fullnameOverride: vault-webhook-{{ .Values.cluster.namespace }}
         serviceAccount:
           name: vault-webhook-service-account
         env:

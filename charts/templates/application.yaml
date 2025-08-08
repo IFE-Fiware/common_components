@@ -110,7 +110,7 @@ spec:
         - $values/app-values/monitoring-operator/{{ . }}
         {{- end }}
       values: |
-        fullnameOverride: {{ .Values.monitoring.operator.nameOverride }}-{{ .Release.Namespace }}
+        fullnameOverride: {{ .Values.monitoring.operator.nameOverride }}-{{ .Values.cluster.namespace }}
         managedNamespaces: [{{ join "," (concat .Values.agentList.authorities .Values.agentList.providers .Values.agentList.consumers (list .Values.cluster.namespace)) }}]
         agentType: common
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.monitoring.projectID }}/packages/helm/stable"
@@ -219,7 +219,7 @@ spec:
         {{- end }}
       values: |
         watchNamespace: {{ .Values.cluster.namespace }}
-        fullnameOverride: vault-operator-{{ .Release.Namespace }}
+        fullnameOverride: vault-operator-{{ .Values.cluster.namespace }}
         {{- if eq .Values.resourcePreset "low" }}
         resources:
           requests:
@@ -274,7 +274,7 @@ spec:
           role: {{ .Values.hashicorp.role }}
         agentList:
           {{- toYaml .Values.agentList | nindent 10 }}
-        fullnameOverride: vault-{{ .Release.Namespace }}
+        fullnameOverride: vault-{{ .Values.cluster.namespace }}
         {{- if eq .Values.resourcePreset "low" }}
         resources:
           requests:
@@ -295,7 +295,7 @@ spec:
         {{- end }}
       values: |
         fullnameOverride: {{ .Values.confluent_operator.nameOverride }}
-        name: confluent-operator-{{ .Release.Namespace }}
+        name: confluent-operator-{{ .Values.cluster.namespace }}
         kRaftEnabled: true
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.kafka.projectID }}/packages/helm/stable"
     path: ''
@@ -313,6 +313,11 @@ spec:
             enabled: {{ .Values.kafka.auth.enabled }}
           topic:
             autocreate: {{ .Values.kafka.topic.autocreate }}
+          {{- if eq .Values.kafka.ha false }}
+          replicas: 1
+          topic: 
+            replicas: 1
+          {{- end }}
           {{- if eq .Values.resourcePreset "low" }}
           resources:
             requests:
@@ -324,6 +329,9 @@ spec:
             {{- end }}
           {{- end }}
         kraftController:
+          {{- if eq .Values.kafka.ha false }}
+          replicas: 1
+          {{- end }}
           {{- if eq .Values.resourcePreset "low" }}
           resources:
             requests:
@@ -351,34 +359,31 @@ spec:
         extraEnv:
           {{- if .Values.kafka.auth.enabled }}
           - name: KAFKA_SASL_PASSWORD
-            value: vault:{{ .Values.hashicorp.secretEngine }}/data/{{ .Values.cluster.namespace }}-kafka-credentials#redpanda
+            valueFrom:
+              secretKeyRef:
+                name: kafka-users-secret
+                key: redpanda
           {{- end }}
         podAnnotations:
           vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
         fullnameOverride: {{ .Values.redpanda.nameOverride }}
-        console:
-          config:
-            kafka:
-              brokers:
-                - kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
-              {{- if .Values.kafka.auth.enabled }}
-              sasl:
-                enabled: true
-                username: redpanda
-                mechanism: PLAIN
-              {{- end }}
+        config:
+          kafka:
+            brokers:
+              - kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
+            {{- if .Values.kafka.auth.enabled }}
+            sasl:
+              enabled: true
+              username: redpanda
+              mechanism: PLAIN
+            {{- end }}
         ingress:
           hosts:
             - host: redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
               paths:
                 - path: /
                   pathType: Prefix
-                  backend: 
-                    service:
-                      name: redpanda
-                      port:
-                        number: 8080
           tls:
             - secretName: redpanda-tls
               hosts:
@@ -406,7 +411,7 @@ spec:
         - $values/app-values/pg-operator/{{ . }}
         {{- end }}
       values: |
-        fullnameOverride: {{ .Values.pg_operator.nameOverride }}-{{ .Release.Namespace }}
+        fullnameOverride: {{ .Values.pg_operator.nameOverride }}-{{ .Values.cluster.namespace }}
         configKubernetes:
           watched_namespace: {{ .Values.cluster.namespace }}
   - repoURL: {{ .Values.pg_admin.repo_URL }}
@@ -418,7 +423,7 @@ spec:
         - $values/app-values/pg-admin/{{ . }}
         {{- end }}
       values: |
-        fullnameOverride: {{ .Values.pg_admin.nameOverride }}-{{ .Release.Namespace }}
+        fullnameOverride: {{ .Values.pg_admin.nameOverride }}-{{ .Values.cluster.namespace }}
         env:
           email: admin@{{ .Values.domainSuffix }}
         podAnnotations:
@@ -432,11 +437,11 @@ spec:
                   pathType: Prefix
                   backend: 
                     service:
-                      name: {{ .Values.pg_admin.nameOverride }}-{{ .Release.Namespace }}
+                      name: {{ .Values.pg_admin.nameOverride }}-{{ .Values.cluster.namespace }}
                       port:
                         number: 80
           tls:
-            - secretName: pgadmin-tls-{{ .Release.Namespace }}
+            - secretName: pgadmin-tls-{{ .Values.cluster.namespace }}
               hosts:
                 - pgadmin.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           annotations:
@@ -474,65 +479,6 @@ spec:
           {{- if .Values.pg_cluster.resources }}
         resources: {{- toYaml .Values.pg_cluster.resources | nindent 10 }}
           {{- end }}
-        {{- end }}
-  - repoURL: {{ .Values.redis.repo_URL }}
-    targetRevision: {{ .Values.redis.targetRevision }}
-    fullnameOverride: {{.Values.redis_commander.fullnameOverride}}
-    chart: {{ .Values.redis.chart_name }}
-    helm:
-      valueFiles:
-        {{- range .Values.redis.valueFiles }}
-        - $values/app-values/Redis/{{ . }}
-        {{- end }}
-      values: |
-        fullnameOverride: {{ .Values.redis.nameOverride }}
-        master:
-          {{- if eq .Values.resourcePreset "low" }}
-          resources:
-            requests:
-              cpu: "0"
-              memory: "0"
-          {{- else }}
-            {{- if .Values.redis.resources }}
-          resources: {{- toYaml .Values.redis.resources | nindent 12 }}
-            {{- end }}
-          {{- end }}
-  - repoURL: {{ .Values.redis_commander.repo_URL }}
-    targetRevision: {{ .Values.redis_commander.targetRevision }}
-    path: {{.Values.redis_commander.path}}
-    chart: {{ .Values.redis_commander.chart_name }}
-    helm:
-      valueFiles:
-        {{- range .Values.redis_commander.valueFiles }}
-        - $values/app-values/Redis_commander/{{ . }}
-        {{- end }}
-      values: |
-        fullnameOverride: {{ .Values.redis_commander.nameOverride }}
-        ingress:
-          hosts:
-          - host: redis-commander.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-            paths:
-              - "/"
-          tls:
-          - secretName: redis-commander-tls
-            hosts:
-              - redis-commander.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          annotations:
-            cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
-        redis:
-          host: "redis-master.{{ .Values.cluster.namespace }}.svc.cluster.local"
-        podAnnotations:
-          vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
-        {{- if eq .Values.resourcePreset "low" }}
-        resources:
-          requests:
-            cpu: "0"
-            memory: "0"
-        {{- else }}
-          {{- if .Values.redis_commander.resources }}
-        resources: {{- toYaml .Values.redis_commander.resources | nindent 10 }}
-  {{- end }}
         {{- end }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.notification.projectID }}/packages/helm/stable"
     targetRevision: {{ .Values.notification.targetRevision }}
