@@ -66,6 +66,10 @@ spec:
       jsonPointers:
         - /data
     - kind: Secret
+      name: redis-secrets
+      jsonPointers:
+        - /data
+    - kind: Secret
       name: mailpit-secrets
       jsonPointers:
         - /data
