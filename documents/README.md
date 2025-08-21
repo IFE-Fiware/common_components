@@ -73,21 +73,21 @@ Please pay special attention to the namespace names: common03, authority03, cons
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  doc: name of the currently deploying app in argocd, this is the name that will be displayed in ArgoCD
+  # name of the currently deploying app in argocd, this is the name that will be displayed in ArgoCD
   name: 'common03-deployer'
 spec:
   project: default
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    doc: version of package, must be aligned with code version that we want to install
+    # version of package, must be aligned with code version that we want to install
     targetRevision: v2.1.1
     helm:
       values: |
         values:
-          doc: Branch of the code repo which the value must be aligned with targetRevision
+          # Branch of the code repo which the value must be aligned with targetRevision
           branch: v2.1.1
-        doc: resourcePreset set to "low" to disable requests of resources
+        # resourcePreset set to "low" to disable requests of resources
         resourcePreset: default
         # List of all the SIMPL-Open MiddleWare agents that will be deployed on top of the current Common Tools Deployment                      
         agentList:
@@ -171,11 +171,11 @@ Please read this document before proceeding to install and configure other SIMPL
 
 ### Redis Commander
 
-Redis commander is a frontend allowing to visualisa the data stored in redis-master
+Redis commander is a frontend allowing to visualise the data stored in redis-master
 
 ![Redis_commander](images/RedisCommander.png)
 
-The password for redis commander is stored in a HashiCopr Vault Secret in the vaut "common-redis secret".
+The password for redis commander is stored in a HashiCorp Vault Secret in the vault "common-redis secret".
 
 Note!!! To log in, we use the password stored in the "rediscommander" variable, but as a username, we should enter "admin" and not "rediscommander"!
 
