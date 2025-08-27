@@ -26,14 +26,14 @@ The deployment is performed using master helm chart deploying the SIMPL-Open Mid
 
 The following versions of the common components will be used during the deployment process
 
-| Prerequisites         |     Version     | Description                                                                                                                                     |
-| ---------------------- |     :-----:     | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| DNS sub-domain name    |       N/A       | This domain will be used to address all services of the agent. <br> example: `*.<YOUR_KUBERNETES_NAME_SPACE>.<YOUR-DNS-FULL-QUALIFIED-DOMAIN-NAME>` |
-| external-dns    | bitnami/external-dns:0.16.1 | Currently version docker.io/bitnami/external-dns:0.16.1-debian-12-r should be used as externaldns. Unfortunately, using a newer version caused DNS to work incorrectly. |
-| Kubernetes Cluster     | 1.29.x or newer | Other version _might_ work but tests were performed using 1.29.x version                                                                        |
-| nginx-ingress          | 1.10.x or newer | Used as ingress controller. <br> Other version _might_ work but tests were performed using 1.10.x version. <br> Image used: `registry.k8s.io/ingress-nginx/controller:v1.10.0`  |
-| cert-manager           | 1.15.x or newer | Used for automatic cert management. <br> Other version _might_ work but tests were performed using 1.15.x version. <br> Image used: `quay.io/jetstack/cert-manager-controller:v1.15.3` |
-| argocd                 | 2.11.x or newer | Used as GitOps tool . App of apps concept. <br> Other version _might_ work but tests were performed using 2.11.x version. <br> Image used: `quay.io/argoproj/argocd:v2.11.3` |
+| Prerequisites       |     Version                 | Description                                                                                                                                     |
+| ------------------- |     :-----:                 | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| DNS sub-domain name |       N/A                   | This domain will be used to address all services of the agent. <br> example: `*.<YOUR_KUBERNETES_NAME_SPACE>.<YOUR-DNS-FULL-QUALIFIED-DOMAIN-NAME>` |
+| external-dns        | bitnami/external-dns:0.16.1 | Currently version docker.io/bitnami/external-dns:0.16.1-debian-12-r should be used as externaldns. Unfortunately, using a newer version caused DNS to work incorrectly. |
+| Kubernetes Cluster  | 1.29.x or newer | Other version _might_ work but tests were performed using 1.29.x version                                                                        |
+| nginx-ingress       | 1.10.x or newer | Used as ingress controller. <br> Other version _might_ work but tests were performed using 1.10.x version. <br> Image used: `registry.k8s.io/ingress-nginx/controller:v1.10.0`  |
+| cert-manager        | 1.15.x or newer | Used for automatic cert management. <br> Other version _might_ work but tests were performed using 1.15.x version. <br> Image used: `quay.io/jetstack/cert-manager-controller:v1.15.3` |
+| argocd              | 2.11.x or newer | Used as GitOps tool . App of apps concept. <br> Other version _might_ work but tests were performed using 2.11.x version. <br> Image used: `quay.io/argoproj/argocd:v2.11.3` |
 | kube-state-metrics  | 2.13.x or newer | Used for monitoring, Metricbeat statuses in Kibana dashboard    |
 
 ## DNS entries
@@ -171,7 +171,7 @@ Please read this document before proceeding to install and configure other SIMPL
 
 ### Redis Commander
 
-Redis commander is a frontend allowing to visualise the data stored in redis-master
+Redis commander is a frontend allowing to visualise the data stored in redis-master, this tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
 
 ![Redis_commander](images/RedisCommander.png)
 

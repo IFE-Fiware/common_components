@@ -2,6 +2,8 @@
 
 ### Overview
 
+This tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
+
 Common Components repo includes three components that are used as Kafka stack. Those are:
 * Postgres Operator, provided by a chart *postgres-operator* from https://opensource.zalando.com/postgres-operator/charts/postgres-operator
 * Postgres cluster, from repository https://code.europa.eu/simpl/simpl-open/development/common-components/postgres-cluster
