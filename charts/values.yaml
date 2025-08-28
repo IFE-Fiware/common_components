@@ -29,7 +29,7 @@ hashicorp:
   role: ${SECRETROLE}
 
 values:
-  repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
+  repo_URL: https://github.com/IFE-Fiware/common_components.git
   branch: develop
 
 monitoring:
