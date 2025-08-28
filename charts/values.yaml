@@ -8,9 +8,9 @@ resourcePreset: default
 # resourcePreset: low
 
 agentList:
-  authorities: {}
-  consumers: {}
-  providers: {}
+  authorities: []
+  consumers: []
+  providers: []
 
 cluster:
   address: https://kubernetes.default.svc
