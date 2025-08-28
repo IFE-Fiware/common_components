@@ -27,8 +27,8 @@ secrets:
   role: ${SECRETROLE}
 
 values:
-  repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
-  branch: v2.4.0
+  repo_URL: https://github.com/IFE-Fiware/common_components.git
+  branch: v2.4.0-IFE
 
 openbao_init:
   projectID: "1258"
