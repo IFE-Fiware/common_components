@@ -32,7 +32,7 @@ spec:
         serviceAccount:
           name: vault-webhook-service-account
         env:
-          VAULT_ADDR: "https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}"
+          VAULT_ADDR: "https://vault-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}"
           VAULT_ROLE: "{{ .Values.hashicorp.role }}"
         {{- if eq .Values.resourcePreset "low" }}
         resources:
