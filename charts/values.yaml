@@ -127,13 +127,13 @@ vault:
 confluent_operator:
   repo_URL: https://packages.confluent.io/helm
   chart_name: confluent-for-kubernetes
-  targetRevision: 0.1193.34
+  targetRevision: 0.1263.8
   nameOverride: confluent-operator
 
 kafka:
   ha: true
   projectID: "976"
-  targetRevision: 1.1.0
+  targetRevision: 1.1.0-F-feature-simpl-17467.220.2aa5db0f
   chart_name: kafka
   auth: 
     enabled: true
