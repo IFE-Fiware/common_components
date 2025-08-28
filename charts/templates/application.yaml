@@ -202,7 +202,7 @@ spec:
               name: Kibana GUI
               id: kibana:443
               schedule: '@every 5s'
-              hosts: ["kibana.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}:443"]
+              hosts: ["kibana-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}:443"]
             - type: icmp
               id: kibana/icmp
               name: Kibana ICMP
@@ -241,7 +241,7 @@ spec:
       values: |
         injector:
           enabled: true
-          externalVaultAddr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          externalVaultAddr: https://vault-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
           {{- if eq .Values.resourcePreset "low" }}
           resources:
             requests:
@@ -269,7 +269,7 @@ spec:
           issuer: {{ .Values.cluster.issuer }}
           namespace: {{ .Values.cluster.namespace }}
         hashicorp:
-          service: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          service: https://vault-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
           secretEngine: {{ .Values.hashicorp.secretEngine }}
           role: {{ .Values.hashicorp.role }}
         agentList:
@@ -343,7 +343,7 @@ spec:
             {{- end }}
           {{- end }}
         hashicorp:
-          service: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          service: https://vault-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
           role: {{ .Values.hashicorp.role }}
           secretEngine: {{ .Values.hashicorp.secretEngine }}
   - repoURL: {{ .Values.redpanda.repo_URL }}
@@ -365,7 +365,7 @@ spec:
                 key: redpanda
           {{- end }}
         podAnnotations:
-          vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          vault.security.banzaicloud.io/vault-addr: https://vault-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
           vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
         fullnameOverride: {{ .Values.redpanda.nameOverride }}
         config:
@@ -380,17 +380,17 @@ spec:
             {{- end }}
         ingress:
           hosts:
-            - host: redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+            - host: redpanda-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
               paths:
                 - path: /
                   pathType: Prefix
           tls:
             - secretName: redpanda-tls
               hosts:
-                - redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+                - redpanda-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
           annotations:
             cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
-            vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+            vault.security.banzaicloud.io/vault-addr: https://vault-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
             vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
         {{- if eq .Values.resourcePreset "low" }}
         resources:
@@ -427,11 +427,11 @@ spec:
         env:
           email: admin@{{ .Values.domainSuffix }}
         podAnnotations:
-          vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          vault.security.banzaicloud.io/vault-addr: https://vault-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
           vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
         ingress:
           hosts:
-            - host: pgadmin.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+            - host: pgadmin-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
               paths:
                 - path: /
                   pathType: Prefix
@@ -443,7 +443,7 @@ spec:
           tls:
             - secretName: pgadmin-tls-{{ .Values.cluster.namespace }}
               hosts:
-                - pgadmin.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+                - pgadmin-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
           annotations:
             cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
         {{- if eq .Values.resourcePreset "low" }}
@@ -493,14 +493,14 @@ spec:
         deployment:
           vault:
             hashicorp:
-              service: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+              service: https://vault-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
               secretEngine: {{ .Values.hashicorp.secretEngine }}
               role: {{ .Values.hashicorp.role }}
               secretConfigPath: "{{ .Values.hashicorp.secretEngine }}/{{ .Values.cluster.namespace }}-notifications"
           kafka:
             bootstrapServer: http://kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
             otel:
-              endpoint: http://collector.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+              endpoint: http://collector-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
         {{- if .Values.mailpit.enabled }}
           mail:
             smtpHost: mailpit-{{ .Values.cluster.namespace }}-smtp
@@ -531,7 +531,7 @@ spec:
           enabled: true
           annotations:
             cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
-          hostname: mailpit.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          hostname: mailpit-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
           ingressClassName: nginx
           tls: true
   {{- end }}
