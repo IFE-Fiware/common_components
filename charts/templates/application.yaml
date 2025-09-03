@@ -254,9 +254,10 @@ spec:
           {{- end }}
         server:
           enabled: false
-  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.vault.projectID }}/packages/helm/stable"
+  - repoURL: {{ .Values.vault.repo_URL }}
     targetRevision: {{ .Values.vault.targetRevision }}
     chart: {{ .Values.vault.chart_name }}
+    path: {{ .Values.vault.path }}
     helm:
       valueFiles:
         {{- range .Values.vault.valueFiles }}
