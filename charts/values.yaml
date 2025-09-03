@@ -116,7 +116,7 @@ vault:
   repo_URL: https://github.com/IFE-Fiware/vault.git
   path: charts
   projectID: "1080"
-  targetRevision: 1.3.0-IFE
+  targetRevision: v1.3.0-IFE
   chart_name:
   resources:
     requests:
