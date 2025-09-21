@@ -485,6 +485,10 @@ spec:
         - $values/app-values/Redis/{{ . }}
         {{- end }}
       values: |
+        image:
+          repository: bitnamilegacy/redis
+        security:
+          allowInsecureImages: true
         fullnameOverride: {{ .Values.redis.nameOverride }}
         master:
           {{- if eq .Values.resourcePreset "low" }}
