@@ -28,12 +28,12 @@ spec:
         {{- end }}
       values: |
         watchNamespace: {{ .Values.cluster.namespace }}
-        fullnameOverride: vault-webhook-{{ .Release.Namespace }}
+        fullnameOverride: vault-webhook-{{ .Values.cluster.namespace }}
         serviceAccount:
           name: vault-webhook-service-account
         env:
-          VAULT_ADDR: "https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}"
-          VAULT_ROLE: "{{ .Values.hashicorp.role }}"
+          VAULT_ADDR: "https://secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}"
+          VAULT_ROLE: "{{ .Values.secrets.role }}"
         {{- if eq .Values.resourcePreset "low" }}
         resources:
           requests:
