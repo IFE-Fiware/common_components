@@ -65,10 +65,27 @@ spec:
       name: redpanda-secret
       jsonPointers:
         - /data
+    {{- range .Values.agentList.authorities }}
     - kind: Secret
       name: redis-secrets
+      namespace: {{ . }}
       jsonPointers:
         - /data
+    {{- end }}
+    {{- range .Values.agentList.consumers }}
+    - kind: Secret
+      name: redis-secrets
+      namespace: {{ . }}
+      jsonPointers:
+        - /data
+    {{- end }}
+    {{- range .Values.agentList.providers }}
+    - kind: Secret
+      name: redis-secrets
+      namespace: {{ . }}
+      jsonPointers:
+        - /data
+    {{- end }}
     - kind: Secret
       name: mailpit-secrets
       jsonPointers:
@@ -209,82 +226,47 @@ spec:
               hosts: ["elastic-kibana-kb-http.{{ .Values.cluster.namespace }}.svc"]
               schedule: '*/5 * * * * * *'
   {{- end }}
-  - repoURL: {{ .Values.vault_operator.repo_URL }}
-    targetRevision: {{ .Values.vault_operator.targetRevision }}
-    chart: {{ .Values.vault_operator.chart_name }}
+  - repoURL: {{ .Values.openbao.repo_URL }}
+    targetRevision: {{ .Values.openbao.targetRevision }}
+    chart: {{ .Values.openbao.chart_name }}
     helm:
       valueFiles:
-        {{- range .Values.vault_operator.valueFiles }}
-        - $values/app-values/vault-operator/{{ . }}
+        {{- range .Values.openbao.valueFiles }}
+        - $values/app-values/openbao/{{ . }}
         {{- end }}
       values: |
-        watchNamespace: {{ .Values.cluster.namespace }}
-        fullnameOverride: vault-operator-{{ .Values.cluster.namespace }}
-        {{- if eq .Values.resourcePreset "low" }}
-        resources:
-          requests:
-            cpu: "0"
-            memory: "0"
-        {{- else }}
-          {{- if .Values.vault_operator.resources }}
-        resources: {{- toYaml .Values.vault_operator.resources | nindent 10 }}
-          {{- end }}
-        {{- end }}
-  - repoURL: {{ .Values.vault_injector.repo_URL }}
-    targetRevision: {{ .Values.vault_injector.targetRevision }}
-    chart: {{ .Values.vault_injector.chart_name }}
-    helm:
-      valueFiles:
-        {{- range .Values.vault_injector.valueFiles }}
-        - $values/app-values/vault-injector/{{ . }}
-        {{- end }}
-      values: |
-        injector:
-          enabled: true
-          externalVaultAddr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          {{- if eq .Values.resourcePreset "low" }}
-          resources:
-            requests:
-              cpu: "0"
-              memory: "0"
-          {{- else }}
-            {{- if .Values.vault_injector.resources }}
-          resources: {{- toYaml .Values.vault_injector.resources | nindent 12 }}
-            {{- end }}
-          {{- end }}
+        fullnameOverride: openbao-{{ .Release.Namespace }}
         server:
-          enabled: false
-  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.vault.projectID }}/packages/helm/stable"
-    targetRevision: {{ .Values.vault.targetRevision }}
-    chart: {{ .Values.vault.chart_name }}
+          ingress:
+            annotations:
+              cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+            hosts:
+              - host: secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+            tls:
+              - secretName: openbao-{{ .Values.namespaceTag }}-tls
+                hosts:
+                  - secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+        {{- if .Values.openbao.resources }}
+        resources: {{- toYaml .Values.openbao.resources | nindent 10 }}
+        {{- end }}
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.openbao_init.projectID }}/packages/helm/stable"
+    targetRevision: {{ .Values.openbao_init.targetRevision }}
+    chart: {{ .Values.openbao_init.chart_name }}
     helm:
       valueFiles:
-        {{- range .Values.vault.valueFiles }}
-        - $values/app-values/vault/{{ . }}
+        {{- range .Values.openbao_init.valueFiles }}
+        - $values/app-values/openbao_init/{{ . }}
         {{- end }}
       values: |
-        domainSuffix: {{ .Values.domainSuffix }}
-        namespaceTag: {{ .Values.namespaceTag }}
         cluster:
-          issuer: {{ .Values.cluster.issuer }}
           namespace: {{ .Values.cluster.namespace }}
-        hashicorp:
-          service: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          secretEngine: {{ .Values.hashicorp.secretEngine }}
-          role: {{ .Values.hashicorp.role }}
+        namespaceTag: {{ .Values.namespaceTag }}
+        domainSuffix: {{ .Values.domainSuffix }}
+        secrets:
+          secretEngine: {{ .Values.secrets.secretEngine }}
+          role: {{ .Values.secrets.role }}
         agentList:
           {{- toYaml .Values.agentList | nindent 10 }}
-        fullnameOverride: vault-{{ .Values.cluster.namespace }}
-        {{- if eq .Values.resourcePreset "low" }}
-        resources:
-          requests:
-            cpu: "0"
-            memory: "0"
-        {{- else }}
-          {{- if .Values.vault.resources }}
-        resources: {{- toYaml .Values.vault.resources | nindent 10 }}
-          {{- end }}
-        {{- end }}
   - repoURL: {{ .Values.confluent_operator.repo_URL }}
     targetRevision: {{ .Values.confluent_operator.targetRevision }}
     chart: {{ .Values.confluent_operator.chart_name }}
@@ -343,9 +325,9 @@ spec:
             {{- end }}
           {{- end }}
         hashicorp:
-          service: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          role: {{ .Values.hashicorp.role }}
-          secretEngine: {{ .Values.hashicorp.secretEngine }}
+          service: https://secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          role: {{ .Values.secrets.role }}
+          secretEngine: {{ .Values.secrets.secretEngine }}
   - repoURL: {{ .Values.redpanda.repo_URL }}
     targetRevision: {{ .Values.redpanda.targetRevision }}
     chart: {{ .Values.redpanda.chart_name }}
@@ -365,8 +347,8 @@ spec:
                 key: redpanda
           {{- end }}
         podAnnotations:
-          vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
+          vault.security.banzaicloud.io/vault-addr: https://secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
         fullnameOverride: {{ .Values.redpanda.nameOverride }}
         config:
           kafka:
@@ -390,8 +372,8 @@ spec:
                 - redpanda.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           annotations:
             cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
-            vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-            vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
+            vault.security.banzaicloud.io/vault-addr: https://secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+            vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
         {{- if eq .Values.resourcePreset "low" }}
         resources:
           requests:
@@ -414,6 +396,7 @@ spec:
         fullnameOverride: {{ .Values.pg_operator.nameOverride }}-{{ .Values.cluster.namespace }}
         configKubernetes:
           watched_namespace: {{ .Values.cluster.namespace }}
+  {{- if .Values.pg_admin.enabled }}
   - repoURL: {{ .Values.pg_admin.repo_URL }}
     targetRevision: {{ .Values.pg_admin.targetRevision }}
     chart: {{ .Values.pg_admin.chart_name }}
@@ -427,8 +410,8 @@ spec:
         env:
           email: admin@{{ .Values.domainSuffix }}
         podAnnotations:
-          vault.security.banzaicloud.io/vault-addr: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-          vault.security.banzaicloud.io/vault-role: {{ .Values.hashicorp.role }}
+          vault.security.banzaicloud.io/vault-addr: https://secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          vault.security.banzaicloud.io/vault-role: {{ .Values.secrets.role }}
         ingress:
           hosts:
             - host: pgadmin.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
@@ -456,6 +439,7 @@ spec:
         resources: {{- toYaml .Values.pg_admin.resources | nindent 10 }}
           {{- end }}
         {{- end }}
+  {{- end }}      
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.pg_cluster.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.pg_cluster.targetRevision }}
@@ -493,10 +477,10 @@ spec:
         deployment:
           vault:
             hashicorp:
-              service: https://vault.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-              secretEngine: {{ .Values.hashicorp.secretEngine }}
-              role: {{ .Values.hashicorp.role }}
-              secretConfigPath: "{{ .Values.hashicorp.secretEngine }}/{{ .Values.cluster.namespace }}-notifications"
+              service: https://secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+              secretEngine: {{ .Values.secrets.secretEngine }}
+              role: {{ .Values.secrets.role }}
+              secretConfigPath: "{{ .Values.secrets.secretEngine }}/{{ .Values.cluster.namespace }}-notifications"
           kafka:
             bootstrapServer: http://kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
             otel:
@@ -535,3 +519,34 @@ spec:
           ingressClassName: nginx
           tls: true
   {{- end }}
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.infrastructure_consumption_monitoring_service.projectID }}/packages/helm/stable"
+    targetRevision: {{ .Values.infrastructure_consumption_monitoring_service.targetRevision }}
+    chart: {{ .Values.infrastructure_consumption_monitoring_service.chart_name }}
+    helm:
+      releaseName: {{ .Values.infrastructure_consumption_monitoring_service.nameOverride }}
+      valueFiles:
+        {{- range .Values.infrastructure_consumption_monitoring_service.valueFiles }}
+        - $values/app-values/infrastructure-consumption-monitoring-service/{{ . }}
+        {{- end }}
+      values: |
+        deployment:
+          vault:
+            hashicorp:
+              service: https://secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+              secretEngine: {{ .Values.secrets.secretEngine }}
+              role: {{ .Values.secrets.role }}
+              secretConfigPath: "{{ .Values.secrets.secretEngine }}/{{ .Values.cluster.namespace }}-icms"
+          kafka:
+            bootstrapServer: http://kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
+            otel:
+              endpoint: http://collector.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.notification.resources }}
+        resources: {{- toYaml .Values.notification.resources | nindent 10 }}
+          {{- end }}
+        {{- end }}

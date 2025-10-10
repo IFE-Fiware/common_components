@@ -2,6 +2,8 @@
 
 ### Overview
 
+This tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
+
 Common Components repo includes three components that are used as Kafka stack. Those are:
 * Confluent Operator, provided by a chart *confluent-for-kubernetes* from https://packages.confluent.io/helm
 * Kafka stack, from repository https://code.europa.eu/simpl/simpl-open/development/common-components/kafka
@@ -36,21 +38,21 @@ For credentials you need to access the Vault, you'll find them in secret named *
 
 After accessing the website above and entering the credentials set up with values, you will see the following screen.
 
-![Init](images/RedpandaMain.png)
+![Init](../images/RedpandaMain.png)
 
 Using the menu on the right, you'll be able to see topics,
 
-![Init](images/RedpandaTopics.png)
+![Init](../images/RedpandaTopics.png)
 
 Consumer groups, etc. 
 
-![Init](images/RedpandaConsumerGroups.png)
+![Init](../images/RedpandaConsumerGroups.png)
 
 #### Creating Topics
 
 By clicking "Create topic" button you are able to add topics.
 
-![Init](images/RedpandaCreateTopics.png)
+![Init](../images/RedpandaCreateTopics.png)
 
 The topics to be created are listed below. All topics have 1 partition, 2 replicas (with exception of contract_consumption.transfer) and cleanup policy set to delete. Retention time and size leave on default.
 
