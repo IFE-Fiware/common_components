@@ -43,9 +43,10 @@ The following versions of the elements will be used in the process:
 | external-dns    | bitnami/external-dns:0.16.1 | Currently version docker.io/bitnami/external-dns:0.16.1-debian-12-r should be used as externaldns. Unfortunately, using a newer version caused DNS to work incorrectly. |  
 | Kubernetes Cluster     | 1.29.x or newer | Other version *might* work but tests were performed using 1.29.x version                                                                        |
 | nginx-ingress          | 1.10.x or newer | Used as ingress controller. <br/> Other version *might* work but tests were performed using 1.10.x version. <br/> Image used: `registry.k8s.io/ingress-nginx/controller:v1.10.0`  |
-| cert-manager           | 1.15.x or newer | Used for automatic cert management. <br/> Other version *might* work but tests were performed using 1.15.x version. <br/> Image used: `quay.io/jetstack/cert-manager-controller:v1.15.3` |
 | argocd                 | 2.11.x or newer | Used as GitOps tool . App of apps concept. <br/> Other version *might* work but tests were performed using 2.11.x version. <br/> Image used: `quay.io/argoproj/argocd:v2.11.3` |
 | kube-state-metrics  | 2.13.x or newer | Used for monitoring, Metricbeat statuses in Kibana dashboard    |
+| cert-manager           | 1.15.x or newer | Used for automatic cert management. <br/> Other version *might* work but tests were performed using 1.15.x version. <br/> Image used: `quay.io/jetstack/cert-manager-controller:v1.15.3` |
+| cluster issuer for selfsigned certificates |       N/A       | A cluster issuer needs to be created to create self-signed certificates. It's used for monitoring only. Name should be supplied in cluster.internalIssuer variable |
 
 ### DNS entries 
 
@@ -83,11 +84,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 2.3.0                          # version of package
+    targetRevision: 2.3.1                          # version of package
     helm:
       values: |
         values:
-          branch: v2.3.0                            # branch of repo with values
+          branch: v2.3.1                            # branch of repo with values
         resourcePreset: default                     # set to "low" to disable requests of resources
         agentList:                                  # list of all the agents to be deployed
           authorities:
@@ -106,6 +107,7 @@ spec:
           address: https://kubernetes.default.svc
           namespace: common01                       # where the app will be deployed
           issuer: dev-prod                          # issuer of certificate
+          internalIssuer: dev-selfsigned            # issuer for self-signed certificates, for monitoring stack
           kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
         secrets:
           secretEngine: example                     # name of the kv secret engine that will be created in vault
@@ -136,7 +138,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```YAML
 values:
-  branch: v2.3.0                            # branch of repo with values
+  branch: v2.3.1                            # branch of repo with values
 resourcePreset: default                     # set to "low" to disable requests of resources
 agentList:                                  # list of all the agents to be deployed
   authorities:
@@ -155,6 +157,7 @@ cluster:
   address: https://kubernetes.default.svc
   namespace: common01                       # where the app will be deployed
   issuer: dev-prod                          # issuer of certificate
+  internalIssuer: dev-selfsigned            # issuer for self-signed certificates, for monitoring stack
   kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
 secrets:
   secretEngine: example                     # name of the kv secret engine that will be created in vault
