@@ -4,8 +4,6 @@
 
 This tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
 
-This tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
-
 Common Components repo includes three components that are used as Kafka stack. Those are:
 
 * Postgres Operator, provided by a chart *postgres-operator* from <https://opensource.zalando.com/postgres-operator/charts/postgres-operator>
@@ -54,8 +52,4 @@ Using the menu on the left, you can see the list of the created databases.
 
 To access the tables from a database, you need to expand Schemas, then Public, then Tables. You can right click and perform a SELECT on a table to view its content.
 
-<<<<<<< HEAD
 ![Init](../images/PGAdminSelect.png)
-=======
-![Init](../images/PGAdminSelect.png)
->>>>>>> develop
