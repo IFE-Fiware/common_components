@@ -9,20 +9,20 @@ Applications retrieve all necessary passwords, keys, and tokens from OpenBao bas
 
 Example entries in OpenBao look like this:
 
-![Vault view](../images/vault1.png)
+![OpenBao view](../images/vault1.png)
 
 **_As an update from previous version, most of the OpenBao configuration is now applied automatically.
 You just need to create a key for Signer and update a couple of values, which is mentioned in other agents readmes._**
 
-**_All the credentials (for Keycloak and other components) are also now automatically stored in a vault - review the secrets for credentials if needed._**
+**_All the credentials (for Keycloak and other components) are also now automatically stored in OpenBao - review the secrets for credentials if needed._**
 
-You can access the vault on <https://secrets.**namespacetag**.**domainsuffix**>
+You can access OpenBao on <https://secrets.**namespacetag**.**domainsuffix**>
 
-we can always check the actual address in rancher:
+We can always check the actual address in rancher:
 
 <img src="../images/Rancher03.png" alt="Rancher03" width="600"><BR>
 
-Root token can be found in secret vault-unseal-keys, in key vault-root.
+Root token can be found in secret OpenBao-unseal-keys, in key OpenBao-root.
 
 <img src="../images/Rancher01.png" alt="Rancher01" width="600"><BR>
 <img src="../images/Rancher02.png" alt="Rancher02" width="600"><BR>

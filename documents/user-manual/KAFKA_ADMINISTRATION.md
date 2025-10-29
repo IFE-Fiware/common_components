@@ -1,15 +1,18 @@
 # Kafka administration
 
-### Overview
+## Overview
+
+This tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
 
 This tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
 
 Common Components repo includes three components that are used as Kafka stack. Those are:
-* Confluent Operator, provided by a chart *confluent-for-kubernetes* from https://packages.confluent.io/helm
-* Kafka stack, from repository https://code.europa.eu/simpl/simpl-open/development/common-components/kafka
-* Redpanda Console, an open source UI, provided by a chart *console* from https://charts.redpanda.com
 
-Redpanda console serves as an UI to administer the Kafka stack. 
+* Confluent Operator, provided by a chart *confluent-for-kubernetes* from <https://packages.confluent.io/helm>
+* Kafka stack, from repository <https://code.europa.eu/simpl/simpl-open/development/common-components/kafka>
+* Redpanda Console, an open source UI, provided by a chart *console* from <https://charts.redpanda.com>
+
+Redpanda console serves as an UI to administer the Kafka stack.
 
 ### Kafka configuration
 
@@ -24,7 +27,7 @@ There are a couple options you can set in Kafka deployment. Below you can find a
 | kafka.auth.enabled         | true          | Should kafka SASL PLAIN authentication be enabled |
 | kafka.topic.autocreate     | false         | Should topics be automatically created if they don't exist |
 
-If kafka.auth.enabled is set as true, you need to have the Secret created in Vault. Secret creation is described in "Secret for Kafka" section in the README.md file. 
+If kafka.auth.enabled is set as true, you need to have the Secret created in OpenBao. Secret creation is described in "Secret for Kafka" section in the README.md file.
 
 ### Redpanda Console
 
@@ -32,7 +35,7 @@ If kafka.auth.enabled is set as true, you need to have the Secret created in Vau
 
 You can access the console by going to https url redpanda.*namespaceTag*.*domainSuffix*
 
-For credentials you need to access the Vault, you'll find them in secret named *namespaceTag*-redpanda-credentials.
+For credentials you need to access the OpenBao, you'll find them in secret named *namespaceTag*-redpanda-credentials.
 
 #### Console overview
 
@@ -44,7 +47,7 @@ Using the menu on the right, you'll be able to see topics,
 
 ![Init](../images/RedpandaTopics.png)
 
-Consumer groups, etc. 
+Consumer groups, etc.
 
 ![Init](../images/RedpandaConsumerGroups.png)
 
