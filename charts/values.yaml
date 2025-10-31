@@ -27,7 +27,7 @@ secrets:
 
 values:
   repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
-  branch: develop
+  branch: v2.3.2
 
 openbao:
   repo_URL: 'https://openbao.github.io/openbao-helm'
