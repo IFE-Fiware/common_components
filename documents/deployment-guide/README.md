@@ -1,4 +1,3 @@
-
 # SIMPL-Open Middleware : Common Components Deployment
 
 <!-- TOC -->
@@ -46,7 +45,7 @@ The following versions of the elements will be used in the process:
 ### DNS entries
 
 | Entry Name | Entries |
-| ------------- | --------------------------------------------------------------------------------------------------- |
+| ------------- | ----------------------------------- |
 | elastic-apm-server | apm.(namespace).(domainSuffix) |
 | elastic-elasticsearch-http| elastic-elasticsearch-es-http.(namespace).svc |
 | elastic-elasticsearch-http-public | elasticsearch.(namespace).(domainSuffix) |
@@ -80,11 +79,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 2.3.0                          # version of package
+    targetRevision: 2.3.2                          # version of package
     helm:
       values: |
         values:
-          branch: v2.3.0                            # branch of repo with values
+          branch: v2.3.2                            # branch of repo with values
         resourcePreset: default                     # set to "low" to disable requests of resources
         agentList:                                  # list of all the agents to be deployed
           authorities:
@@ -141,7 +140,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```YAML
 values:
-  branch: v2.3.0                            # branch of repo with values
+  branch: v2.3.2                            # branch of repo with values
 resourcePreset: default                     # set to "low" to disable requests of resources
 agentList:                                  # list of all the agents to be deployed
   authorities:
