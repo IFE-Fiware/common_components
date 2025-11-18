@@ -4,8 +4,6 @@
 
 This tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
 
-This tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
-
 Common Components repo includes three components that are used as Kafka stack. Those are:
 
 * Confluent Operator, provided by a chart *confluent-for-kubernetes* from <https://packages.confluent.io/helm>

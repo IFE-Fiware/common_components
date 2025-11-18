@@ -35,7 +35,7 @@ The following versions of the elements will be used in the process:
 | Pre-Requisites         |     Version     | Description                                                                                                                                     |
 | ---------------------- |     :-----:     | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | DNS sub-domain name    |       N/A       | This domain will be used to address all services of the agent. <br/> example: `*.common01.example.com`|
-| external-dns    | bitnami/external-dns:0.16.1 | Currently version docker.io/bitnami/external-dns:0.16.1-debian-12-r should be used as externaldns. Unfortunately, using a newer version caused DNS to work incorrectly. |  
+| external-dns    | 0.16.1 or newer | Used for DNS entries creation. <br/> Other version *might* work but tests were performed using 0.16.1-debian-12-r6 version. <br/> Image used: `docker.io/bitnamilegacy/external-dns:0.16.1-debian-12-r6` |  
 | Kubernetes Cluster     | 1.29.x or newer | Other version *might* work but tests were performed using 1.29.x version                                                                        |
 | nginx-ingress          | 1.10.x or newer | Used as ingress controller. <br/> Other version _might_ work but tests were performed using 1.10.x version. <br/> Image used: `registry.k8s.io/ingress-nginx/controller:v1.10.0`  |
 | cert-manager           | 1.15.x or newer | Used for automatic cert management. <br/> Other version _might_ work but tests were performed using 1.15.x version. <br/> Image used: `quay.io/jetstack/cert-manager-controller:v1.15.3` |
@@ -79,11 +79,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 2.3.2                          # version of package
+    targetRevision: 2.4.0                          # version of package
     helm:
       values: |
         values:
-          branch: v2.3.2                            # branch of repo with values
+          branch: v2.4.0                            # branch of repo with values
         resourcePreset: default                     # set to "low" to disable requests of resources
         agentList:                                  # list of all the agents to be deployed
           authorities:
@@ -140,7 +140,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```YAML
 values:
-  branch: v2.3.2                            # branch of repo with values
+  branch: v2.4.0                            # branch of repo with values
 resourcePreset: default                     # set to "low" to disable requests of resources
 agentList:                                  # list of all the agents to be deployed
   authorities:

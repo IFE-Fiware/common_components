@@ -1,8 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: "{{ .Values.argocd.appname }}-vswh"
+  name: "{{ .Values.argocd.appname }}-dependencies"
   namespace: {{ .Values.argocd.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+
 spec:
   syncPolicy:
     automated: {}
@@ -13,7 +16,7 @@ spec:
   project: {{ .Values.project }}
   destination:
     server: {{ .Values.cluster.address }}
-    namespace: "{{ .Values.cluster.namespace }}-vswh"
+    namespace: "{{ .Values.cluster.namespace }}-dependencies"
   sources:
   - repoURL: {{ .Values.values.repo_URL }}
     targetRevision: {{ .Values.values.branch }}
@@ -43,4 +46,27 @@ spec:
           {{- if .Values.vault_webhook.resources }}
         resources: {{- toYaml .Values.vault_webhook.resources | nindent 10 }}
           {{- end }}
+        {{- end }}
+  - repoURL: {{ .Values.openbao.repo_URL }}
+    targetRevision: {{ .Values.openbao.targetRevision }}
+    chart: {{ .Values.openbao.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.openbao.valueFiles }}
+        - $values/app-values/openbao/{{ . }}
+        {{- end }}
+      values: |
+        fullnameOverride: openbao-{{ .Release.Namespace }}
+        server:
+          ingress:
+            annotations:
+              cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
+            hosts:
+              - host: secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+            tls:
+              - secretName: openbao-{{ .Values.namespaceTag }}-tls
+                hosts:
+                  - secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+        {{- if .Values.openbao.resources }}
+        resources: {{- toYaml .Values.openbao.resources | nindent 10 }}
         {{- end }}
