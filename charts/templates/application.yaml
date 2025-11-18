@@ -11,7 +11,7 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: "{{ .Values.cluster.namespace }}-vswh"
+  name: "{{ .Values.cluster.namespace }}-dependencies"
 {{- range .Values.agentList.authorities }}
 ---
 apiVersion: v1
@@ -41,6 +41,9 @@ kind: Application
 metadata:
   name: {{ .Values.argocd.appname }}
   namespace: {{ .Values.argocd.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+
 spec:
   syncPolicy:
     automated: {}
@@ -129,7 +132,6 @@ spec:
       values: |
         fullnameOverride: {{ .Values.monitoring.operator.nameOverride }}-{{ .Values.cluster.namespace }}
         managedNamespaces: [{{ join "," (concat .Values.agentList.authorities .Values.agentList.providers .Values.agentList.consumers (list .Values.cluster.namespace)) }}]
-        agentType: common
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.monitoring.projectID }}/packages/helm/stable"
     path: ''
     targetRevision: {{ .Values.monitoring.targetRevision }}
@@ -141,6 +143,7 @@ spec:
         - $values/app-values/monitoring/{{ . }}
         {{- end }}
       values: |
+        agentType: common
         clusterIssuer: {{ .Values.cluster.issuer }}
         clusterIssuer_internal: {{ .Values.cluster.internalIssuer }}
         domainSuffix: {{ .Values.domainSuffix }}
@@ -208,48 +211,7 @@ spec:
           resources: {{- toYaml .Values.monitoring.resources.metricbeat | nindent 12 }}
             {{- end }}
           {{- end }}
-        heartbeat:
-          services:
-            heartbeat.monitors:
-            - type: tcp
-              name: Elasticsearch Service
-              id: elasticsearch:9200
-              schedule: '@every 5s'
-              hosts: ["elastic-elasticsearch-es-http.{{ .Values.cluster.namespace }}.svc:9200"]
-            - type: tcp
-              name: Kibana GUI
-              id: kibana:443
-              schedule: '@every 5s'
-              hosts: ["kibana.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}:443"]
-            - type: icmp
-              id: kibana/icmp
-              name: Kibana ICMP
-              hosts: ["elastic-kibana-kb-http.{{ .Values.cluster.namespace }}.svc"]
-              schedule: '*/5 * * * * * *'
   {{- end }}
-  - repoURL: {{ .Values.openbao.repo_URL }}
-    targetRevision: {{ .Values.openbao.targetRevision }}
-    chart: {{ .Values.openbao.chart_name }}
-    helm:
-      valueFiles:
-        {{- range .Values.openbao.valueFiles }}
-        - $values/app-values/openbao/{{ . }}
-        {{- end }}
-      values: |
-        fullnameOverride: openbao-{{ .Release.Namespace }}
-        server:
-          ingress:
-            annotations:
-              cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
-            hosts:
-              - host: secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-            tls:
-              - secretName: openbao-{{ .Values.namespaceTag }}-tls
-                hosts:
-                  - secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-        {{- if .Values.openbao.resources }}
-        resources: {{- toYaml .Values.openbao.resources | nindent 10 }}
-        {{- end }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.openbao_init.projectID }}/packages/helm/stable"
     targetRevision: {{ .Values.openbao_init.targetRevision }}
     chart: {{ .Values.openbao_init.chart_name }}
