@@ -24,7 +24,7 @@ We can always check the actual address in rancher:
 
 <img src="../images/OpenBao03.png" alt="OpenBao03" width="600"><BR>
 
-Root token can be found in secret OpenBao-unseal-keys, in key OpenBao-root.
+Root token can be found in secret secrets-root-token, in key token. 
 
 <img src="../images/OpenBao04.png" alt="OpenBao04" width="600"><BR>
 <img src="../images/OpenBao05.png" alt="OpenBao05" width="600"><BR>
@@ -35,3 +35,5 @@ The application retrieves them according to the following configuration:
 ![OpenBao07 view](../images/OpenBao07.png)
 
 The above configuration ensures that passwords and other secrets are generated securely and managed efficiently, reducing the risk of security breaches and simplifying the management of secrets across namespaces.
+
+
