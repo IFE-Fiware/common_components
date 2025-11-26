@@ -35,7 +35,7 @@ spec:
         serviceAccount:
           name: vault-webhook-service-account
         env:
-          VAULT_ADDR: "https://secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}"
+          VAULT_ADDR: "https://secrets-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}"
           VAULT_ROLE: "{{ .Values.secrets.role }}"
         {{- if eq .Values.resourcePreset "low" }}
         resources:
@@ -62,11 +62,11 @@ spec:
             annotations:
               cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
             hosts:
-              - host: secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+              - host: secrets-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
             tls:
               - secretName: openbao-{{ .Values.namespaceTag }}-tls
                 hosts:
-                  - secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+                  - secrets-{{ .Values.namespaceTag }}-{{ .Values.domainSuffix }}
         {{- if .Values.openbao.resources }}
         resources: {{- toYaml .Values.openbao.resources | nindent 10 }}
         {{- end }}
