@@ -31,9 +31,12 @@ values:
   branch: v2.4.1-IFE
 
 openbao_init:
+  repo_URL: https://github.com/IFE-Fiware/openbao.git
   projectID: "1258"
-  targetRevision: 1.1.1-IFE
+  targetRevision: dev-ife
+  #
   chart_name: openbao-init
+  path: charts
 
 openbao:
   repo_URL: 'https://openbao.github.io/openbao-helm'
