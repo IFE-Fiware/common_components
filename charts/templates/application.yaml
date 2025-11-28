@@ -109,6 +109,10 @@ spec:
       name: ejbca-secret
       jsonPointers:
         - /data
+    - kind: Secret
+      name: schema-manager-secret
+      jsonPointers:
+        - /data
   project: {{ .Values.project }}
   destination:
     server: {{ .Values.cluster.address }}
@@ -446,8 +450,8 @@ spec:
               secretConfigPath: "{{ .Values.secrets.secretEngine }}/{{ .Values.cluster.namespace }}-notifications"
           kafka:
             bootstrapServer: http://kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
-            otel:
-              endpoint: http://collector.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
+          otel:
+            endpoint: http://collector.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
         {{- if .Values.mailpit.enabled }}
           mail:
             smtpHost: mailpit-{{ .Values.cluster.namespace }}-smtp
