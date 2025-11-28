@@ -79,11 +79,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 2.4.0                          # version of package
+    targetRevision: 2.4.1                          # version of package
     helm:
       values: |
         values:
-          branch: v2.4.0                            # branch of repo with values
+          branch: v2.4.1                            # branch of repo with values
         resourcePreset: default                     # set to "low" to disable requests of resources
         agentList:                                  # list of all the agents to be deployed
           authorities:
@@ -103,6 +103,7 @@ spec:
           address: https://kubernetes.default.svc
           namespace: common01                       # where the app will be deployed
           issuer: dev-prod                          # issuer of certificate
+          internalIssuer: dev-selfsigned            # issuer of self-signed certificates
           kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
         secrets:
           secretEngine: example                     # name of the kv secret engine that will be created in OpenBao
@@ -140,7 +141,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```YAML
 values:
-  branch: v2.4.0                            # branch of repo with values
+  branch: v2.4.1                            # branch of repo with values
 resourcePreset: default                     # set to "low" to disable requests of resources
 agentList:                                  # list of all the agents to be deployed
   authorities:
@@ -159,6 +160,7 @@ cluster:
   address: https://kubernetes.default.svc
   namespace: common01                       # where the app will be deployed
   issuer: dev-prod                          # issuer of certificate
+  internalIssuer: dev-selfsigned            # issuer of self-signed certificates
   kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
 secrets:
   secretEngine: example                     # name of the kv secret engine that will be created in OpenBao
