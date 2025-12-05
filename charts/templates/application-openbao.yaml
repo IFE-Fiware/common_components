@@ -1,11 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.cluster.namespace }}
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: "{{ .Values.argocd.appname }}-dependencies"
+  name: "{{ .Values.argocd.appname }}-openbao"
   namespace: {{ .Values.argocd.namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "1"
-
 spec:
   syncPolicy:
     automated: {}
@@ -16,37 +20,11 @@ spec:
   project: {{ .Values.project }}
   destination:
     server: {{ .Values.cluster.address }}
-    namespace: "{{ .Values.cluster.namespace }}-dependencies"
+    namespace: "{{ .Values.cluster.namespace }}"
   sources:
   - repoURL: {{ .Values.values.repo_URL }}
     targetRevision: {{ .Values.values.branch }}
     ref: values
-  - repoURL: {{ .Values.vault_webhook.repo_URL }}
-    targetRevision: {{ .Values.vault_webhook.targetRevision }}
-    chart: {{ .Values.vault_webhook.chart_name }}
-    helm:
-      valueFiles:
-        {{- range .Values.vault_webhook.valueFiles }}
-        - $values/app-values/vault-webhook/{{ . }}
-        {{- end }}
-      values: |
-        watchNamespace: {{ .Values.cluster.namespace }}
-        fullnameOverride: vault-webhook-{{ .Values.cluster.namespace }}
-        serviceAccount:
-          name: vault-webhook-service-account
-        env:
-          VAULT_ADDR: "https://secrets.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}"
-          VAULT_ROLE: "{{ .Values.secrets.role }}"
-        {{- if eq .Values.resourcePreset "low" }}
-        resources:
-          requests:
-            cpu: "0"
-            memory: "0"
-        {{- else }}
-          {{- if .Values.vault_webhook.resources }}
-        resources: {{- toYaml .Values.vault_webhook.resources | nindent 10 }}
-          {{- end }}
-        {{- end }}
   - repoURL: {{ .Values.openbao.repo_URL }}
     targetRevision: {{ .Values.openbao.targetRevision }}
     chart: {{ .Values.openbao.chart_name }}
@@ -70,3 +48,12 @@ spec:
         {{- if .Values.openbao.resources }}
         resources: {{- toYaml .Values.openbao.resources | nindent 10 }}
         {{- end }}
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.openbao_init.projectID }}/packages/helm/stable"
+    targetRevision: {{ .Values.openbao_init.targetRevision }}
+    chart: {{ .Values.openbao_init.chart_name }}
+    helm:
+      values: |
+        cluster:
+          namespace: {{ .Values.cluster.namespace }}
+        namespaceTag: {{ .Values.namespaceTag }}
+        domainSuffix: {{ .Values.domainSuffix }}

@@ -6,12 +6,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .Values.cluster.namespace }}
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: "{{ .Values.cluster.namespace }}-dependencies"
+  name: "{{ .Values.cluster.namespace }}-vswh"
 {{- range .Values.agentList.authorities }}
 ---
 apiVersion: v1
@@ -42,7 +37,7 @@ metadata:
   name: {{ .Values.argocd.appname }}
   namespace: {{ .Values.argocd.namespace }}
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 
 spec:
   syncPolicy:
@@ -121,6 +116,20 @@ spec:
   - repoURL: {{ .Values.values.repo_URL }}
     targetRevision: {{ .Values.values.branch }}
     ref: values
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.openbao_config.projectID }}/packages/helm/stable"
+    targetRevision: {{ .Values.openbao_config.targetRevision }}
+    chart: {{ .Values.openbao_config.chart_name }}
+    helm:
+      values: |
+        cluster:
+          namespace: {{ .Values.cluster.namespace }}
+        namespaceTag: {{ .Values.namespaceTag }}
+        domainSuffix: {{ .Values.domainSuffix }}
+        secrets:
+          secretEngine: {{ .Values.secrets.secretEngine }}
+          role: {{ .Values.secrets.role }}
+        agentList:
+          {{- toYaml .Values.agentList | nindent 10 }}
   {{- if .Values.monitoring.enabled }}
   - repoURL: {{ .Values.monitoring.operator.repo_URL }}
     targetRevision: {{ .Values.monitoring.operator.targetRevision }}
@@ -216,24 +225,6 @@ spec:
             {{- end }}
           {{- end }}
   {{- end }}
-  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.openbao_init.projectID }}/packages/helm/stable"
-    targetRevision: {{ .Values.openbao_init.targetRevision }}
-    chart: {{ .Values.openbao_init.chart_name }}
-    helm:
-      valueFiles:
-        {{- range .Values.openbao_init.valueFiles }}
-        - $values/app-values/openbao_init/{{ . }}
-        {{- end }}
-      values: |
-        cluster:
-          namespace: {{ .Values.cluster.namespace }}
-        namespaceTag: {{ .Values.namespaceTag }}
-        domainSuffix: {{ .Values.domainSuffix }}
-        secrets:
-          secretEngine: {{ .Values.secrets.secretEngine }}
-          role: {{ .Values.secrets.role }}
-        agentList:
-          {{- toYaml .Values.agentList | nindent 10 }}
   - repoURL: {{ .Values.confluent_operator.repo_URL }}
     targetRevision: {{ .Values.confluent_operator.targetRevision }}
     chart: {{ .Values.confluent_operator.chart_name }}
@@ -363,6 +354,30 @@ spec:
         fullnameOverride: {{ .Values.pg_operator.nameOverride }}-{{ .Values.cluster.namespace }}
         configKubernetes:
           watched_namespace: {{ .Values.cluster.namespace }}
+  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.pg_cluster.projectID }}/packages/helm/stable"
+    path: ''
+    targetRevision: {{ .Values.pg_cluster.targetRevision }}
+    chart: {{ .Values.pg_cluster.chart_name }}
+    helm:
+      valueFiles:
+        {{- range .Values.pg_cluster.valueFiles }}
+        - $values/app-values/pg-cluster/{{ . }}
+        {{- end }}
+      values: |
+        authorityList: {{ .Values.agentList.authorities }}
+        consumerList: {{ .Values.agentList.consumers }}
+        providerList: {{ .Values.agentList.providers }}
+        volumeSize: {{ .Values.pg_cluster.volumeSize }}
+        {{- if eq .Values.resourcePreset "low" }}
+        resources:
+          requests:
+            cpu: "0"
+            memory: "0"
+        {{- else }}
+          {{- if .Values.pg_cluster.resources }}
+        resources: {{- toYaml .Values.pg_cluster.resources | nindent 10 }}
+          {{- end }}
+        {{- end }}
   {{- if .Values.pg_admin.enabled }}
   - repoURL: {{ .Values.pg_admin.repo_URL }}
     targetRevision: {{ .Values.pg_admin.targetRevision }}
@@ -407,30 +422,6 @@ spec:
           {{- end }}
         {{- end }}
   {{- end }}      
-  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.pg_cluster.projectID }}/packages/helm/stable"
-    path: ''
-    targetRevision: {{ .Values.pg_cluster.targetRevision }}
-    chart: {{ .Values.pg_cluster.chart_name }}
-    helm:
-      valueFiles:
-        {{- range .Values.pg_cluster.valueFiles }}
-        - $values/app-values/pg-cluster/{{ . }}
-        {{- end }}
-      values: |
-        authorityList: {{ .Values.agentList.authorities }}
-        consumerList: {{ .Values.agentList.consumers }}
-        providerList: {{ .Values.agentList.providers }}
-        volumeSize: {{ .Values.pg_cluster.volumeSize }}
-        {{- if eq .Values.resourcePreset "low" }}
-        resources:
-          requests:
-            cpu: "0"
-            memory: "0"
-        {{- else }}
-          {{- if .Values.pg_cluster.resources }}
-        resources: {{- toYaml .Values.pg_cluster.resources | nindent 10 }}
-          {{- end }}
-        {{- end }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.notification.projectID }}/packages/helm/stable"
     targetRevision: {{ .Values.notification.targetRevision }}
     chart: {{ .Values.notification.chart_name }}
