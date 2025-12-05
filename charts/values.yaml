@@ -1,8 +1,8 @@
 argocd:
   appname: ${NAMESPACE}
-  namespace: argocd
+  namespace: ${ARGOCDNAMESPACE}
 
-project: default
+project: ${PROJECT}
 
 resourcePreset: default
 # resourcePreset: low
@@ -28,12 +28,17 @@ secrets:
 
 values:
   repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
-  branch: v2.4.1
+  branch: v2.4.2
 
 openbao_init:
-  projectID: "1258"
-  targetRevision: 1.1.1
+  projectID: "1347"
+  targetRevision: 1.0.0
   chart_name: openbao-init
+
+openbao_config:
+  projectID: "1258"
+  targetRevision: 1.1.2
+  chart_name: openbao-config
 
 openbao:
   repo_URL: 'https://openbao.github.io/openbao-helm'
