@@ -73,17 +73,18 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   # name of the currently deploying app in argocd, this is the name that will be displayed in ArgoCD
-  name: 'common01-deployer'
+  name: 'common01-deployer'                         # name of the deploying app in argocd
+  namespace: argocd                                 # namespace of your argocd
 spec:
   project: default
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 2.4.1                          # version of package
+    targetRevision: 2.4.2                           # version of package
     helm:
       values: |
         values:
-          branch: v2.4.1                            # branch of repo with values
+          branch: v2.4.2                            # branch of repo with values
         resourcePreset: default                     # set to "low" to disable requests of resources
         agentList:                                  # list of all the agents to be deployed
           authorities:
@@ -141,7 +142,7 @@ There are a couple of variables you need to replace - described below. The rest 
 
 ```YAML
 values:
-  branch: v2.4.1                            # branch of repo with values
+  branch: v2.4.2                            # branch of repo with values
 resourcePreset: default                     # set to "low" to disable requests of resources
 agentList:                                  # list of all the agents to be deployed
   authorities:
