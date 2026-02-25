@@ -364,9 +364,9 @@ spec:
         - $values/app-values/pg-cluster/{{ . }}
         {{- end }}
       values: |
-        authorityList: {{ .Values.agentList.authorities }}
-        consumerList: {{ .Values.agentList.consumers }}
-        providerList: {{ .Values.agentList.providers }}
+        authorityList: {{ toYaml .Values.agentList.authorities | nindent 10 }}
+        consumerList: {{ toYaml .Values.agentList.consumers | nindent 10 }}
+        providerList: {{ toYaml .Values.agentList.providers | nindent 10 }}
         volumeSize: {{ .Values.pg_cluster.volumeSize }}
         {{- if eq .Values.resourcePreset "low" }}
         resources:
