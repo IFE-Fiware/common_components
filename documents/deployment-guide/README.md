@@ -68,6 +68,8 @@ In the example below, please replace the marked versions with the ones applicabl
 
 Please pay special attention to the namespace names: common01, authority01, consumer01 and dataprovider01, and also to replace the domain name example.com and the occurrence of the example value itself.
 
+Important notice - agent names in agentList value list cannot contain "-" character.
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -80,11 +82,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 3.0.0                           # version of package
+    targetRevision: 3.0.1                           # version of package
     helm:
       values: |
         values:
-          branch: v3.0.0                            # branch of repo with values
+          branch: v3.0.1                            # branch of repo with values
         resourcePreset: default                     # set to "low" to disable requests of resources
         agentList:                                  # list of all the agents to be deployed
           authorities:
@@ -140,9 +142,11 @@ Another way for deployment, is to unpack the released package to a folder on a h
 There is basically one file that you need to modify - values.yaml.
 There are a couple of variables you need to replace - described below. The rest you don't need to change.
 
+Important notice - agent names in agentList value list cannot contain "-" character.
+
 ```YAML
 values:
-  branch: v3.0.0                            # branch of repo with values
+  branch: v3.0.1                            # branch of repo with values
 resourcePreset: default                     # set to "low" to disable requests of resources
 agentList:                                  # list of all the agents to be deployed
   authorities:
