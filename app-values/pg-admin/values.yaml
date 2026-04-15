@@ -6,7 +6,7 @@ serviceAccount:
   automountServiceAccountToken: true
 ingress:
   enabled: true
-  ingressClassName: nginx
+  ingressClassName: external-nginx
 existingSecret: pg-admin-secret
 secretKeys:
   pgadminPasswordKey: password

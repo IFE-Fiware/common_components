@@ -5,5 +5,5 @@ injector:
     enabled: true
 server:
   ingress:
-    ingressClassName: nginx
+    ingressClassName: external-nginx
     enabled: true
