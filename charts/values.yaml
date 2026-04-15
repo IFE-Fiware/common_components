@@ -27,8 +27,8 @@ secrets:
   role: ${SECRETROLE}
 
 values:
-  repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
-  branch: v4.0.6
+  repo_URL: https://github.com/IFE-Fiware/common_components.git
+  branch: dev-ife
 
 openbao_init:
   enabled: true
@@ -38,9 +38,12 @@ openbao_init:
 
 openbao_config:
   enabled: true
+  repo_URL: https://github.com/IFE-Fiware/openbao.git
   projectID: "1258"
   targetRevision: 1.4.1
   chart_name: openbao-config
+  targetRevision: dev-ife
+  path: charts
 
 openbao:
   enabled: true

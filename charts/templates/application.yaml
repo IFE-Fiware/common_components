@@ -116,9 +116,10 @@ spec:
     targetRevision: {{ .Values.values.branch }}
     ref: values
   {{- if .Values.openbao_config.enabled }}
-  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.openbao_config.projectID }}/packages/helm/stable"
+  - repoURL: {{ .Values.openbao_config.repo_URL }}
     targetRevision: {{ .Values.openbao_config.targetRevision }}
-    chart: {{ .Values.openbao_config.chart_name }}
+#    chart: {{ .Values.openbao_config.chart_name }}
+    path: {{ .Values.openbao_config.path }}
     helm:
       values: |
         cluster:

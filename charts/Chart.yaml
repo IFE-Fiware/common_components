@@ -1,3 +1,2 @@
 name: common_components
-version: ${PROJECT_RELEASE_VERSION}
-
+version: v3.0.1-IFE
