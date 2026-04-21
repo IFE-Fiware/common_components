@@ -30,17 +30,14 @@ The deployment is performed using master helm chart deploying the SIMPL-Open Mid
 
 ### Tools
 
-The following versions of the elements will be used in the process:
+The following versions of the elements will be used in the process: [Tools Requirements](<https://code.europa.eu/simpl/simpl-open/documentation/installation-guide/-/blob/main/Prerequisites.md?ref_type=heads#tools-requirements>)
 
-| Pre-Requisites         |     Version     | Description                                                                                                                                     |
-| ---------------------- |     :-----:     | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| DNS sub-domain name    |       N/A       | This domain will be used to address all services of the agent. <br/> example: `*.common01.example.com`|
-| external-dns    | 0.16.1 or newer | Used for DNS entries creation. <br/> Other version *might* work but tests were performed using 0.16.1-debian-12-r6 version. <br/> Image used: `docker.io/bitnamilegacy/external-dns:0.16.1-debian-12-r6` |  
-| Kubernetes Cluster     | 1.29.x or newer | Other version *might* work but tests were performed using 1.29.x version                                                                        |
-| nginx-ingress          | 1.10.x or newer | Used as ingress controller. <br/> Other version _might_ work but tests were performed using 1.10.x version. <br/> Image used: `registry.k8s.io/ingress-nginx/controller:v1.10.0`  |
-| cert-manager           | 1.15.x or newer | Used for automatic cert management. <br/> Other version _might_ work but tests were performed using 1.15.x version. <br/> Image used: `quay.io/jetstack/cert-manager-controller:v1.15.3` |
-| argocd                 | 2.11.x or newer | Used as GitOps tool . App of apps concept. <br/> Other version _might_ work but tests were performed using 2.11.x version. <br/> Image used: `quay.io/argoproj/argocd:v2.11.3` |
-| kube-state-metrics  | 2.13.x or newer | Used for monitoring, Metricbeat statuses in Kibana dashboard    |
+The elements listed above are also mandatory:
+
+| Pre-Requisites     |     Version     | Description                                                                                                                                                                                              |
+|--------------------|     :-----:     |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| external-dns       | 0.16.1 or newer | Used for DNS entries creation. <br/> Other version *might* work but tests were performed using 0.16.1-debian-12-r6 version. <br/> Image used: `docker.io/bitnamilegacy/external-dns:0.16.1-debian-12-r6` |
+| kube-state-metrics | 2.13.x or newer | Used for monitoring, Metricbeat statuses in Kibana dashboard                                                                                                                                             |
 
 ### DNS entries
 
@@ -82,11 +79,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 3.0.1                           # version of package
+    targetRevision: 3.0.2                           # version of package
     helm:
       values: |
         values:
-          branch: v3.0.1                            # branch of repo with values
+          branch: v3.0.2                            # branch of repo with values
         resourcePreset: default                     # set to "low" to disable requests of resources
         agentList:                                  # list of all the agents to be deployed
           authorities:
@@ -146,7 +143,7 @@ Important notice - agent names in agentList value list cannot contain "-" charac
 
 ```YAML
 values:
-  branch: v3.0.1                            # branch of repo with values
+  branch: v3.0.2                            # branch of repo with values
 resourcePreset: default                     # set to "low" to disable requests of resources
 agentList:                                  # list of all the agents to be deployed
   authorities:
@@ -240,14 +237,22 @@ Please read this document before proceeding to install and configure other SIMPL
 
 Redis commander is a frontend allowing to visualise the data stored in redis-master, this tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
 
-![Redis_commander](images/RedisCommander.png)
+<img src="../images/RedisCommander.png" alt="Redis012" width="400"><BR>
 
 The password for redis commander is stored in a OpenBao Secret in the OpenBao "common-redis secret".
 
 Note!!! To log in, we use the password stored in the "rediscommander" variable, but as a username, we should enter "admin" and not "rediscommander"!
 
-<img src="images/Redis01.png" alt="Redis012" width="400"><BR>
-<img src="images/Redis02.png" alt="Redis02" width="400"><BR>
+<img src="../images/Redis01.png" alt="Redis012" width="400"><BR>
+<img src="../images/Redis02.png" alt="Redis02" width="400"><BR>
+
+### Kafka Administration
+
+The description of Kafla Administration tool is in a separate document: <https://code.europa.eu/simpl/simpl-open/development/agents/common_components/-/blob/main/documents/user-manual/KAFKA_ADMINISTRATION.md>
+
+### PostgreSQL Administation
+
+The description of PostgreSQL  Administration tool is in a separate document: <https://code.europa.eu/simpl/simpl-open/development/agents/common_components/-/blob/main/documents/user-manual/POSTGRESQL_ADMINISTRATION.md>
 
 ## Troubleshooting
 
@@ -255,4 +260,4 @@ If you encounter issues during deployment, check the following:
 
 - Ensure that ArgoCD is properly set up and running.
 - Verify that the namespace exists in your Kubernetes cluster.
-- Check the ArgoCD application logs and Helm error messages for specific issues.<<>>
+- Check the ArgoCD application logs and Helm error messages for specific issues.

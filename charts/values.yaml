@@ -28,7 +28,7 @@ secrets:
 
 values:
   repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
-  branch: v3.0.1
+  branch: v3.0.2
 
 openbao_init:
   projectID: "1347"
