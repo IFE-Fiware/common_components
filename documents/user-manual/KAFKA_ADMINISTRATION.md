@@ -2,13 +2,13 @@
 
 ## Overview
 
-This tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
+This tool is not required for end user to the SIMPL-Middleware. It is needed for the developer of the middleware
 
 Common Components repo includes three components that are used as Kafka stack. Those are:
 
-* Confluent Operator, provided by a chart *confluent-for-kubernetes* from <https://packages.confluent.io/helm>
+* Confluent Operator, provided by a chart *confluent-for-kubernetes* from Confluent helm package repository, documentation: <https://docs.confluent.io/operator/current/overview.html>
 * Kafka stack, from repository <https://code.europa.eu/simpl/simpl-open/development/common-components/kafka>
-* Redpanda Console, an open source UI, provided by a chart *console* from <https://charts.redpanda.com>
+* Redpanda Console, an open source UI, provided by a chart *console* from Redpanda helm package repository, documentation: <https://docs.redpanda.com/current/console/>
 
 Redpanda console serves as an UI to administer the Kafka stack.
 
@@ -16,16 +16,23 @@ Redpanda console serves as an UI to administer the Kafka stack.
 
 There are a couple options you can set in Kafka deployment. Below you can find a table explaining them:
 
-| Variable name              | Default value | Description     |
-| ----------------------     | :-----:       | --------------- |
-| kafka.replicas             | 3             | Count of Kafka replicas |
-| kafka.topic.replicas       | 2             | Number of requested topic replicas |
-| kafka.topic.insyncreplicas | 1             | Number of topic replicas for topic to be shown as in sync |
-| kraftController.replicas   | 3             | Count of Kraft Controller replicas |
-| kafka.auth.enabled         | true          | Should kafka SASL PLAIN authentication be enabled |
-| kafka.topic.autocreate     | false         | Should topics be automatically created if they don't exist |
-
-If kafka.auth.enabled is set as true, you need to have the Secret created in OpenBao. Secret creation is described in "Secret for Kafka" section in the README.md file.
+| Variable name                 |     Example         | Description     |
+| ----------------------        |     :-----:         | --------------- |
+| kafka.image.tag               | 8.0.4  | version of kafka image |
+| kafka.image.initTag           | 3.0.4  | version of kafka init container |
+| kafka.replicas                | 3     | number of replicas  |
+| kafka.resources               | - | resources for kafka replicas - standard syntax of requests and limits |
+| kafka.topic.replicas          | 2 | number of topic replicas  |
+| kafka.topic.insyncreplicas    | 1 | number of in sync replicas |
+| kafka.topic.autocreate        | true | enables autocreation of topics |
+| kafka.auth.enabled            | true | enables enables SASL plaintext authentication (users are defined in vault secret) |
+| kafka.clusterLink             | false | enable or disable cluster link feature |
+| kafka.balancer                | false | enable or disable balancer feature |
+| kraftController.replicas      | 3 | number of replicas of kraft controllers |
+| kraftController.resources     | - | resources for kraft controllers - standard syntax of requests and limits |
+| hashicorp.service             | http://vault.commonns.domainsuffix | link to vault ingress
+| hashicorp.role                | accessrole_name | name of role for vault access |
+| hashicorp.secretEngine        | name | secret engine name in vault |
 
 ### Redpanda Console
 
@@ -41,7 +48,7 @@ After accessing the website above and entering the credentials set up with value
 
 ![Init](../images/RedpandaMain.png)
 
-Using the menu on the right, you'll be able to see topics,
+Using the menu on the left, you'll be able to see topics,
 
 ![Init](../images/RedpandaTopics.png)
 
@@ -63,7 +70,7 @@ The topics to be created are listed below. All topics have 1 partition, 2 replic
 * 4.iaa.consumer.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
 * 5.iaa.dataprovider.eu.europa.ec.simpl.authenticationprovider.events.credential.updated
 * 6.iaa.dataprovider.eu.europa.ec.simpl.authenticationprovider.events.identity-attributes.updated
-* 7.notifications
+* 7.notifications (if error 'TOPIC_ALREADY_EXIST' appears, you can skip this topic)
 * 8.provisioned
 * 9.sign-contract-req-consumer
 * 10.sign-contract-req-provider
