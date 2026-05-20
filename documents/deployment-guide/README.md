@@ -1,263 +1,214 @@
-# SIMPL-Open Middleware : Common Components Deployment
+# SIMPL-Open Middleware — Common Components Deployment Guide
+
+## Document Information
+
+| | |
+|---|---|
+| **Scope** | Overview, prerequisites, deployment options, post-deployment tasks, and troubleshooting for the SIMPL-Open Middleware Common Components. |
+| **Audience** | Platform engineers and DevOps engineers responsible for deploying and operating the Common Components on Kubernetes. |
+
+---
 
 <!-- TOC -->
-- [SIMPL-Open Middleware : Common Components Deployment](#simpl-open-middleware-common-components-deployment)
-  - [Description](#description)
-    - [Tools](#tools)
-    - [DNS entries](#dns-entries)
-  - [Deployment](#deployment)
-    - [Graphical deployment using ArgoCD](#graphical-deployment-using-argocd)
-    - [Manual deployment](#manual-deployment)
-      - [Files preparation](#files-preparation)
-      - [Command to execute](#command-to-execute)
-  - [Additional steps and remarks](#additional-steps-and-remarks)
-    - [Init-bao job issues](#init-bao-job-issues)
-    - [Failing pod restart](#failing-pod-restart)
-    - [Monitoring](#monitoring)
-    - [OpenBao Configuration](#openbao-configuration)
-    - [Redis Commander](#redis-commander)
-  - [Troubleshooting](#troubleshooting)
+- [Description](#description)
+- [Component Chart Sources](#component-chart-sources)
+- [Prerequisites](#prerequisites)
+  - [Tools](#tools)
+  - [DNS Entries](#dns-entries)
+- [Deployment](#deployment)
+- [Additional Steps and Remarks](#additional-steps-and-remarks)
+  - [Init-bao Job Issues](#init-bao-job-issues)
+  - [Failing Pod Restart](#failing-pod-restart)
+  - [Monitoring](#monitoring)
+  - [OpenBao Configuration](#openbao-configuration)
+- [Sanity check](#sanity-check)
+- [Troubleshooting](#troubleshooting)
+- [Glossary](#glossary)
 <!-- /TOC -->
 
 ## Description
 
-This project contains the configuration files required to deploy SIMPL-Open Middleware Common Components.  The Common Components are the basis required by all the others SIMPL-Open Middleware agents.  Two deployment methods are documented here under :
+This repository contains the configuration files required to deploy the **SIMPL-Open Middleware Common Components**. The Common Components are the foundational layer required by all other SIMPL-Open Middleware agents.
 
-- manual deployment using command line tools such as Helm and kubectl.
-- ArgoCD deployment using mainly graphical interface
+- The deployment is performed using a master Helm chart that deploys the full Common Components stack in a single step.
+- The master Helm chart requires a values file for configuration. Example values are provided in the deployment guides linked below; inline comments explain each parameter.
+- Templates of `values.yaml` files used in the integration environment are available under the `app-values` folder of the source code repository.
 
-The deployment is performed using master helm chart deploying the SIMPL-Open Middleware _Common components_ in one step.  The master helm chart requires a value file for the deployment, here under you will find an example of the master value chart, please be aware that many values must be replaced to be aligned with your environment.  These values are explained by inline comment in the values file of the master helm chart example.  The values file of each common components could found in te app-values folder of the source code repository.
+## Component Chart Sources
+
+The master Helm chart orchestrates a set of sub-charts. Individual sub-charts are not published as standalone charts in the SIMPL-Open Helm registry. If you need to install or inspect a component independently, use the sources listed below.
+
+### Internal Charts
+
+Hosted in the SIMPL-Open GitLab package registry. Access requires appropriate GitLab credentials.
+
+| Name | Chart | Description | Helm Registry |
+|---|---|---|---|
+| openbao-init | `openbao-init` | Initialises OpenBao after deployment (unsealing, secret engine setup) | [Helm stable registry](https://code.europa.eu/api/v4/projects/1347/packages/helm/stable) |
+| openbao-config | `openbao-config` | Configures OpenBao policies, roles, and secrets for the stack | [Helm stable registry](https://code.europa.eu/api/v4/projects/1258/packages/helm/stable) |
+| eck-monitoring | `eck-monitoring` | ELK/ECK monitoring stack (Elasticsearch, Kibana, Logstash, Metricbeat, Filebeat) | [Helm stable registry](https://code.europa.eu/api/v4/projects/828/packages/helm/stable) |
+| kafka | `kafka` | Kafka message broker deployment (Confluent/KRaft mode) | [Helm stable registry](https://code.europa.eu/api/v4/projects/976/packages/helm/stable) |
+| pg-cluster | `pg-cluster` | PostgreSQL cluster managed by the Zalando Postgres Operator | [Helm stable registry](https://code.europa.eu/api/v4/projects/1024/packages/helm/stable) |
+| simpl-notification-service | `simpl-notification-service` | SIMPL-Open internal notification service | [Helm stable registry](https://code.europa.eu/api/v4/projects/1002/packages/helm/stable) |
+| infrastructure-consumption-monitoring-service | `infrastructure-consumption-monitoring-service` | Monitors infrastructure resource consumption | [Helm stable registry](https://code.europa.eu/api/v4/projects/1240/packages/helm/stable) |
+| kube-state-metrics | 2.18.x or newer | Monitoring and Metricbeat statuses in Kibana. For OVH provider it's pre-installed when cluster is deployed. Image: `registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.18.0` |
+
+### External Charts
+
+Publicly available third-party charts. These can be installed independently using the `helm repo add` and `helm install` commands.
+
+| Name | Chart | Description | Chart Repository |
+|---|---|---|---|
+| OpenBao | `openbao/openbao` | Open-source secrets management (fork of HashiCorp Vault) | [openbao.github.io/openbao-helm](https://openbao.github.io/openbao-helm) |
+| ECK Operator | `elastic/eck-operator` | Elastic Cloud on Kubernetes — manages Elasticsearch, Kibana, and related resources | [helm.elastic.co](https://helm.elastic.co) |
+| Vault Secrets Webhook | `bank-vaults/vault-secrets-webhook` | Kubernetes mutating webhook that injects secrets from OpenBao into pods | [ghcr.io/bank-vaults/helm-charts](https://github.com/bank-vaults/vault-secrets-webhook) |
+| Confluent for Kubernetes | `confluent/confluent-for-kubernetes` | Operator for deploying and managing Confluent/Kafka components | [packages.confluent.io/helm](https://packages.confluent.io/helm) |
+| Redpanda Console | `redpanda/console` | Web UI for inspecting and managing Kafka topics and consumer groups | [charts.redpanda.com](https://charts.redpanda.com) |
+| Postgres Operator | `postgres-operator/postgres-operator` | Zalando Postgres Operator — manages PostgreSQL clusters on Kubernetes | [opensource.zalando.com](https://opensource.zalando.com/postgres-operator/charts/postgres-operator) |
+| pgAdmin 4 | `runix/pgadmin4` | Web-based PostgreSQL administration and query tool | [helm.runix.net](https://helm.runix.net) |
+| Mailpit | `jouve/mailpit` | Mock SMTP server for capturing and inspecting outgoing emails in non-production environments | [jouve.github.io/charts](https://jouve.github.io/charts/) |
+
+## Prerequisites
 
 ### Tools
 
-The following versions of the elements will be used in the process: [Tools Requirements](<https://code.europa.eu/simpl/simpl-open/documentation/installation-guide/-/blob/main/Prerequisites.md?ref_type=heads#tools-requirements>)
+| Pre-Requisite | Version | Type | Description | External link |
+|---|:---:|---|---|--|
+| external-dns | 0.19.1 or newer | Optional | Used for automated DNS entry/subdomain creation and deletion via OVH API. This domain will be used to address all services and ingresses of the agent. Example pattern: `*.{namespaceTag}.{domainSuffix}`. Image: `registry.k8s.io/external-dns/external-dns:0.19.1`| [Official external-dns documentation](https://kubernetes-sigs.github.io/external-dns/latest) |
+| Kubernetes Cluster | 1.33.x or newer | Mandatory | Kubernetes cluster provided via OVH. Other versions may work; tested with 1.33.x. | [Official kubernetes documentation](https://kubernetes.io/docs/concepts/overview) |
+| nginx-ingress | 1.13.x or newer | Mandatory| ingress-nginx is used to control how external traffic gets into cluster and reaches applications and it integrates with OVH load balancers. Image: `registry.k8s.io/ingress-nginx/controller:v1.13.7` | [Official nginx documentation](https://docs.nginx.com/nginx-ingress-controller/install/helm/open-source) |
+| cert-manager | 1.19.x or newer | Mandatory| Tool that automates HTTPS certificates inside Kubernetes cluster. It keeps certificates renewed and it integrates directly with ingress-nginx. Image: `quay.io/jetstack/cert-manager-controller:v1.19.1` | [Official cert-manager documentation](https://cert-manager.io/docs) |
+| nfs-provisioner | 4.0.x or newer | Mandatory | Backend for ReadWriteMany volumes and shared storage. Image: `registry.k8s.io/sig-storage/nfs-provisioner:v4.0.8` | [Official nfs-provisioner documentation](https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner/tree/HEAD/charts/nfs-server-provisioner#nfs-server-provisioner) |
+| ArgoCD | 3.2.x or newer | Mandatory |  GitOps continuous delivery (App-of-Apps pattern). Image: `quay.io/argoproj/argocd:v3.2.1` | [Official ArgoCD documentation](https://argo-cd.readthedocs.io/?_gl=1*1mlwt96*_ga*MTg1Mjk2OTUwMC4xNzc3NTUzMjg5*_ga_5Z1VTPDL73*czE3Nzc1NTMyODkkbzEkZzAkdDE3Nzc1NTMyOTQkajU1JGwwJGgw) |
 
-The elements listed above are also mandatory:
+### DNS Entries
 
-| Pre-Requisites     |     Version     | Description                                                                                                                                                                                              |
-|--------------------|     :-----:     |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| external-dns       | 0.16.1 or newer | Used for DNS entries creation. <br/> Other version *might* work but tests were performed using 0.16.1-debian-12-r6 version. <br/> Image used: `docker.io/bitnamilegacy/external-dns:0.16.1-debian-12-r6` |
-| kube-state-metrics | 2.13.x or newer | Used for monitoring, Metricbeat statuses in Kibana dashboard                                                                                                                                             |
+| Component | FQDN Pattern | Public IP |
+|---|---|---|
+| elastic-apm-server | `apm.{namespace}.{domainSuffix}` | Default Ingress Controller Public IP |
+| elastic-elasticsearch-http | `elastic-elasticsearch-es-http.{namespace}.svc`  | Default Ingress Controller Public IP |
+| elastic-elasticsearch-http-public | `elasticsearch.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| elastic-kibana-dashboard | `kibana.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| elastic-otel-collector | `collector.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| logstash-api-beats | `logstash.beats.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| mailpit-{namespace} | `mailpit.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| pg-admin-{namespace} | `pgadmin.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| redpanda | `redpanda.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| OpenBao | `secrets.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
 
-### DNS entries
+If your Ingress Controller is **nginx** and installed into namespace **ingress-nginx**, you can retrieve its public IP using:
 
-| Entry Name | Entries |
-| ------------- | ----------------------------------- |
-| elastic-apm-server | apm.(namespace).(domainSuffix) |
-| elastic-elasticsearch-http| elastic-elasticsearch-es-http.(namespace).svc |
-| elastic-elasticsearch-http-public | elasticsearch.(namespace).(domainSuffix) |
-| elastic-kibana-dashboard | kibana.(namespace).(domainSuffix) |
-| elastic-otel-collector | collector.(namespace).(domainSuffix) |
-| logstash-api-beats | logstash.beats.(namespace).(domainSuffix) |
-| mailpit-(namespace) | mailpit.(namespace).(domainSuffix) |
-| pg-admin-(namespace) | pgadmin.(namespace).(domainSuffix) |
-| redpanda | redpanda.(namespace).(domainSuffix) |
-| OpenBao | secrets.(namespace).(domainSuffix) |
+```bash
+kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+```
+
+While we recommend strongly to use **external-dns** to manage your DNS entries using automation, one could achieve a manual DNS setup.
+
+Here is a proposed implementation of manual DNS configuration:
+
+- Create an `A` record using `{namespace}.{domainSuffix}` pointing to the public IP of the Ingress Controller
+- For each entry in the above table, create a `CNAME` record using value of *FQDN Pattern* column pointing to `{namespace}.{domainSuffix}`
 
 ## Deployment
 
-### Graphical deployment using ArgoCD
+The Common Components can be deployed using either of the following methods. Choose the guide that matches your workflow:
 
-All the values mentioned in the sections below you can input in ArgoCD deployment. The repoURL gets the package directly from code.europa.eu.
-"targetRevision" is the package version.
+| Method | Guide | Description |
+|---|---|---|
+| **ArgoCD UI** | [ARGOCD_DEPLOYMENT.md](ARGOCD_DEPLOYMENT.md) | Deploy through the ArgoCD graphical interface by creating an Application resource. Recommended for teams using GitOps workflows. |
+| **Helm CLI** | [HELM_CLI_DEPLOYMENT.md](HELM_CLI_DEPLOYMENT.md) | Deploy from the command line using `helm install`. Suitable for scripted or CI/CD-driven deployments. |
 
-In the example below, please replace the marked versions with the ones applicable to your environment.
+## Additional Steps and Remarks
 
-Please pay special attention to the namespace names: common01, authority01, consumer01 and dataprovider01, and also to replace the domain name example.com and the occurrence of the example value itself.
+### Init-bao Job Issues
 
-Important notice - agent names in agentList value list cannot contain "-" character.
+Occasionally, the `init-bao` job may proceed with creating secrets before the OpenBao secret engine is available. This results in empty secrets, which can cause downstream components to fail.
 
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  # name of the currently deploying app in argocd, this is the name that will be displayed in ArgoCD
-  name: 'common01-deployer'                         # name of the deploying app in argocd
-  namespace: argocd                                 # namespace of your argocd
-spec:
-  project: default
-  source:
-    repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
-    path: '""'
-    targetRevision: 3.0.2                           # version of package
-    helm:
-      values: |
-        values:
-          branch: v3.0.2                            # branch of repo with values
-        resourcePreset: default                     # set to "low" to disable requests of resources
-        agentList:                                  # list of all the agents to be deployed
-          authorities:
-            - authority01
-          consumers:
-            - consumer01
-          providers:
-            - dataprovider01
-        project: default                            # Project to which the namespace is attached
-        namespaceTag: common01                      # identifier of deployment and part of fqdn
-        domainSuffix: example.com                   # last part of fqdn
-        argocd:
-          appname: common01                         # name of generated argocd app 
-          namespace: argocd                         # namespace of your argocd
-        cluster:
-          # FQDN Fully Qualified Domain Name of your kubernetes cluster
-          address: https://kubernetes.default.svc
-          namespace: common01                       # where the app will be deployed
-          issuer: dev-prod                          # issuer of certificate
-          internalIssuer: dev-selfsigned            # issuer of self-signed certificates
-          kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
-        secrets:
-          secretEngine: example                     # name of the kv secret engine that will be created in OpenBao
-          role: example-role                        # name of the role that will be created in OpenBao
-        kafka:
-          ha: true                                  # true creates 3 replicas of each component, false creates 1 of each
-          topic:
-            # set this value to true, to have kafka creating automatically the required topics
-            autocreate: true
-        mailpit:
-          # set this value to true, to have mailpit activated
-          enabled: true
-        monitoring:
-          # set this value to true, to enable the monitoring features
-          enabled: true
-    # Name of the helm chart to deploy
-    chart: common_components
-  destination:
-    # FQDN Fully Qualified Domain Name of your kubernetes cluster
-    server: 'https://kubernetes.default.svc'
-    # Name of the Kubernetes NameSpace in which the Common Tools will be deployed
-    namespace: common01
-```
+<img src="../images/Initbao.png" alt="Init-bao job issue" width="400">
 
-Be patient!... Depending on the your kubernetes configuration and resources availalbe, the deployment of the Common Tools could take more than 30 minutes.
+If this occurs:
 
-### Manual deployment
+1. Delete the following secrets:
+   - `secrets-root-token`
+   - `secrets-unseal-keys`
+2. Restart the `init-bao` job if it has exhausted its retry attempts.
 
-#### Files preparation
+When one of `init-bao` job is completed, the error one could be deleted.
 
-Another way for deployment, is to unpack the released package to a folder on a host where you have kubectl and helm available and configured.
+### Failing Pod Restart
 
-There is basically one file that you need to modify - values.yaml.
-There are a couple of variables you need to replace - described below. The rest you don't need to change.
+The following two pods depend on information from OpenBao and may start before OpenBao is fully available. If they are failing, restart them after OpenBao is up:
 
-Important notice - agent names in agentList value list cannot contain "-" character.
+<img src="../images/Podstodelete.png" alt="Pods to restart" width="400">
 
-```YAML
-values:
-  branch: v3.0.2                            # branch of repo with values
-resourcePreset: default                     # set to "low" to disable requests of resources
-agentList:                                  # list of all the agents to be deployed
-  authorities:
-    - authority01
-  consumers:
-    - consumer01
-  providers:
-    - dataprovider01
-project: default                            # Project to which the namespace is attached
-namespaceTag: common01                      # identifier of deployment and part of fqdn
-domainSuffix: example.com                   # last part of fqdn
-argocd:
-  appname: common01                         # name of generated argocd app 
-  namespace: argocd                         # namespace of your argocd
-cluster:
-  address: https://kubernetes.default.svc
-  namespace: common01                       # where the app will be deployed
-  issuer: dev-prod                          # issuer of certificate
-  internalIssuer: dev-selfsigned            # issuer of self-signed certificates
-  kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080    # link to kube-state-metrics svc
-secrets:
-  secretEngine: example                     # name of the kv secret engine that will be created in OpenBao
-  role: example-role                        # name of the role that will be created in OpenBao
-kafka:
-  ha: true                                  # true creates 3 replicas of each component, false creates 1 of each
-  topic:
-    autocreate: true                        # set to true if kafka should automatically create topics
-mailpit:
-  enabled: true                             # set to true if mailpit should be deployed as mock smtp for notification service
-monitoring:
-  enabled: true                             # should monitoring be enabled
-```
+Although rare, this condition may recur. Retry the steps above if `init-bao` fails again.
 
-#### Command to execute
+### Monitoring not being deployed
 
-After you have prepared the values file, you can start the deployment.
-Use the command prompt. Proceed to the folder where you have the Chart.yaml file and execute the following command. The dot at the end is crucial - it points to current folder to look for the chart.
+You might observe a case when objects-loader pod is in progressing state for a long time, but the monitoring components aren't synced:
 
-Now you can deploy the agent:
+<img src="../images/ObjectsLoader.png" alt="objects-loader" width="400">
 
-`helm install common .`
+This is because objects-loader needs the monitoring components to work. If that happens, terminate the sync and trigger it again. 
 
-After starting the deployment synchronization process, the expected namespace will be created.
-
-Initially, the status observed e.g. in ArgoCD will indicate the creation of new pods:
-
-<img src="../images/ArgoCD_01.png" alt="ArgoCD_01" width="600"><BR>
-
-At the end, all pods should be created correctly:
-
-<img src="../images/ArgoCD_02.png" alt="ArgoCD_02" width="600"><BR>
-
-## Additional steps and remarks
-
-### Init-bao job issues
-
-Ocassionaly, the init-bao job might go ahead with creating secrets, despite open-bao secret engine not being available. This creates empty secrets, which might cause components to fail.
-
-<img src="../images/Initbao.png" alt="Initbao" width="400"><BR>
-
-in case this happens, the secrets must be deleted and then the job has to be restarted if it has ran out of tries.
-
-These secrets have to be deleted:
-
-secrets-root-token<br>
-secrets-unseal-keys
-
-### Failing pod restart
-
-If failing. these two pods need to be restarted after OpenBao is up. They rely on information from OpenBao and may be up before it is up.
-
-<img src="../images/Podstodelete.png" alt="Podstodelete" width="400"><BR>
-
-Although it's rare, it might happen more than once so retry the following steps if init-bao is failing again.
+<img src="../images/Sync1.png" alt="sync" width="400">
+<img src="../images/Sync2.png" alt="terminate-sync" width="400">
 
 ### Monitoring
 
-ELK stack for monitoring is added with this release.  
-Its deployment can be disabled by switch the value monitoring.enabled to false.  
-When it's enabled, after the stack is deployed, you can access the ELK stack UI by <https://kibana.**namespacetag**.**domainSuffix**>
-Default user is "elastic", its password can be extracted by kubectl command. `kubectl get secret elastic-elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}' -n {namespace}`
+The ELK stack for monitoring is included with this release. Its deployment can be disabled by setting `monitoring.enabled` to `false`.
+
+When enabled, access the Kibana dashboard at: `https://kibana.{namespaceTag}.{domainSuffix}`
+
+Default credentials:
+- **Username:** `elastic`
+- **Password:** Retrieve with:
+
+```bash
+kubectl get secret elastic-elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}' -n <namespace>
+```
 
 ### OpenBao Configuration
 
 The description of configuring and using OpenBao is in a separate document:
 <https://code.europa.eu/simpl/simpl-open/development/agents/common_components/-/blob/main/documents/user-manual/Using_OpenBao.md>
 
-Please read this document before proceeding to install and configure other SIMPL-OPEN agents(namespaces).
-
-### Redis Commander
-
-Redis commander is a frontend allowing to visualise the data stored in redis-master, this tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
-
-<img src="../images/RedisCommander.png" alt="Redis012" width="400"><BR>
-
-The password for redis commander is stored in a OpenBao Secret in the OpenBao "common-redis secret".
-
-Note!!! To log in, we use the password stored in the "rediscommander" variable, but as a username, we should enter "admin" and not "rediscommander"!
-
-<img src="../images/Redis01.png" alt="Redis012" width="400"><BR>
-<img src="../images/Redis02.png" alt="Redis02" width="400"><BR>
-
-### Kafka Administration
-
-The description of Kafla Administration tool is in a separate document: <https://code.europa.eu/simpl/simpl-open/development/agents/common_components/-/blob/main/documents/user-manual/KAFKA_ADMINISTRATION.md>
-
-### PostgreSQL Administation
-
-The description of PostgreSQL  Administration tool is in a separate document: <https://code.europa.eu/simpl/simpl-open/development/agents/common_components/-/blob/main/documents/user-manual/POSTGRESQL_ADMINISTRATION.md>
+Please read this document before proceeding to install and configure other SIMPL-Open agents.
 
 ## Troubleshooting
 
-If you encounter issues during deployment, check the following:
+If you encounter issues during deployment, verify the following:
 
-- Ensure that ArgoCD is properly set up and running.
-- Verify that the namespace exists in your Kubernetes cluster.
-- Check the ArgoCD application logs and Helm error messages for specific issues.
+- ArgoCD is properly set up and running.
+- The target namespace exists in your Kubernetes cluster.
+- Review the ArgoCD Application logs and Helm error messages for specific issues.
+- All [DNS entries](#dns-entries) resolve correctly to the ingress controller.
+
+## Sanity check
+
+To make sure that everything is running correctly, you can check the statuses of apps in ArgoCD.<br><br>
+<img src="../images/Sanity_check_1.png" alt="ArgoCD statuses" width="400">
+
+Normally, every app should have a healthy status, but at the moment there are exceptions:
+- common application can get a "Missing" status, because of objects-loader job which is removed after it's been processed. 
+<img src="../images/Sanity_check_2.png" alt="objects-loader" width="400">
+
+This will be fixed in future releases.
+
+## Glossary
+
+| Term | Definition |
+|---|---|
+| **ArgoCD** | A GitOps continuous delivery tool for Kubernetes that synchronises application state from a Git repository or Helm registry. |
+| **Helm** | The package manager for Kubernetes, using charts to define, install, and upgrade applications. |
+| **Master Helm Chart** | A top-level chart that orchestrates the deployment of multiple sub-charts as a single unit. |
+| **namespaceTag** | An identifier used in Kubernetes namespace names and DNS entries to distinguish deployments. |
+| **domainSuffix** | The base domain name appended to generated DNS entries (e.g. `example.com`). |
+| **FQDN** | Fully Qualified Domain Name — the complete DNS name for a service. |
+| **OpenBao** | An open-source secrets management tool (fork of HashiCorp Vault) used to store and access sensitive configuration. |
+| **KV Secret Engine** | A key-value secret storage backend in OpenBao / Vault. |
+| **cert-manager** | A Kubernetes add-on that automates the management and issuance of TLS certificates. |
+| **nginx-ingress** | An ingress controller that manages external access to services in a Kubernetes cluster. |
+| **kube-state-metrics** | A Kubernetes service that generates metrics about the state of objects (pods, deployments, etc.). |
+| **Redpanda** | A Kafka-compatible streaming data platform used as the message broker in SIMPL-Open. |
+| **ELK Stack** | Elasticsearch, Logstash, and Kibana — used for log aggregation, processing, and visualisation. |
