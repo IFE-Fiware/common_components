@@ -2,13 +2,13 @@
 
 ## Overview
 
-This tool is not required for end user to the SIMPL-Middleware is it need for the developer of the middleware
+This tool is not required for end user to the SIMPL-Middleware. It is needed for the developer of the middleware
 
-Common Components repo includes three components that are used as Kafka stack. Those are:
+Common Components repo includes three components that are used as Postgres stack. Those are:
 
-* Postgres Operator, provided by a chart *postgres-operator* from <https://opensource.zalando.com/postgres-operator/charts/postgres-operator>
+* Postgres Operator, provided by a chart *postgres-operator* from Zalando helm package repository, documentation: <https://postgres-operator.readthedocs.io/en/latest/>
 * Postgres cluster, from repository <https://code.europa.eu/simpl/simpl-open/development/common-components/postgres-cluster>
-* PGAdmin Console, an open source UI, provided by a chart *pgadmin4* from <https://helm.runix.net>
+* PGAdmin Console, an open source UI, provided by a chart *pgadmin4* from Runix helm package repository, documentation: <https://www.pgadmin.org/docs/>
 
 PGAdmin console serves as an UI to administer the Postgres stack.
 
@@ -20,7 +20,7 @@ It looks for example like this:
 ```yaml
 agentList:
   authorities:
-    - authority1
+    - authority01
   consumers:
     - consumer01
   providers:

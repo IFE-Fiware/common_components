@@ -25,6 +25,7 @@ spec:
   - repoURL: {{ .Values.values.repo_URL }}
     targetRevision: {{ .Values.values.branch }}
     ref: values
+  {{- if .Values.openbao.enabled }}
   - repoURL: {{ .Values.openbao.repo_URL }}
     targetRevision: {{ .Values.openbao.targetRevision }}
     chart: {{ .Values.openbao.chart_name }}
@@ -36,6 +37,13 @@ spec:
       values: |
         fullnameOverride: openbao-{{ .Release.Namespace }}
         server:
+          ha:
+            {{- if eq .Values.openbao.ha false }}
+            enabled: false
+            replicas: 1
+            {{- else }}
+            replicas: {{ .Values.openbao.replicas }}
+            {{- end }}
           ingress:
             annotations:
               cert-manager.io/cluster-issuer: {{ .Values.cluster.issuer }}
@@ -48,6 +56,8 @@ spec:
         {{- if .Values.openbao.resources }}
         resources: {{- toYaml .Values.openbao.resources | nindent 10 }}
         {{- end }}
+  {{- end }}
+  {{- if .Values.openbao_init.enabled }}
   - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.openbao_init.projectID }}/packages/helm/stable"
     targetRevision: {{ .Values.openbao_init.targetRevision }}
     chart: {{ .Values.openbao_init.chart_name }}
@@ -57,3 +67,8 @@ spec:
           namespace: {{ .Values.cluster.namespace }}
         namespaceTag: {{ .Values.namespaceTag }}
         domainSuffix: {{ .Values.domainSuffix }}
+        replicas: {{ .Values.openbao.replicas }}
+        {{- if eq .Values.openbao.ha false }}
+        replicas: 1
+        {{- end }}
+  {{- end }}
