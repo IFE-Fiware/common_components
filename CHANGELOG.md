@@ -4,39 +4,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-05-20
+
+### fixed (2 changes)
+- icms values in application.yaml
+- various changes in user-manuals
+
+### changed (16 changes)
+- added HA and automatic unsealing after environment changes to OpenBao
+- added ignoring differences in ArgoCD to improve app health
+- rebuilt and improved deployment parts of README.md
+- openbao-init to v1.1.0
+- openbao-config to v1.3.6
+- openbao to v0.26.2
+- monitoring to v0.5.5
+- vault webhook to v0.22.2
+- confluent operator to v0.1514.19
+- kafka to v1.2.2
+- postgres operator to v1.15.1
+- pgadmin to v1.62.0
+- pg-cluster to v1.2.0
+- notifications to v2.6.1
+- mailpit to v0.31.3
+- icms to v2.6.0
+
 ## [3.0.2] - 2026-04-21
-- Various documentation fixes.
+
+### fixed (1 change)
+- various documentation fixes
 
 ## [3.0.1] - 2026-03-11
-- Update Monitoring stack version to 0.3.3 (SIMPL-24671)
-- Update Readme (SIMPL-24688)
+
+### fixed (2 changes)
+- updated Monitoring stack version to 0.3.3 (SIMPL-24671)
+- updated Readme (SIMPL-24688)
 
 ## [3.0.0] - 2026-02-25
-- Updated many components to implement Common version 3.0.0.
 
-### Kafka
+### fixed (3 changes)
+- list of agents interpreted by pg-cluster
+- memory limits of pg-cluster
+- typos and image links in README.md
 
-#### 1.2.0 (2025-10-08)
-No changes.
-
-
-### eck-monitoring
-
-#### 0.3.1 (2025-11-28)
-
-#### Fixed
-- SIMPL-21094
-
-#### Added
-- SIMPL-19008
-
-### Notification
-
-#### 2.1.1 (2025-11-28)
-No changes.
-
-
-### Infrastructure Consumption Monitoring Service
-
-#### 2.3.1 (2025-11-28)
-No changes.
+### changed (5 changes)
+- openbao-config to v1.2.3
+- monitoring to v0.3.1
+- pg-cluster to v1.1.1
+- notifications to v2.1.1
+- icms to v2.3.1
