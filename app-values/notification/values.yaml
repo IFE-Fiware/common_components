@@ -5,3 +5,6 @@ deployment:
     smtpHost: ssl0.ovh.net
     smtpUser: dev@simpl-europe.eu
     defaultReceiver: simpl_tech@simpl-europe.eu
+startupProbe:
+  timeoutSeconds: 10
+  failureThreshold: 60

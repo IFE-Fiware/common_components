@@ -3,3 +3,6 @@ deployment:
   kafka:
     clientUser: icms
 environment: default
+startupProbe:
+  timeoutSeconds: 10
+  failureThreshold: 60
