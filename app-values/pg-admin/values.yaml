@@ -30,5 +30,11 @@ serverDefinitions:
       Host: "pg-cluster"
       SSLMode: "require"
       MaintenanceDB: "postgres"
+envVarsExtra:
+  - name: PGADMIN_LISTEN_ADDRESS
+    value: "0.0.0.0"
+startupProbe:
+  failureThreshold: 60
+  timeoutSeconds: 10
 image:
   tag: 9.15

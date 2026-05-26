@@ -28,7 +28,7 @@ secrets:
 
 values:
   repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
-  branch: v3.1.0
+  branch: v3.1.1
 
 openbao_init:
   enabled: true
@@ -209,7 +209,7 @@ pg_cluster:
 notification:
   enabled: true
   projectID: "1002"
-  targetRevision: 2.6.1
+  targetRevision: 2.6.2
   nameOverride: simpl-notification
   chart_name: simpl-notification-service
   resources:
@@ -234,7 +234,7 @@ mailpit:
 infrastructure_consumption_monitoring_service:
   enabled: true
   projectID: "1240"
-  targetRevision: 2.6.0
+  targetRevision: 2.6.1
   nameOverride: infrastructure-consumption-monitoring-service
   chart_name: infrastructure-consumption-monitoring-service
   resources:
