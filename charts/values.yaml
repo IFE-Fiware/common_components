@@ -28,7 +28,7 @@ secrets:
 
 values:
   repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
-  branch: v3.1.1
+  branch: v3.1.2
 
 openbao_init:
   enabled: true
@@ -67,7 +67,7 @@ monitoring:
     valueFiles:
       - values.yaml
   projectID: "828"
-  targetRevision: 0.5.5
+  targetRevision: 0.5.6
   chart_name: eck-monitoring
   fullnameOverride: elastic
   resources:

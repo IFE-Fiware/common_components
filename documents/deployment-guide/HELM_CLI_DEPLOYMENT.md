@@ -43,7 +43,7 @@ The primary file to modify is `values.yaml`. Replace the placeholder values list
 | `<authority-namespace>`, `<consumer-namespace>`, `<dataprovider-namespace>` | `agentList` entries | The actual namespace identifiers of each agent to be deployed |
 | `<your-domain>` | `domainSuffix` | Your actual domain name |
 | `default` | `project` | The ArgoCD project to which this deployment belongs |
-| `v3.1.1` | `values.branch` | The Git branch corresponding to your release version |
+| `v3.1.2` | `values.branch` | The Git branch corresponding to your release version |
 | `example` | `secrets.secretEngine` | The name of the KV secret engine configured in your OpenBao |
 | `example-role` | `secrets.role` | The name of the role configured in your OpenBao |
 | `dev-prod` | `cluster.issuer` | Your certificate issuer name |
@@ -54,7 +54,7 @@ The primary file to modify is `values.yaml`. Replace the placeholder values list
 
 ```yaml
 values:
-  branch: v3.1.1                               # branch of repo with values
+  branch: v3.1.2                               # branch of repo with values
 resourcePreset: default                        # set to "low" to disable requests of resources
 agentList:                                     # list of all the agents to be deployed
   authorities:
