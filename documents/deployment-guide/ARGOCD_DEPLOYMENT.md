@@ -57,7 +57,7 @@ After saving, ArgoCD switches back to the form view. Verify that the following f
 | **Project Name** | `default` (or your chosen project) | `spec.project` |
 | **Repository URL** | `https://code.europa.eu/api/v4/projects/951/packages/helm/stable` | `spec.source.repoURL` |
 | **Chart** | `common_components` | `spec.source.chart` |
-| **Target Revision** | `3.1.0` (your chart version) | `spec.source.targetRevision` |
+| **Target Revision** | `3.1.1` (your chart version) | `spec.source.targetRevision` |
 | **Cluster URL** | `https://kubernetes.default.svc` | `spec.destination.server` |
 | **Namespace** | Your common components namespace | `spec.destination.namespace` |
 
@@ -90,7 +90,7 @@ The sections below provide the full list of values that must be replaced, follow
 | `<authority-namespace>`, `<consumer-namespace>`, `<dataprovider-namespace>` | `agentList` entries | The actual namespace identifiers of each agent to be deployed |
 | `<your-domain>` | `domainSuffix` | Your actual domain name |
 | `default` | `project` | The ArgoCD project to which this deployment belongs |
-| `3.1.0` / `v3.1.0` | `targetRevision`, `values.branch` | The Helm chart version and corresponding Git branch for your release |
+| `3.1.1` / `v3.1.1` | `targetRevision`, `values.branch` | The Helm chart version and corresponding Git branch for your release |
 | `example` | `secrets.secretEngine` | The name of the KV secret engine configured in your OpenBao |
 | `example-role` | `secrets.role` | The name of the role configured in your OpenBao |
 | `dev-prod` | `cluster.issuer` | Your certificate issuer name |
@@ -112,11 +112,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 3.1.0                              # version of package
+    targetRevision: 3.1.1                              # version of package
     helm:
       values: |
         values:
-          branch: v3.1.0                               # branch of repo with values
+          branch: v3.1.1                               # branch of repo with values
         resourcePreset: default                        # set to "low" to disable requests of resources
         agentList:                                     # list of all the agents to be deployed
           authorities:
