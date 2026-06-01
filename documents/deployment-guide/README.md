@@ -112,7 +112,7 @@ Here is a proposed implementation of manual DNS configuration:
 
 ### Custom self signed CA
 
-During deployment ELK stack helm may create custom self signed Certificate of Authority. This CA is used to sign CA certificate which in next steps sign cerificates for internal communication in ELK stack. If parameter **clusterIssuer_internal** is definied, then HELM will create self signed CA with name: <clusterIssuer_internal>-ca-<name_space> , otherwise helm will use **dev-selfsigned** Certificate of Authority to sign CA certificate.
+During deployment ELK stack helm may create custom self signed Certificate of Authority. This CA is used to sign CA certificate which in next steps sign cerificates for internal communication in ELK stack. If parameter **clusterIssuer_internal** is definied, then HELM will create self signed CA with name: `{clusterIssuer_internal}-ca-{namespace}` , otherwise helm will use **dev-selfsigned** Certificate of Authority to sign CA certificate.
 
 
 
