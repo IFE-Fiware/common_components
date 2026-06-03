@@ -15,6 +15,7 @@
 - [Prerequisites](#prerequisites)
   - [Tools](#tools)
   - [DNS Entries](#dns-entries)
+  - [Custom self signed CA](#custom-self-signed-ca)
 - [Deployment](#deployment)
 - [Additional Steps and Remarks](#additional-steps-and-remarks)
   - [Init-bao Job Issues](#init-bao-job-issues)
@@ -108,6 +109,12 @@ Here is a proposed implementation of manual DNS configuration:
 
 - Create an `A` record using `{namespace}.{domainSuffix}` pointing to the public IP of the Ingress Controller
 - For each entry in the above table, create a `CNAME` record using value of *FQDN Pattern* column pointing to `{namespace}.{domainSuffix}`
+
+### Custom self signed CA
+
+During deployment ELK stack helm may create custom self signed Certificate of Authority. This CA is used to sign CA certificate which in next steps sign cerificates for internal communication in ELK stack. If parameter **clusterIssuer_internal** is definied, then HELM will create self signed CA with name: `{clusterIssuer_internal}-ca-{namespace}` , otherwise helm will use **dev-selfsigned** Certificate of Authority to sign CA certificate.
+
+
 
 ## Deployment
 
