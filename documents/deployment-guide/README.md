@@ -73,14 +73,7 @@ Publicly available third-party charts. These can be installed independently usin
 
 ### Tools
 
-| Pre-Requisite | Version | Type | Description | External link |
-|---|:---:|---|---|--|
-| external-dns | 0.19.1 or newer | Optional | Used for automated DNS entry/subdomain creation and deletion via OVH API. This domain will be used to address all services and ingresses of the agent. Example pattern: `*.{namespaceTag}.{domainSuffix}`. Image: `registry.k8s.io/external-dns/external-dns:0.19.1`| [Official external-dns documentation](https://kubernetes-sigs.github.io/external-dns/latest) |
-| Kubernetes Cluster | 1.33.x or newer | Mandatory | Kubernetes cluster provided via OVH. Other versions may work; tested with 1.33.x. | [Official kubernetes documentation](https://kubernetes.io/docs/concepts/overview) |
-| nginx-ingress | 1.13.x or newer | Mandatory| ingress-nginx is used to control how external traffic gets into cluster and reaches applications and it integrates with OVH load balancers. Image: `registry.k8s.io/ingress-nginx/controller:v1.13.7` | [Official nginx documentation](https://docs.nginx.com/nginx-ingress-controller/install/helm/open-source) |
-| cert-manager | 1.19.x or newer | Mandatory| Tool that automates HTTPS certificates inside Kubernetes cluster. It keeps certificates renewed and it integrates directly with ingress-nginx. Image: `quay.io/jetstack/cert-manager-controller:v1.19.1` | [Official cert-manager documentation](https://cert-manager.io/docs) |
-| nfs-provisioner | 4.0.x or newer | Mandatory | Backend for ReadWriteMany volumes and shared storage. Image: `registry.k8s.io/sig-storage/nfs-provisioner:v4.0.8` | [Official nfs-provisioner documentation](https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner/tree/HEAD/charts/nfs-server-provisioner#nfs-server-provisioner) |
-| ArgoCD | 3.2.x or newer | Mandatory |  GitOps continuous delivery (App-of-Apps pattern). Image: `quay.io/argoproj/argocd:v3.2.1` | [Official ArgoCD documentation](https://argo-cd.readthedocs.io/?_gl=1*1mlwt96*_ga*MTg1Mjk2OTUwMC4xNzc3NTUzMjg5*_ga_5Z1VTPDL73*czE3Nzc1NTMyODkkbzEkZzAkdDE3Nzc1NTMyOTQkajU1JGwwJGgw) |
+The requirements tools are listed here: [Tools requirements](https://code.europa.eu/simpl/simpl-open/cross-cutting/documentation/installation-guide/-/blob/main/Prerequisites.md?ref_type=heads#tools-requirements)
 
 ### DNS Entries
 

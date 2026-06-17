@@ -134,12 +134,12 @@ spec:
         cluster:
           address: https://kubernetes.default.svc      # FQDN of your kubernetes cluster
           namespace: <common-namespace>                # where the app will be deployed
-          issuer: dev-prod                             # issuer of certificate
+          issuer: <your-issuer>                        # issuer of certificate
           internalIssuer: dev-selfsigned               # issuer of self-signed certificates
           kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080
         secrets:
-          secretEngine: example                        # name of the kv secret engine that will be created in OpenBao
-          role: example-role                           # name of the role that will be created in OpenBao
+          role: <role_name>                           # role created in OpenBao for access (this value must be defined per environment)
+          secretEngine: <secret_engine_name>          # container for secrets in your OpenBao (this value must be defined per environment)
         kafka:
           ha: true                                     # true creates 3 replicas of each component, false creates 1 of each
           topic:
