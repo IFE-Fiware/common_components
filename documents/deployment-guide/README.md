@@ -52,7 +52,6 @@ Hosted in the SIMPL-Open GitLab package registry. Access requires appropriate Gi
 | pg-cluster | `pg-cluster` | PostgreSQL cluster managed by the Zalando Postgres Operator | [Helm stable registry](https://code.europa.eu/api/v4/projects/1024/packages/helm/stable) |
 | simpl-notification-service | `simpl-notification-service` | SIMPL-Open internal notification service | [Helm stable registry](https://code.europa.eu/api/v4/projects/1002/packages/helm/stable) |
 | infrastructure-consumption-monitoring-service | `infrastructure-consumption-monitoring-service` | Monitors infrastructure resource consumption | [Helm stable registry](https://code.europa.eu/api/v4/projects/1240/packages/helm/stable) |
-| kube-state-metrics | 2.18.x or newer | Monitoring and Metricbeat statuses in Kibana. For OVH provider it's pre-installed when cluster is deployed. Image: `registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.18.0` |
 
 ### External Charts
 
