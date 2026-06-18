@@ -74,6 +74,10 @@ Publicly available third-party charts. These can be installed independently usin
 
 The requirements tools are listed here: [Tools requirements](https://code.europa.eu/simpl/simpl-open/cross-cutting/documentation/installation-guide/-/blob/main/Prerequisites.md?ref_type=heads#tools-requirements)
 
+| Tool                |     Version      |   Type    | Description                                                                                                                                                                      |
+|---------------------|:----------------:|:---------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| kube-state-metrics  | 2.18.x or newer  | Mandatory | Monitoring and Metricbeat statuses in Kibana. For OVH provider it's pre-installed when cluster is deployed. Image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.18.0 |
+
 ### DNS Entries
 
 | Component | FQDN Pattern | Public IP |
