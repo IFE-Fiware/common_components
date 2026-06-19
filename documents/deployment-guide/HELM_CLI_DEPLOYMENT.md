@@ -50,6 +50,9 @@ The primary file to modify is `values.yaml`. Replace the placeholder values list
 | `dev-selfsigned` | `cluster.internalIssuer` | Your internal/self-signed certificate issuer name |
 | `kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080` | `cluster.kubeStateHost` | The service address of kube-state-metrics in your cluster |
 
+> There is also a resourcePreset key, which, if you set it the value to "low", will limit the Kubernetes requests for CPU and memory in deployed resources, if possible. 
+> It will make the agent deployable on a smaller cluster.
+
 ### Example values.yaml
 
 ```yaml

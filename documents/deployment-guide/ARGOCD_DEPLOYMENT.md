@@ -99,6 +99,9 @@ The sections below provide the full list of values that must be replaced, follow
 
 **Fields that typically do not need changing:** `repoURL` (unless you host your own mirror), `cluster.address` (unless deploying to a remote cluster).
 
+> There is also a resourcePreset key, which, if you set it the value to "low", will limit the Kubernetes requests for CPU and memory in deployed resources, if possible. 
+> It will make the agent deployable on a smaller cluster.
+
 ### Example ArgoCD Application manifest
 
 ```yaml

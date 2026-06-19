@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### fixed (1 change)
 - fixed issue #33
 
-### added (1 change)
-- added changes suggested by Marco Moschetti
+### changed (1 change)
+- added documentation changes suggested by Marco Moschetti
 
 ## [3.1.3] - 2026-06-03
 
