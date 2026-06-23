@@ -39,7 +39,7 @@ openbao_init:
 openbao_config:
   enabled: true
   projectID: "1258"
-  targetRevision: 1.4.0-F-feature-simpl-26570.288.7128ab87
+  targetRevision: 1.4.0-F-feature-simpl-26570.297.c46ea1a8
   chart_name: openbao-config
 
 openbao:
