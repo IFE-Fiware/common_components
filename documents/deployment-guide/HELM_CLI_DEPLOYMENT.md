@@ -44,14 +44,12 @@ The primary file to modify is `values.yaml`. Replace the placeholder values list
 | `<your-domain>` | `domainSuffix` | Your actual domain name |
 | `default` | `project` | The ArgoCD project to which this deployment belongs |
 | `v3.1.4` | `values.branch` | The Git branch corresponding to your release version |
+| `default` | `resourcePreset` | Setting this value to `low`, will limit the Kubernetes requests for CPU and memory in deployed resources, if possible. It will make the agent deployable on a smaller cluster. It will not affect HA of resources |
 | `example` | `secrets.secretEngine` | The name of the KV secret engine configured in your OpenBao |
 | `example-role` | `secrets.role` | The name of the role configured in your OpenBao |
 | `dev-prod` | `cluster.issuer` | Your certificate issuer name |
 | `dev-selfsigned` | `cluster.internalIssuer` | Your internal/self-signed certificate issuer name |
 | `kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080` | `cluster.kubeStateHost` | The service address of kube-state-metrics in your cluster |
-
-> There is also a resourcePreset key, which, if you set it the value to "low", will limit the Kubernetes requests for CPU and memory in deployed resources, if possible. 
-> It will make the agent deployable on a smaller cluster.
 
 ### Example values.yaml
 

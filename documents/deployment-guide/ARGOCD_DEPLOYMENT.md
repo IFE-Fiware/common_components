@@ -91,6 +91,7 @@ The sections below provide the full list of values that must be replaced, follow
 | `<your-domain>` | `domainSuffix` | Your actual domain name |
 | `default` | `project` | The ArgoCD project to which this deployment belongs |
 | `3.1.4` / `v3.1.4` | `targetRevision`, `values.branch` | The Helm chart version and corresponding Git branch for your release |
+| `default` | `resourcePreset` | Setting this value to `low`, will limit the Kubernetes requests for CPU and memory in deployed resources, if possible. It will make the agent deployable on a smaller cluster. |
 | `example` | `secrets.secretEngine` | The name of the KV secret engine configured in your OpenBao |
 | `example-role` | `secrets.role` | The name of the role configured in your OpenBao |
 | `dev-prod` | `cluster.issuer` | Your certificate issuer name |
@@ -98,9 +99,6 @@ The sections below provide the full list of values that must be replaced, follow
 | `kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080` | `cluster.kubeStateHost` | The service address of kube-state-metrics in your cluster |
 
 **Fields that typically do not need changing:** `repoURL` (unless you host your own mirror), `cluster.address` (unless deploying to a remote cluster).
-
-> There is also a resourcePreset key, which, if you set it the value to "low", will limit the Kubernetes requests for CPU and memory in deployed resources, if possible. 
-> It will make the agent deployable on a smaller cluster.
 
 ### Example ArgoCD Application manifest
 

@@ -127,7 +127,7 @@ The Common Components can be deployed using either of the following methods. Cho
 
 Occasionally, the `init-bao` job may proceed with creating secrets before the OpenBao secret engine is available. This results in empty secrets, which can cause downstream components to fail.
 
-<img src="../images/Initbao.png" alt="Init-bao job issue" width="400">
+<img src="documents/images/Initbao.png" alt="Init-bao job issue" width="400">
 
 If this occurs:
 
@@ -142,7 +142,7 @@ When one of `init-bao` job is completed, the error one could be deleted.
 
 The following two pods depend on information from OpenBao and may start before OpenBao is fully available. If they are failing, restart them after OpenBao is up:
 
-<img src="../images/Podstodelete.png" alt="Pods to restart" width="400">
+<img src="documents/images/Podstodelete.png" alt="Pods to restart" width="400">
 
 Although rare, this condition may recur. Retry the steps above if `init-bao` fails again.
 
@@ -150,12 +150,12 @@ Although rare, this condition may recur. Retry the steps above if `init-bao` fai
 
 You might observe a case when objects-loader pod is in progressing state for a long time, but the monitoring components aren't synced:
 
-<img src="../images/ObjectsLoader.png" alt="objects-loader" width="400">
+<img src="documents/images/ObjectsLoader.png" alt="objects-loader" width="400">
 
 This is because objects-loader needs the monitoring components to work. If that happens, terminate the sync and trigger it again. 
 
-<img src="../images/Sync1.png" alt="sync" width="400">
-<img src="../images/Sync2.png" alt="terminate-sync" width="400">
+<img src="documents/images/Sync1.png" alt="sync" width="400">
+<img src="documents/images/Sync2.png" alt="terminate-sync" width="400">
 
 ### Monitoring
 
@@ -190,11 +190,11 @@ If you encounter issues during deployment, verify the following:
 ## Sanity check
 
 To make sure that everything is running correctly, you can check the statuses of apps in ArgoCD.<br><br>
-<img src="../images/Sanity_check_1.png" alt="ArgoCD statuses" width="400">
+<img src="documents/images/Sanity_check_1.png" alt="ArgoCD statuses" width="400">
 
 Normally, every app should have a healthy status, but at the moment there are exceptions:
 - common application can get a "Missing" status, because of objects-loader job which is removed after it's been processed. 
-<img src="../images/Sanity_check_2.png" alt="objects-loader" width="400">
+<img src="documents/images/Sanity_check_2.png" alt="objects-loader" width="400">
 
 This will be fixed in future releases.
 
