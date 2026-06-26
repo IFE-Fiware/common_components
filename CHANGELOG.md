@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fixed issue #33 and #34
 - change README.md location (SIMPL-28359)
 - added information about resourcePreset key (SIMPL-28199)
-
+ 
 ### changed (1 change)
 - added documentation changes suggested by Marco Moschetti
 
