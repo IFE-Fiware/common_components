@@ -52,7 +52,6 @@ Hosted in the SIMPL-Open GitLab package registry. Access requires appropriate Gi
 | pg-cluster | `pg-cluster` | PostgreSQL cluster managed by the Zalando Postgres Operator | [Helm stable registry](https://code.europa.eu/api/v4/projects/1024/packages/helm/stable) |
 | simpl-notification-service | `simpl-notification-service` | SIMPL-Open internal notification service | [Helm stable registry](https://code.europa.eu/api/v4/projects/1002/packages/helm/stable) |
 | infrastructure-consumption-monitoring-service | `infrastructure-consumption-monitoring-service` | Monitors infrastructure resource consumption | [Helm stable registry](https://code.europa.eu/api/v4/projects/1240/packages/helm/stable) |
-| kube-state-metrics | 2.18.x or newer | Monitoring and Metricbeat statuses in Kibana. For OVH provider it's pre-installed when cluster is deployed. Image: `registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.18.0` |
 
 ### External Charts
 
@@ -73,14 +72,11 @@ Publicly available third-party charts. These can be installed independently usin
 
 ### Tools
 
-| Pre-Requisite | Version | Type | Description | External link |
-|---|:---:|---|---|--|
-| external-dns | 0.19.1 or newer | Optional | Used for automated DNS entry/subdomain creation and deletion via OVH API. This domain will be used to address all services and ingresses of the agent. Example pattern: `*.{namespaceTag}.{domainSuffix}`. Image: `registry.k8s.io/external-dns/external-dns:0.19.1`| [Official external-dns documentation](https://kubernetes-sigs.github.io/external-dns/latest) |
-| Kubernetes Cluster | 1.33.x or newer | Mandatory | Kubernetes cluster provided via OVH. Other versions may work; tested with 1.33.x. | [Official kubernetes documentation](https://kubernetes.io/docs/concepts/overview) |
-| nginx-ingress | 1.13.x or newer | Mandatory| ingress-nginx is used to control how external traffic gets into cluster and reaches applications and it integrates with OVH load balancers. Image: `registry.k8s.io/ingress-nginx/controller:v1.13.7` | [Official nginx documentation](https://docs.nginx.com/nginx-ingress-controller/install/helm/open-source) |
-| cert-manager | 1.19.x or newer | Mandatory| Tool that automates HTTPS certificates inside Kubernetes cluster. It keeps certificates renewed and it integrates directly with ingress-nginx. Image: `quay.io/jetstack/cert-manager-controller:v1.19.1` | [Official cert-manager documentation](https://cert-manager.io/docs) |
-| nfs-provisioner | 4.0.x or newer | Mandatory | Backend for ReadWriteMany volumes and shared storage. Image: `registry.k8s.io/sig-storage/nfs-provisioner:v4.0.8` | [Official nfs-provisioner documentation](https://github.com/kubernetes-sigs/nfs-ganesha-server-and-external-provisioner/tree/HEAD/charts/nfs-server-provisioner#nfs-server-provisioner) |
-| ArgoCD | 3.2.x or newer | Mandatory |  GitOps continuous delivery (App-of-Apps pattern). Image: `quay.io/argoproj/argocd:v3.2.1` | [Official ArgoCD documentation](https://argo-cd.readthedocs.io/?_gl=1*1mlwt96*_ga*MTg1Mjk2OTUwMC4xNzc3NTUzMjg5*_ga_5Z1VTPDL73*czE3Nzc1NTMyODkkbzEkZzAkdDE3Nzc1NTMyOTQkajU1JGwwJGgw) |
+The requirements tools are listed here: [Tools requirements](https://code.europa.eu/simpl/simpl-open/cross-cutting/documentation/installation-guide/-/blob/main/Prerequisites.md?ref_type=heads#tools-requirements)
+
+| Tool                |     Version      |   Type    | Description                                                                                                                                                                      |
+|---------------------|:----------------:|:---------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| kube-state-metrics  | 2.18.x or newer  | Mandatory | Monitoring and Metricbeat statuses in Kibana. For OVH provider it's pre-installed when cluster is deployed. Image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.18.0 |
 
 ### DNS Entries
 
@@ -131,7 +127,7 @@ The Common Components can be deployed using either of the following methods. Cho
 
 Occasionally, the `init-bao` job may proceed with creating secrets before the OpenBao secret engine is available. This results in empty secrets, which can cause downstream components to fail.
 
-<img src="../images/Initbao.png" alt="Init-bao job issue" width="400">
+<img src="documents/images/Initbao.png" alt="Init-bao job issue" width="400">
 
 If this occurs:
 
@@ -146,7 +142,7 @@ When one of `init-bao` job is completed, the error one could be deleted.
 
 The following two pods depend on information from OpenBao and may start before OpenBao is fully available. If they are failing, restart them after OpenBao is up:
 
-<img src="../images/Podstodelete.png" alt="Pods to restart" width="400">
+<img src="documents/images/Podstodelete.png" alt="Pods to restart" width="400">
 
 Although rare, this condition may recur. Retry the steps above if `init-bao` fails again.
 
@@ -154,12 +150,12 @@ Although rare, this condition may recur. Retry the steps above if `init-bao` fai
 
 You might observe a case when objects-loader pod is in progressing state for a long time, but the monitoring components aren't synced:
 
-<img src="../images/ObjectsLoader.png" alt="objects-loader" width="400">
+<img src="documents/images/ObjectsLoader.png" alt="objects-loader" width="400">
 
 This is because objects-loader needs the monitoring components to work. If that happens, terminate the sync and trigger it again. 
 
-<img src="../images/Sync1.png" alt="sync" width="400">
-<img src="../images/Sync2.png" alt="terminate-sync" width="400">
+<img src="documents/images/Sync1.png" alt="sync" width="400">
+<img src="documents/images/Sync2.png" alt="terminate-sync" width="400">
 
 ### Monitoring
 
@@ -194,11 +190,11 @@ If you encounter issues during deployment, verify the following:
 ## Sanity check
 
 To make sure that everything is running correctly, you can check the statuses of apps in ArgoCD.<br><br>
-<img src="../images/Sanity_check_1.png" alt="ArgoCD statuses" width="400">
+<img src="documents/images/Sanity_check_1.png" alt="ArgoCD statuses" width="400">
 
 Normally, every app should have a healthy status, but at the moment there are exceptions:
 - common application can get a "Missing" status, because of objects-loader job which is removed after it's been processed. 
-<img src="../images/Sanity_check_2.png" alt="objects-loader" width="400">
+<img src="documents/images/Sanity_check_2.png" alt="objects-loader" width="400">
 
 This will be fixed in future releases.
 

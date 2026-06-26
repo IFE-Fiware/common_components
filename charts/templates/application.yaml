@@ -139,10 +139,12 @@ spec:
     targetRevision: {{ .Values.monitoring.operator.targetRevision }}
     chart: {{ .Values.monitoring.operator.chart_name }}
     helm:
+      {{- if .Values.monitoring.operator.valueFiles }}
       valueFiles:
         {{- range .Values.monitoring.operator.valueFiles }}
         - $values/app-values/monitoring-operator/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         fullnameOverride: {{ .Values.monitoring.operator.nameOverride }}-{{ .Values.cluster.namespace }}
         managedNamespaces: [{{ join "," (concat .Values.agentList.authorities .Values.agentList.providers .Values.agentList.consumers (list .Values.cluster.namespace)) }}]
@@ -152,10 +154,12 @@ spec:
     chart: {{ .Values.monitoring.chart_name }}
     helm:
       releaseName: {{ .Values.monitoring.fullnameOverride }}
+      {{- if .Values.monitoring.valueFiles }}
       valueFiles:
         {{- range .Values.monitoring.valueFiles }}
         - $values/app-values/monitoring/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         agentType: common
         clusterIssuer: {{ .Values.cluster.issuer }}
@@ -231,10 +235,12 @@ spec:
     targetRevision: {{ .Values.confluent_operator.targetRevision }}
     chart: {{ .Values.confluent_operator.chart_name }}
     helm:
+      {{- if .Values.confluent_operator.valueFiles }}
       valueFiles:
         {{- range .Values.confluent_operator.valueFiles }}
         - $values/app-values/confluent-operator/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         fullnameOverride: {{ .Values.confluent_operator.nameOverride }}
         name: confluent-operator-{{ .Values.cluster.namespace }}
@@ -246,10 +252,12 @@ spec:
     targetRevision: {{ .Values.kafka.targetRevision }}
     chart: {{ .Values.kafka.chart_name }}
     helm:
+      {{- if .Values.kafka.valueFiles }}
       valueFiles:
         {{- range .Values.kafka.valueFiles }}
         - $values/app-values/kafka/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         clusterIssuer: {{ .Values.cluster.issuer }}
         kafka:
@@ -296,10 +304,12 @@ spec:
     targetRevision: {{ .Values.redpanda.targetRevision }}
     chart: {{ .Values.redpanda.chart_name }}
     helm:
+      {{- if .Values.redpanda.valueFiles }}
       valueFiles:
         {{- range .Values.redpanda.valueFiles }}
         - $values/app-values/redpanda/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         automountServiceAccountToken: true
         extraEnv:
@@ -354,10 +364,12 @@ spec:
     targetRevision: {{ .Values.pg_operator.targetRevision }}
     chart: {{ .Values.pg_operator.chart_name }}
     helm:
+      {{- if .Values.pg_operator.valueFiles }}
       valueFiles:
         {{- range .Values.pg_operator.valueFiles }}
         - $values/app-values/pg-operator/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         fullnameOverride: {{ .Values.pg_operator.nameOverride }}-{{ .Values.cluster.namespace }}
         configKubernetes:
@@ -369,10 +381,12 @@ spec:
     targetRevision: {{ .Values.pg_cluster.targetRevision }}
     chart: {{ .Values.pg_cluster.chart_name }}
     helm:
+      {{- if .Values.pg_cluster.valueFiles }}
       valueFiles:
         {{- range .Values.pg_cluster.valueFiles }}
         - $values/app-values/pg-cluster/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         authorityList: {{ toYaml .Values.agentList.authorities | nindent 10 }}
         consumerList: {{ toYaml .Values.agentList.consumers | nindent 10 }}
@@ -397,10 +411,12 @@ spec:
     targetRevision: {{ .Values.pg_admin.targetRevision }}
     chart: {{ .Values.pg_admin.chart_name }}
     helm:
+      {{- if .Values.pg_admin.valueFiles }}
       valueFiles:
         {{- range .Values.pg_admin.valueFiles }}
         - $values/app-values/pg-admin/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         fullnameOverride: {{ .Values.pg_admin.nameOverride }}-{{ .Values.cluster.namespace }}
         env:
@@ -442,10 +458,12 @@ spec:
     chart: {{ .Values.notification.chart_name }}
     helm:
       releaseName: {{ .Values.notification.nameOverride }}
+      {{- if .Values.notification.valueFiles }}
       valueFiles:
         {{- range .Values.notification.valueFiles }}
         - $values/app-values/notification/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         deployment:
           vault:
@@ -479,10 +497,12 @@ spec:
     targetRevision: {{ .Values.mailpit.targetRevision }}
     chart: {{ .Values.mailpit.chart_name }}
     helm:
+      {{- if .Values.mailpit.valueFiles }}
       valueFiles:
         {{- range .Values.mailpit.valueFiles }}
         - $values/app-values/mailpit/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         fullnameOverride: {{ .Values.mailpit.nameOverride }}-{{ .Values.cluster.namespace }}
         ingress:
@@ -499,10 +519,12 @@ spec:
     chart: {{ .Values.infrastructure_consumption_monitoring_service.chart_name }}
     helm:
       releaseName: {{ .Values.infrastructure_consumption_monitoring_service.nameOverride }}
+      {{- if .Values.infrastructure_consumption_monitoring_service.valueFiles }}
       valueFiles:
         {{- range .Values.infrastructure_consumption_monitoring_service.valueFiles }}
         - $values/app-values/infrastructure-consumption-monitoring-service/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         deployment:
           vault:
