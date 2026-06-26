@@ -42,10 +42,12 @@ spec:
     targetRevision: {{ .Values.vault_webhook.targetRevision }}
     chart: {{ .Values.vault_webhook.chart_name }}
     helm:
+      {{- if .Values.vault_webhook.valueFiles }}
       valueFiles:
         {{- range .Values.vault_webhook.valueFiles }}
         - $values/app-values/vault-webhook/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         watchNamespace: {{ .Values.cluster.namespace }}
         fullnameOverride: vault-webhook-{{ .Values.cluster.namespace }}
