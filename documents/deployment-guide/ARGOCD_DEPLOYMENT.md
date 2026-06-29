@@ -49,17 +49,7 @@ Copy the YAML manifest from the [Example ArgoCD Application manifest](#example-a
 
 ### Step 5 — Verify the populated fields
 
-After saving, ArgoCD switches back to the form view. Verify that the following fields have been correctly populated from the manifest:
-
-| Field in ArgoCD UI | Expected value | Corresponds to manifest field |
-|---|---|---|
-| **Application Name** | `<common-namespace>-deployer` | `metadata.name` |
-| **Project Name** | `default` (or your chosen project) | `spec.project` |
-| **Repository URL** | `https://code.europa.eu/api/v4/projects/951/packages/helm/stable` | `spec.source.repoURL` |
-| **Chart** | `common_components` | `spec.source.chart` |
-| **Target Revision** | `3.1.4` (your chart version) | `spec.source.targetRevision` |
-| **Cluster URL** | `https://kubernetes.default.svc` | `spec.destination.server` |
-| **Namespace** | Your common components namespace | `spec.destination.namespace` |
+After saving, ArgoCD switches back to the form view. Verify that the following fields have been correctly populated from the manifest.
 
 If any field is empty or incorrect, click **EDIT AS YAML** again, correct the manifest, and save.
 
@@ -97,7 +87,13 @@ The sections below provide the full list of values that must be replaced, follow
 | `dev-prod` | `cluster.issuer` | Your certificate issuer name |
 | `dev-selfsigned` | `cluster.internalIssuer` | Your internal/self-signed certificate issuer name |
 | `kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080` | `cluster.kubeStateHost` | The service address of kube-state-metrics in your cluster |
-
+| `<common-namespace>-deployer` | `metadata.name` | Application name |
+| `default` (or your chosen project) | `spec.project` | Project name |
+| `https://code.europa.eu/api/v4/projects/951/packages/helm/stable` | `spec.source.repoURL` | Repository URL |
+| `common_components` | `spec.source.chart` | Chart |
+| `3.1.4` (your chart version) | `spec.source.targetRevision` | Target Version |
+| `https://kubernetes.default.svc` | `spec.destination.server` | Cluster URL |
+| Your common components namespace | `spec.destination.namespace` | Namespace |
 **Fields that typically do not need changing:** `repoURL` (unless you host your own mirror), `cluster.address` (unless deploying to a remote cluster).
 
 ### Example ArgoCD Application manifest
