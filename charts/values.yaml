@@ -225,7 +225,7 @@ notification:
 mailpit:
   enabled: true
   repo_URL: 'https://jouve.github.io/charts/'
-  targetRevision: 0.34.1
+  targetRevision: 0.31.3
   chart_name: mailpit
   nameOverride: mailpit
   valueFiles:
