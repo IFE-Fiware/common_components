@@ -43,15 +43,17 @@ The master Helm chart orchestrates a set of sub-charts. Individual sub-charts ar
 
 Hosted in the SIMPL-Open GitLab package registry. Access requires appropriate GitLab credentials.
 
-| Name | Chart | Description | Helm Registry |
-|---|---|---|---|
-| openbao-init | `openbao-init` | Initialises OpenBao after deployment (unsealing, secret engine setup) | [Helm stable registry](https://code.europa.eu/api/v4/projects/1347/packages/helm/stable) |
-| openbao-config | `openbao-config` | Configures OpenBao policies, roles, and secrets for the stack | [Helm stable registry](https://code.europa.eu/api/v4/projects/1258/packages/helm/stable) |
-| eck-monitoring | `eck-monitoring` | ELK/ECK monitoring stack (Elasticsearch, Kibana, Logstash, Metricbeat, Filebeat) | [Helm stable registry](https://code.europa.eu/api/v4/projects/828/packages/helm/stable) |
-| kafka | `kafka` | Kafka message broker deployment (Confluent/KRaft mode) | [Helm stable registry](https://code.europa.eu/api/v4/projects/976/packages/helm/stable) |
-| pg-cluster | `pg-cluster` | PostgreSQL cluster managed by the Zalando Postgres Operator | [Helm stable registry](https://code.europa.eu/api/v4/projects/1024/packages/helm/stable) |
-| simpl-notification-service | `simpl-notification-service` | SIMPL-Open internal notification service | [Helm stable registry](https://code.europa.eu/api/v4/projects/1002/packages/helm/stable) |
-| infrastructure-consumption-monitoring-service | `infrastructure-consumption-monitoring-service` | Monitors infrastructure resource consumption | [Helm stable registry](https://code.europa.eu/api/v4/projects/1240/packages/helm/stable) |
+> **Note:** The **Helm Registry** value is a Helm repository endpoint consumed by Helm/ArgoCD — it is **not** a web page and cannot be opened in a browser. To browse the chart source, use the **Repository (Chart Directory)** link instead.
+
+| Name | Chart | Description | Helm Registry (Helm/ArgoCD only, not browsable) | Repository (Chart Directory) |
+|---|---|---|---|---|
+| openbao-init | `openbao-init` | Initialises OpenBao after deployment (unsealing, secret engine setup) | `https://code.europa.eu/api/v4/projects/1347/packages/helm/stable` | [View chart source](https://code.europa.eu/simpl/simpl-open/development/common-components/openbao-init/-/tree/main/charts) |
+| openbao-config | `openbao-config` | Configures OpenBao policies, roles, and secrets for the stack | `https://code.europa.eu/api/v4/projects/1258/packages/helm/stable` | [View chart source](https://code.europa.eu/simpl/simpl-open/development/common-components/openbao/-/tree/main/charts) |
+| eck-monitoring | `eck-monitoring` | ELK/ECK monitoring stack (Elasticsearch, Kibana, Logstash, Metricbeat, Filebeat) | `https://code.europa.eu/api/v4/projects/828/packages/helm/stable` | [View chart source](https://code.europa.eu/simpl/simpl-open/development/monitoring/eck-monitoring/-/tree/main/charts) |
+| kafka | `kafka` | Kafka message broker deployment (Confluent/KRaft mode) | `https://code.europa.eu/api/v4/projects/976/packages/helm/stable` | [View chart source](https://code.europa.eu/simpl/simpl-open/development/common-components/kafka/-/tree/main/charts) |
+| pg-cluster | `pg-cluster` | PostgreSQL cluster managed by the Zalando Postgres Operator | `https://code.europa.eu/api/v4/projects/1024/packages/helm/stable` | [View chart source](https://code.europa.eu/simpl/simpl-open/development/common-components/postgres-cluster/-/tree/main/charts) |
+| simpl-notification-service | `simpl-notification-service` | SIMPL-Open internal notification service | `https://code.europa.eu/api/v4/projects/1002/packages/helm/stable` | [View chart source](https://code.europa.eu/simpl/simpl-open/development/contract-billing/notification-service/-/tree/main/charts) |
+| infrastructure-consumption-monitoring-service | `infrastructure-consumption-monitoring-service` | Monitors infrastructure resource consumption | `https://code.europa.eu/api/v4/projects/1240/packages/helm/stable` | [View chart source](https://code.europa.eu/simpl/simpl-open/development/monitoring/infrastructure-consumption-monitoring-service/-/tree/main/charts) |
 
 ### External Charts
 
@@ -118,8 +120,8 @@ The Common Components can be deployed using either of the following methods. Cho
 
 | Method | Guide | Description |
 |---|---|---|
-| **ArgoCD UI** | [ARGOCD_DEPLOYMENT.md](ARGOCD_DEPLOYMENT.md) | Deploy through the ArgoCD graphical interface by creating an Application resource. Recommended for teams using GitOps workflows. |
-| **Helm CLI** | [HELM_CLI_DEPLOYMENT.md](HELM_CLI_DEPLOYMENT.md) | Deploy from the command line using `helm install`. Suitable for scripted or CI/CD-driven deployments. |
+| **ArgoCD UI** | [ARGOCD_DEPLOYMENT.md](documents/deployment-guide/ARGOCD_DEPLOYMENT.md) | Deploy through the ArgoCD graphical interface by creating an Application resource. Recommended for teams using GitOps workflows. |
+| **Helm CLI** | [HELM_CLI_DEPLOYMENT.md](documents/deployment-guide/HELM_CLI_DEPLOYMENT.md) | Deploy from the command line using `helm install`. Suitable for scripted or CI/CD-driven deployments. |
 
 ## Additional Steps and Remarks
 
