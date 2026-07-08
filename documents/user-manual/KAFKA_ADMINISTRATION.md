@@ -18,8 +18,8 @@ There are a couple options you can set in Kafka deployment. Below you can find a
 
 | Variable name                 |     Example         | Description     |
 | ----------------------        |     :-----:         | --------------- |
-| kafka.image.tag               | 8.0.4  | version of kafka image |
-| kafka.image.initTag           | 3.0.4  | version of kafka init container |
+| kafka.image.tag               | 8.2.1  | version of kafka image |
+| kafka.image.initTag           | 3.2.2  | version of kafka init container |
 | kafka.replicas                | 3     | number of replicas  |
 | kafka.resources               | - | resources for kafka replicas - standard syntax of requests and limits |
 | kafka.topic.replicas          | 2 | number of topic replicas  |
