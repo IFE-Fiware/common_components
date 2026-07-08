@@ -49,17 +49,7 @@ Copy the YAML manifest from the [Example ArgoCD Application manifest](#example-a
 
 ### Step 5 — Verify the populated fields
 
-After saving, ArgoCD switches back to the form view. Verify that the following fields have been correctly populated from the manifest:
-
-| Field in ArgoCD UI | Expected value | Corresponds to manifest field |
-|---|---|---|
-| **Application Name** | `<common-namespace>-deployer` | `metadata.name` |
-| **Project Name** | `default` (or your chosen project) | `spec.project` |
-| **Repository URL** | `https://code.europa.eu/api/v4/projects/951/packages/helm/stable` | `spec.source.repoURL` |
-| **Chart** | `common_components` | `spec.source.chart` |
-| **Target Revision** | `3.1.3` (your chart version) | `spec.source.targetRevision` |
-| **Cluster URL** | `https://kubernetes.default.svc` | `spec.destination.server` |
-| **Namespace** | Your common components namespace | `spec.destination.namespace` |
+After saving, ArgoCD switches back to the form view. Verify that the following fields have been correctly populated from the manifest.
 
 If any field is empty or incorrect, click **EDIT AS YAML** again, correct the manifest, and save.
 
@@ -90,13 +80,20 @@ The sections below provide the full list of values that must be replaced, follow
 | `<authority-namespace>`, `<consumer-namespace>`, `<dataprovider-namespace>` | `agentList` entries | The actual namespace identifiers of each agent to be deployed |
 | `<your-domain>` | `domainSuffix` | Your actual domain name |
 | `default` | `project` | The ArgoCD project to which this deployment belongs |
-| `3.1.3` / `v3.1.3` | `targetRevision`, `values.branch` | The Helm chart version and corresponding Git branch for your release |
+| `3.1.5` / `v3.1.5` | `targetRevision`, `values.branch` | The Helm chart version and corresponding Git branch for your release |
+| `default` | `resourcePreset` | Setting this value to `low`, will limit the Kubernetes requests for CPU and memory in deployed resources, if possible. It will make the agent deployable on a smaller cluster. |
 | `example` | `secrets.secretEngine` | The name of the KV secret engine configured in your OpenBao |
 | `example-role` | `secrets.role` | The name of the role configured in your OpenBao |
 | `dev-prod` | `cluster.issuer` | Your certificate issuer name |
 | `dev-selfsigned` | `cluster.internalIssuer` | Your internal/self-signed certificate issuer name |
 | `kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080` | `cluster.kubeStateHost` | The service address of kube-state-metrics in your cluster |
-
+| `<common-namespace>-deployer` | `metadata.name` | Application name |
+| `default` (or your chosen project) | `spec.project` | Project name |
+| `https://code.europa.eu/api/v4/projects/951/packages/helm/stable` | `spec.source.repoURL` | Repository URL |
+| `common_components` | `spec.source.chart` | Chart |
+| `3.1.5` (your chart version) | `spec.source.targetRevision` | Target Version |
+| `https://kubernetes.default.svc` | `spec.destination.server` | Cluster URL |
+| Your common components namespace | `spec.destination.namespace` | Namespace |
 **Fields that typically do not need changing:** `repoURL` (unless you host your own mirror), `cluster.address` (unless deploying to a remote cluster).
 
 ### Example ArgoCD Application manifest
@@ -112,11 +109,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 3.1.3                              # version of package
+    targetRevision: 3.1.5                              # version of package
     helm:
       values: |
         values:
-          branch: v3.1.3                               # branch of repo with values
+          branch: v3.1.5                               # branch of repo with values
         resourcePreset: default                        # set to "low" to disable requests of resources
         agentList:                                     # list of all the agents to be deployed
           authorities:
@@ -134,12 +131,12 @@ spec:
         cluster:
           address: https://kubernetes.default.svc      # FQDN of your kubernetes cluster
           namespace: <common-namespace>                # where the app will be deployed
-          issuer: dev-prod                             # issuer of certificate
+          issuer: <your-issuer>                        # issuer of certificate
           internalIssuer: dev-selfsigned               # issuer of self-signed certificates
           kubeStateHost: kube-prometheus-stack-kube-state-metrics.devsecopstools.svc.cluster.local:8080
         secrets:
-          secretEngine: example                        # name of the kv secret engine that will be created in OpenBao
-          role: example-role                           # name of the role that will be created in OpenBao
+          role: <role_name>                           # role created in OpenBao for access (this value must be defined per environment)
+          secretEngine: <secret_engine_name>          # container for secrets in your OpenBao (this value must be defined per environment)
         kafka:
           ha: true                                     # true creates 3 replicas of each component, false creates 1 of each
           topic:

@@ -30,10 +30,12 @@ spec:
     targetRevision: {{ .Values.openbao.targetRevision }}
     chart: {{ .Values.openbao.chart_name }}
     helm:
+      {{- if .Values.openbao.valueFiles }}
       valueFiles:
         {{- range .Values.openbao.valueFiles }}
         - $values/app-values/openbao/{{ . }}
         {{- end }}
+      {{- end }}
       values: |
         fullnameOverride: openbao-{{ .Release.Namespace }}
         server:
