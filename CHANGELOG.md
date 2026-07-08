@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2026-07-08
+
+### changed (8 changes)
+- mailpit configuration (added persistence)
+- openbao-config to v1.4.0
+- openbao to v0.28.4
+- vault-webhook to v1.23.1
+- kafka to v1.3.0
+- pg-admin to v1.64.0
+- pg-cluster to v1.3.0
+- notifications to v2.7.0
+
 ## [3.1.5] - 2026-07-03
 
 ### fixed (3 changes)

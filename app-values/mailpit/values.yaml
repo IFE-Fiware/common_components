@@ -22,3 +22,7 @@ mailpit:
 service:
   smtp: 
     port: 587
+  
+persistence:
+  enabled: true
+  size: 4Gi
