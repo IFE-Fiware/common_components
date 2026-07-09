@@ -260,6 +260,9 @@ spec:
       {{- end }}
       values: |
         clusterIssuer: {{ .Values.cluster.issuer }}
+        {{- if .Values.kafka.extraValues }}
+          {{- toYaml .Values.kafka.extraValues  | nindent 8 }}
+        {{- end }}    
         kafka:
           auth:
             enabled: {{ .Values.kafka.auth.enabled }}

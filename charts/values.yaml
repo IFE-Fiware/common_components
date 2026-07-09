@@ -147,6 +147,7 @@ kafka:
         memory: 4Gi
   valueFiles:
     - values.yaml
+  extraValues: []
 
 redpanda:
   enabled: true
