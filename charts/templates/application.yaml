@@ -259,7 +259,7 @@ spec:
         {{- end }}
       {{- end }}
       values: |
-        clusterIssuer: {{ .Values.cluster.issuer }}  
+        clusterIssuer: {{ .Values.cluster.issuer }}
         kafka:
           auth:
             enabled: {{ .Values.kafka.auth.enabled }}
