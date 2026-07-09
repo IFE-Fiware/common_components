@@ -16,6 +16,7 @@
   - [Tools](#tools)
   - [DNS Entries](#dns-entries)
   - [Custom self signed CA](#custom-self-signed-ca)
+  - [OIDC providers](#oidc-providers)
 - [Deployment](#deployment)
 - [Additional Steps and Remarks](#additional-steps-and-remarks)
   - [Init-bao Job Issues](#init-bao-job-issues)
