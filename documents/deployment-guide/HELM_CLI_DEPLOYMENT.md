@@ -104,6 +104,22 @@ To limit the resource usage you can switch the following keys to those values:
 | `pg_cluster.ha` | `false` | Switches from 3 replicas of Postgres to 1 |
 | `openbao.ha` | `false` | Switches from 3 replicas of OpenBao to 1 |
 
+You can also add additional values to Kafka deployment. 
+You can address the values that are described in [Kafka administration manual](../user-manual/KAFKA_ADMINISTRATION.md)
+Example: 
+```
+      kafka:
+        extraValues:
+          configOverrides:
+            log4j2:
+              Configuration:
+                Loggers:
+                  Root:
+                    level: WARN
+            server:
+              - exampleKey=EXAMPLEVALUE
+```
+
 Also, additionally to what is described in the snippet above, all of the following apps deployment can be disabled, but it will affect out-of-the-box functionality. 
 To do so, add the following keys to with value "false" in spec.source.helm.values:
 
