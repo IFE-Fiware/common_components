@@ -6,8 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.1] - 2026-07-00
 
-### changed (1 changes)
+### changed (2 changes)
 - Added configOverrides possibility to kafka deployment
+- Added OIDC information to README.md (issue #19)
 
 ## [4.0.0] - 2026-07-08
 
