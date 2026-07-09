@@ -28,6 +28,9 @@ There are a couple options you can set in Kafka deployment. Below you can find a
 | kafka.auth.enabled            | true | enables enables SASL plaintext authentication (users are defined in vault secret) |
 | kafka.clusterLink             | false | enable or disable cluster link feature |
 | kafka.balancer                | false | enable or disable balancer feature |
+| kafka.configOverrides.server  | - | table of additional configOverrides.server |
+| kafka.configOverrides.log4j   | - | table of configOverrides.log4j  |
+| kafka.configOverrides.log4j2  | - | table of configOverrides.log4j2 |
 | kraftController.replicas      | 3 | number of replicas of kraft controllers |
 | kraftController.resources     | - | resources for kraft controllers - standard syntax of requests and limits |
 | hashicorp.service             | http://vault.commonns.domainsuffix | link to vault ingress

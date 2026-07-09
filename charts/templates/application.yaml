@@ -280,6 +280,9 @@ spec:
           resources: {{- toYaml .Values.kafka.resources.kafka | nindent 12 }}
             {{- end }}
           {{- end }}
+          {{- if .Values.kafka.extraValues }}
+            {{- toYaml .Values.kafka.extraValues  | nindent 10 }}
+          {{- end }}  
         kraftController:
           {{- if eq .Values.kafka.ha false }}
           replicas: 1
