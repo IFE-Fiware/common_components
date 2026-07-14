@@ -28,7 +28,7 @@ secrets:
 
 values:
   repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
-  branch: v4.0.0
+  branch: v4.0.2
 
 openbao_init:
   enabled: true
@@ -39,7 +39,7 @@ openbao_init:
 openbao_config:
   enabled: true
   projectID: "1258"
-  targetRevision: 1.4.0
+  targetRevision: 1.4.1
   chart_name: openbao-config
 
 openbao:
