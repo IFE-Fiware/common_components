@@ -28,12 +28,12 @@ secrets:
 
 values:
   repo_URL: https://code.europa.eu/simpl/simpl-open/development/agents/common_components.git
-  branch: v4.0.2
+  branch: v4.0.3
 
 openbao_init:
   enabled: true
   projectID: "1347"
-  targetRevision: 1.1.0
+  targetRevision: 1.1.1
   chart_name: openbao-init
 
 openbao_config:

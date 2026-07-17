@@ -4,9 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.3] - 2026-07-17
+
+### changed (1 change)
+- openbao-init to v1.1.1 (fixing issue #31)
+- restored changelog entries (fixing issue #21)
+
 ## [4.0.2] - 2026-07-14
 
-### changed (1 changes)
+### changed (1 change)
 - openbao-config to v1.4.1
 
 ## [4.0.1] - 2026-07-09
@@ -115,3 +121,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - pg-cluster to v1.1.1
 - notifications to v2.1.1
 - icms to v2.3.1
+
+## [2.4.2] - 2025-12-04
+
+### fixed (2 changes)
+- Fix the waved deployment and change the split between applications. (SIMPL-21565)
+- Fixed SIMPL-21567 bug.
+
+## [2.4.1] - 2025-11-28
+
+### fixed (2 changes)
+- Apply fixes to bugs found in OpenBao init scripts.
+- Update Notifications app.
+
+## [2.4.0] - 2025-11-15
+
+### changed (2 changes)
+- Updated many components to implement Consumer version 2.4.0.
+- Update monitoring stack to version 0.1.20.
+
+## [2.3.2] - 2025-10-30
+
+### changed (1 change)
+- Replace Vault by OpenBao (fixing bug SIMPL-19876)
+
+## [2.3.1] - 2025-10-29
+
+### changed (1 change)
+- Update monitoring stack to version 0.1.20.
+
+## [2.3.0] - 2025-10-10
+
+### changed (2 change)
+- Updated many components to implement Common Components agent version 2.3.0.
+- Replace Vault with OpenBao
+
+## [2.1.3] - 2025-09-19
+
+### fixed (1 change)
+- bitnamilegacy related fixes
+
+## [2.1.2] - 2025-09-01
+
+### fixed (1 change)
+- Hotfix for SIMPL-17511
+
+## [2.1.1] - 2025-07-21
+
+### fixed (2 changes)
+- Hotfix for SIMPL-14454
+- Hotfix for SIMPL-14418
+
+## [2.1.0] - 2025-06-27
+
+### changed (1 change)
+- Updated many components to implement Consumer version 2.1.0.
