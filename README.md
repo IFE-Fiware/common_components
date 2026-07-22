@@ -85,16 +85,16 @@ The requirements tools are listed here: [Tools requirements](https://code.europa
 
 | Component | FQDN Pattern | Public IP |
 |---|---|---|
-| elastic-apm-server | `apm.{namespace}.{domainSuffix}` | Default Ingress Controller Public IP |
-| elastic-elasticsearch-http | `elastic-elasticsearch-es-http.{namespace}.svc`  | Default Ingress Controller Public IP |
-| elastic-elasticsearch-http-public | `elasticsearch.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
-| elastic-kibana-dashboard | `kibana.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
-| elastic-otel-collector | `collector.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
-| logstash-api-beats | `logstash.beats.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
-| mailpit-{namespace} | `mailpit.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
-| pg-admin-{namespace} | `pgadmin.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
-| redpanda | `redpanda.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
-| OpenBao | `secrets.{namespace}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| elastic-apm-server | `apm.{namespaceTag}.{domainSuffix}` | Default Ingress Controller Public IP |
+| elastic-elasticsearch-http-public | `elasticsearch.{namespaceTag}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| elastic-kibana-dashboard | `kibana.{namespaceTag}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| elastic-otel-collector | `collector.{namespaceTag}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| logstash-api-beats | `logstash.beats.{namespaceTag}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| mailpit-{namespaceTag} | `mailpit.{namespaceTag}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| pg-admin-{namespaceTag} | `pgadmin.{namespaceTag}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| redpanda | `redpanda.{namespaceTag}.{domainSuffix}`  | Default Ingress Controller Public IP |
+| openbao-{namespaceTag} | `secrets.{namespaceTag}.{domainSuffix}`  | Default Ingress Controller Public IP |
+|	elastic-kibana-pdf-export | `kibana-pdf-export.{namespaceTag}.{domainSuffix}`  | Default Ingress Controller Public IP |
 
 If your Ingress Controller is **nginx** and installed into namespace **ingress-nginx**, you can retrieve its public IP using:
 
@@ -119,12 +119,7 @@ OpenBao integration within Simpl-Open is tested against vanilla Kubernetes clust
 
 ## Deployment
 
-The Common Components can be deployed using either of the following methods. Choose the guide that matches your workflow:
-
-| Method | Guide | Description |
-|---|---|---|
-| **ArgoCD UI** | [ARGOCD_DEPLOYMENT.md](documents/deployment-guide/ARGOCD_DEPLOYMENT.md) | Deploy through the ArgoCD graphical interface by creating an Application resource. Recommended for teams using GitOps workflows. |
-| **Helm CLI** | [HELM_CLI_DEPLOYMENT.md](documents/deployment-guide/HELM_CLI_DEPLOYMENT.md) | Deploy from the command line using `helm install`. Suitable for scripted or CI/CD-driven deployments. |
+The Common Components can be deployed using by adding the deployer Application resource in the ArgoCD graphical interface. It's described in [ARGOCD_DEPLOYMENT.md](documents/deployment-guide/ARGOCD_DEPLOYMENT.md) file.
 
 ## Additional Steps and Remarks
 
