@@ -19,7 +19,6 @@
   - [OIDC providers](#oidc-providers)
 - [Deployment](#deployment)
 - [Additional Steps and Remarks](#additional-steps-and-remarks)
-  - [Init-bao Job Issues](#init-bao-job-issues)
   - [Failing Pod Restart](#failing-pod-restart)
   - [Monitoring](#monitoring)
   - [OpenBao Configuration](#openbao-configuration)
@@ -122,21 +121,6 @@ OpenBao integration within Simpl-Open is tested against vanilla Kubernetes clust
 The Common Components can be deployed using by adding the deployer Application resource in the ArgoCD graphical interface. It's described in [ARGOCD_DEPLOYMENT.md](documents/deployment-guide/ARGOCD_DEPLOYMENT.md) file.
 
 ## Additional Steps and Remarks
-
-### Init-bao Job Issues
-
-Occasionally, the `init-bao` job may proceed with creating secrets before the OpenBao secret engine is available. This results in empty secrets, which can cause downstream components to fail.
-
-<img src="documents/images/Initbao.png" alt="Init-bao job issue" width="400">
-
-If this occurs:
-
-1. Delete the following secrets:
-   - `secrets-root-token`
-   - `secrets-unseal-keys`
-2. Restart the `init-bao` job if it has exhausted its retry attempts.
-
-When one of `init-bao` job is completed, the error one could be deleted.
 
 ### Failing Pod Restart
 
