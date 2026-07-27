@@ -213,6 +213,10 @@ notification:
   targetRevision: 2.7.0
   nameOverride: simpl-notification
   chart_name: simpl-notification-service
+  mail:
+    smtpHost: ssl0.ovh.net
+    smtpUser: dev@simpl-europe.eu
+    defaultReceiver: simpl_tech@simpl-europe.eu
   resources:
     requests:
       cpu: "500m"
