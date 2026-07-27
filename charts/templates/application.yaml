@@ -480,7 +480,7 @@ spec:
           otel:
             endpoint: http://collector.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
           {{- if .Values.monitoring.enabled }}
-            enabled: 'true'
+            disabled: 'false'
           {{- end }}
           {{- if .Values.mailpit.enabled }}
           mail:

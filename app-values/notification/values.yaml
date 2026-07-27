@@ -2,7 +2,7 @@ deployment:
   kafka:
     clientUser: notification
   otel:
-    enabled: false
+    disabled: true
 startupProbe:
   timeoutSeconds: 10
   failureThreshold: 60

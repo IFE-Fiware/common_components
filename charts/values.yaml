@@ -210,7 +210,7 @@ pg_cluster:
 notification:
   enabled: true
   projectID: "1002"
-  targetRevision: 2.7.0-F-feature-simpl-29117.463.2af98adf
+  targetRevision: 2.7.0-F-feature-simpl-29117.465.21ba27ae
   nameOverride: simpl-notification
   chart_name: simpl-notification-service
   mail:
