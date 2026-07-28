@@ -41,7 +41,7 @@ The master Helm chart orchestrates a set of sub-charts. Individual sub-charts ar
 
 ### Internal Charts
 
-Hosted in the SIMPL-Open GitLab package registry. Access requires appropriate GitLab credentials.
+Hosted in the SIMPL-Open GitLab package registry.
 
 > **Note:** The **Helm Registry** value is a Helm repository endpoint consumed by Helm/ArgoCD — it is **not** a web page and cannot be opened in a browser. To browse the chart source, use the **Repository (Chart Directory)** link instead.
 
@@ -128,7 +128,7 @@ The following two pods depend on information from OpenBao and may start before O
 
 <img src="documents/images/Podstodelete.png" alt="Pods to restart" width="400">
 
-Although rare, this condition may recur. Retry the steps above if `init-bao` fails again.
+Although rare, this condition may recur.
 
 ### Monitoring not being deployed
 
