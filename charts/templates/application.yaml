@@ -479,11 +479,19 @@ spec:
             bootstrapServer: http://kafka.{{ .Values.cluster.namespace }}.svc.cluster.local:9092
           otel:
             endpoint: http://collector.{{ .Values.namespaceTag }}.{{ .Values.domainSuffix }}
-        {{- if .Values.mailpit.enabled }}
+          {{- if .Values.monitoring.enabled }}
+            disabled: 'false'
+          {{- end }}
+          {{- if .Values.mailpit.enabled }}
           mail:
             smtpHost: mailpit-{{ .Values.cluster.namespace }}-smtp
             smtpUser: smtp
-        {{- end }}
+          {{- else }}
+          mail:
+            {{- toYaml .Values.notification.mail | nindent 12 }}
+          {{- end }}
+            defaultReceiver: {{ .Values.notification.mail.defaultReceiver }}
+            healthCheck: {{ .Values.notification.mail.healthCheck }}
         {{- if eq .Values.resourcePreset "low" }}
         resources:
           requests:

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.5] - 2026-07-28
+
+### fixed (4 changes)
+- removed statement about GitLab credentials (SIMPL-30721)
+- removed section about init-bao job - outdated and should no longer occur (SIMPL-30253)
+- added additional variables to notifications app, fixing deployment when Mailpit is disabled (SIMPL-29117)
+- fixing issue #28 - added a comment about multiple pods in a job
+
+### changed (1 change)
+- monitoring to v0.9.4 (fixing SIMPL-26365)
+
 ## [4.0.4] - 2026-07-22
 
 ### fixed (2 changes)
