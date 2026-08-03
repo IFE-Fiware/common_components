@@ -78,7 +78,7 @@ The sections below provide the full list of values that must be replaced, follow
 | `<authority-namespace>`, `<consumer-namespace>`, `<dataprovider-namespace>` | `agentList` entries | The actual namespace identifiers of each agent to be deployed |
 | `<your-domain>` | `domainSuffix` | Your actual domain name |
 | `default` | `project` | The ArgoCD project to which this deployment belongs |
-| `4.0.5` / `v4.0.5` | `targetRevision`, `values.branch` | The Helm chart version and corresponding Git branch for your release |
+| `4.0.6` / `v4.0.6` | `targetRevision`, `values.branch` | The Helm chart version and corresponding Git branch for your release |
 | `default` | `resourcePreset` | Setting this value to `low`, will limit the Kubernetes requests for CPU and memory in deployed resources, if possible. It will make the agent deployable on a smaller cluster. |
 | `example` | `secrets.secretEngine` | The name of the KV secret engine configured in your OpenBao |
 | `example-role` | `secrets.role` | The name of the role configured in your OpenBao |
@@ -89,7 +89,7 @@ The sections below provide the full list of values that must be replaced, follow
 | `default` (or your chosen project) | `spec.project` | Project name |
 | `https://code.europa.eu/api/v4/projects/951/packages/helm/stable` | `spec.source.repoURL` | Repository URL |
 | `common_components` | `spec.source.chart` | Chart |
-| `4.0.5` (your chart version) | `spec.source.targetRevision` | Target Version |
+| `4.0.6` (your chart version) | `spec.source.targetRevision` | Target Version |
 | `https://kubernetes.default.svc` | `spec.destination.server` | Cluster URL |
 | Your common components namespace | `spec.destination.namespace` | Namespace |
 | SMTP server settings | `notification.mail` branch | appropriate SMTP server settings / used when Mailpit is disabled |
@@ -108,11 +108,11 @@ spec:
   source:
     repoURL: 'https://code.europa.eu/api/v4/projects/951/packages/helm/stable'
     path: '""'
-    targetRevision: 4.0.5                              # version of package
+    targetRevision: 4.0.6                              # version of package
     helm:
       values: |
         values:
-          branch: v4.0.5                               # branch of repo with values
+          branch: v4.0.6                               # branch of repo with values
         resourcePreset: default                        # set to "low" to disable requests of resources
         agentList:                                     # list of all the agents to be deployed
           authorities:
