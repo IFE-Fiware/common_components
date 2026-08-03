@@ -14,7 +14,7 @@ Example entries in OpenBao look like this:
 <img src="../images/OpenBao02.png" alt="OpenBao02" width="400"><BR>
 
 **_As an update from previous version, most of the OpenBao configuration is now applied automatically.
-You just need to create a key for Signer and update a couple of values, which is mentioned in other agents readmes._**
+You just need to update a couple of values, which are mentioned in other agents readmes._**
 
 **_All the credentials (for Keycloak and other components) are also now automatically stored in OpenBao - review the secrets for credentials if needed._**
 
