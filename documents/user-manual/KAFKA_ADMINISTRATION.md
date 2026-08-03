@@ -42,8 +42,14 @@ There are a couple options you can set in Kafka deployment. Below you can find a
 #### Console access
 
 You can access the console by going to https url redpanda.*namespaceTag*.*domainSuffix*
+You can always check the actual address through kubectl command:
 
-For credentials you need to access the OpenBao, you'll find them in secret named *namespaceTag*-redpanda-credentials.
+`kubectl get ingress redpanda -n <namespace>`
+
+Login is `admin`, the password you can obtain from through kubectl command:
+
+`kubectl get secret redpanda-secret -o go-template='{{.data.password | base64decode}}' -n <namespace>`
+or from OpenBao secret named namespaceTag-redpanda-credentials. 
 
 #### Console overview
 

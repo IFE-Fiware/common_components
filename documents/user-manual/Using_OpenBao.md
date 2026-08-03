@@ -22,7 +22,7 @@ You can access OpenBao on <https://secrets.**namespacetag**.**domainsuffix**>
 
 <img src="../images/OpenBao06.png" alt="OpenBao06" width="600"><BR>
 
-We can always check the actual address through kubectl command:
+You can always check the actual address through kubectl command:
 
 `kubectl get ingress openbao-<namespace> -n <namespace>`
 
