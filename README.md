@@ -59,16 +59,16 @@ Hosted in the SIMPL-Open GitLab package registry.
 
 Publicly available third-party charts. These can be installed independently using the `helm repo add` and `helm install` commands.
 
-| Name | Chart | Description | Chart Repository |
+| Name | Chart name | Helm Registry (Helm/ArgoCD only, not browsable) | Description | Documentation |
 |---|---|---|---|
-| OpenBao | `openbao/openbao` | Open-source secrets management (fork of HashiCorp Vault) | [openbao.github.io/openbao-helm](https://openbao.github.io/openbao-helm) |
-| ECK Operator | `elastic/eck-operator` | Elastic Cloud on Kubernetes — manages Elasticsearch, Kibana, and related resources | [helm.elastic.co](https://helm.elastic.co) |
-| Vault Secrets Webhook | `bank-vaults/vault-secrets-webhook` | Kubernetes mutating webhook that injects secrets from OpenBao into pods | [ghcr.io/bank-vaults/helm-charts](https://github.com/bank-vaults/vault-secrets-webhook) |
-| Confluent for Kubernetes | `confluent/confluent-for-kubernetes` | Operator for deploying and managing Confluent/Kafka components | [packages.confluent.io/helm](https://packages.confluent.io/helm) |
-| Redpanda Console | `redpanda/console` | Web UI for inspecting and managing Kafka topics and consumer groups | [charts.redpanda.com](https://charts.redpanda.com) |
-| Postgres Operator | `postgres-operator/postgres-operator` | Zalando Postgres Operator — manages PostgreSQL clusters on Kubernetes | [opensource.zalando.com](https://opensource.zalando.com/postgres-operator/charts/postgres-operator) |
-| pgAdmin 4 | `runix/pgadmin4` | Web-based PostgreSQL administration and query tool | [helm.runix.net](https://helm.runix.net) |
-| Mailpit | `jouve/mailpit` | Mock SMTP server for capturing and inspecting outgoing emails in non-production environments | [jouve.github.io/charts](https://jouve.github.io/charts/) |
+| OpenBao | `openbao` | `openbao.github.io/openbao-helm` | Open-source secrets management (fork of HashiCorp Vault) | [Documentation](https://openbao.org/docs/) |
+| ECK Operator | `eck-operator` | `helm.elastic.co` | Elastic Cloud on Kubernetes — manages Elasticsearch, Kibana, and related resources | [Documentation](https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s) |
+| Vault Secrets Webhook | `vault-secrets-webhook` | `ghcr.io/bank-vaults/helm-charts` | Kubernetes mutating webhook that injects secrets from OpenBao into pods | [Documentation](https://bank-vaults.dev/docs/mutating-webhook/)
+| Confluent for Kubernetes | `confluent-for-kubernetes` | `packages.confluent.io/helm` | Operator for deploying and managing Confluent/Kafka components | [Documentation](https://docs.confluent.io/operator/current/overview.html)
+| Redpanda Console | `console` | `charts.redpanda.com` | Web UI for inspecting and managing Kafka topics and consumer groups | [Documentation](https://docs.redpanda.com/streaming/current/console/)
+| Postgres Operator | `postgres-operator` | `opensource.zalando.com` | Zalando Postgres Operator — manages PostgreSQL clusters on Kubernetes | [Documentation](https://postgres-operator.readthedocs.io/en/latest/)
+| pgAdmin 4 | `pgadmin4` | `helm.runix.net` | Web-based PostgreSQL administration and query tool | [Documentation](https://www.pgadmin.org/docs/)
+| Mailpit | `mailpit` | `jouve.github.io/charts` | Mock SMTP server for capturing and inspecting outgoing emails in non-production environments | [Documentation](https://mailpit.axllent.org/docs/)
 
 ## Prerequisites
 
