@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.6] - 2026-08-03
+
+### fixed (3 changes)
+- fix the table of external charts (SIMPL-30725)
+- remove Rancher dependant extracting of ingresses and secrets, adding kubectl way (SIMPL-30543)
+- extend the max connections number in postgres cluster (SIMPL-29924 and related)
+
 ## [4.0.5] - 2026-07-28
 
 ### fixed (4 changes)
