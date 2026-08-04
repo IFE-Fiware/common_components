@@ -2,6 +2,7 @@ name: pg-cluster
 
 volumeSize: 5Gi
 instances: 3
+maxConnections: 1000
 
 authorityList: {}
 

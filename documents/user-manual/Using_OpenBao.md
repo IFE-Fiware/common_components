@@ -14,21 +14,21 @@ Example entries in OpenBao look like this:
 <img src="../images/OpenBao02.png" alt="OpenBao02" width="400"><BR>
 
 **_As an update from previous version, most of the OpenBao configuration is now applied automatically.
-You just need to create a key for Signer and update a couple of values, which is mentioned in other agents readmes._**
+You just need to update a couple of values, which are mentioned in other agents readmes._**
 
 **_All the credentials (for Keycloak and other components) are also now automatically stored in OpenBao - review the secrets for credentials if needed._**
 
 You can access OpenBao on <https://secrets.**namespacetag**.**domainsuffix**>
 
-We can always check the actual address in rancher:
+<img src="../images/OpenBao06.png" alt="OpenBao06" width="600"><BR>
 
-<img src="../images/OpenBao03.png" alt="OpenBao03" width="600"><BR>
+You can always check the actual address through kubectl command:
 
-Root token can be found in secret secrets-root-token, in key token. 
+`kubectl get ingress openbao-<namespace> -n <namespace>`
 
-<img src="../images/OpenBao04.png" alt="OpenBao04" width="600"><BR>
-<img src="../images/OpenBao05.png" alt="OpenBao05" width="600"><BR>
-<img src="../images/OpenBao06.png" alt="OpenBao06" width="400"><BR>
+Root token can be found in secret secrets-root-token, in key token. You can get it through kubectl command:
+
+`kubectl get secret secrets-root-token -o go-template='{{.data.token | base64decode}}' -n <namespace>`
 
 The application retrieves them according to the following configuration:
 
