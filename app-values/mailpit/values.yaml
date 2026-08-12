@@ -18,6 +18,8 @@ mailpit:
         name: mailpit-secrets
         context: mailpit-secrets
         key: smtp.htpasswd
+  ingress:
+    ingressClassName: external-nginx
 
 service:
   smtp: 
