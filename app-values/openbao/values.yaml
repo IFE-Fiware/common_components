@@ -13,3 +13,5 @@ server:
     raft:
       enabled: true
       setNodeId: true
+  dataStorage:
+    storageClass: rook-cephfs
