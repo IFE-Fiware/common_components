@@ -38,12 +38,9 @@ openbao_init:
 
 openbao_config:
   enabled: true
-  repo_URL: https://github.com/IFE-Fiware/openbao.git
   projectID: "1258"
   targetRevision: 1.4.1
   chart_name: openbao-config
-  targetRevision: dev-ife
-  path: charts
 
 openbao:
   enabled: true
