@@ -33,8 +33,10 @@ values:
 openbao_init:
   enabled: true
   projectID: "1347"
-  targetRevision: 1.1.1
+  repo_URL: 'https://github.com/IFE-Fiware/openbao-init'
+  targetRevision: v1.1.1-IFE
   chart_name: openbao-init
+  pvcStorageClass: rook-cephfs
 
 openbao_config:
   enabled: true

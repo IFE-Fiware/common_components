@@ -60,9 +60,11 @@ spec:
         {{- end }}
   {{- end }}
   {{- if .Values.openbao_init.enabled }}
-  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.openbao_init.projectID }}/packages/helm/stable"
+#  - repoURL: "https://code.europa.eu/api/v4/projects/{{ .Values.openbao_init.projectID }}/packages/helm/stable"
+  - repoURL: {{ .Values.openbao_init.repo_URL }}
     targetRevision: {{ .Values.openbao_init.targetRevision }}
-    chart: {{ .Values.openbao_init.chart_name }}
+    path: charts
+    #chart: {{ .Values.openbao_init.chart_name }}
     helm:
       values: |
         cluster:
@@ -70,6 +72,7 @@ spec:
         namespaceTag: {{ .Values.namespaceTag }}
         domainSuffix: {{ .Values.domainSuffix }}
         replicas: {{ .Values.openbao.replicas }}
+        pvcStorageClass: {{ .Values.openbao_init.pvcStorageClass }}
         {{- if eq .Values.openbao.ha false }}
         replicas: 1
         {{- end }}
